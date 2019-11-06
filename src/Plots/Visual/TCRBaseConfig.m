@@ -1,7 +1,7 @@
 %% Plot TCR base configurations
 
 
-saveTF = 1;
+saveTF = 0;
 
 baseSepDistance = [5,17]; % Kuhn lengths
 NFIL = 6; % number of filaments in TCR
@@ -20,6 +20,34 @@ for bSD = 1:length(baseSepDistance)
         rBase.z(bSD,nf)= 0;
     end
 end
+
+%% Define locations for TCR PDB Config
+bSD = length(baseSepDistance)+1
+
+% TCR configuration estimated from PDB: 6JXR
+rBase.x(bSD,1) = 0;
+rBase.y(bSD,1) = 0;
+rBase.z(bSD,1) = 0;
+
+rBase.x(bSD,2) = -cos( 0.753 )*4.1;
+rBase.y(bSD,2) = sin( 0.753 )*4.1;
+rBase.z(bSD,2) = 0;
+
+rBase.x(bSD,3) = -9.7333;
+rBase.y(bSD,3) = 0;
+rBase.z(bSD,3) = 0;
+
+rBase.x(bSD,4) = -cos( 0.5095 )*8.0667;
+rBase.y(bSD,4) = sin( 0.5095 )*8.0667;
+rBase.z(bSD,4) = 0;
+
+rBase.x(bSD,5) = -cos( 0.97545 )*10.1667;
+rBase.y(bSD,5) = sin( 0.97545 )*10.1667;
+rBase.z(bSD,5) = 0;
+
+rBase.x(bSD,6) = -cos( 1.069 )*11.3;
+rBase.y(bSD,6) = sin( 1.069 )*11.3;
+rBase.z(bSD,6) = 0;
 
 
 
@@ -99,6 +127,52 @@ if(saveTF)
     figure(20);
     savesubfolder = 'SepDist17/Plots/Visuals';
     savename = 'TCRBaseConfig_BaseSepDist17Labels';
+    saveas(gcf,fullfile(savefolder,savesubfolder,savename),'epsc');
+    saveas(gcf,fullfile(savefolder,savesubfolder,savename),'fig');
+end
+
+
+
+%% Plot base configurations - TCR PDB Config - No Labels
+xshift = +1.5; % shift this config to be similarly centered to above - does not affect results
+yshift = -1.5;
+
+figure(3); clf; hold on; box on;
+for nf=1:1:NFIL
+    plot(rBase.x(3,nf).*0.3 + xshift,rBase.y(3,nf).*0.3 + yshift,'x','MarkerSize',ms,'Color',colors_fil(nf,:),'LineWidth',lw);
+end
+xlim([-xm,xm]);
+ylim([-ym,ym]);
+set(gca,'xtick',[-6 -3 0 3 6],'XTickLabel',[]);
+set(gca,'ytick',[-6 -3 0 3 6],'YTickLabel',[]);
+set(gca,'units','inches','position',[[0.5,0.5],2,2]);
+
+if(saveTF)
+    figure(3);
+    savesubfolder = 'TCRPDBConfig/Plots/Visuals';
+    savename = 'TCRBaseConfig_BaseTCRPDBConfig';
+    saveas(gcf,fullfile(savefolder,savesubfolder,savename),'epsc');
+    saveas(gcf,fullfile(savefolder,savesubfolder,savename),'fig');
+end
+
+
+%% Plot base configurations - TCR PDB Config - Labels
+
+figure(30); clf; hold on; box on;
+for nf=1:1:NFIL
+    plot(rBase.x(3,nf).*0.3 + xshift,rBase.y(3,nf).*0.3 + yshift,'x','MarkerSize',ms,'Color',colors_fil(nf,:),'LineWidth',lw);
+end
+xlim([-xm,xm]);
+ylim([-ym,ym]);
+set(gcf,'Position',[1 1 400 400]);
+xlabel('x (nm)','FontName','Arial','FontSize',fs);
+ylabel('y (nm)','FontName','Arial','FontSize',fs);
+legend('CD3E','CD3D','CD3Z','CD3Z','CD3G','CD3E');
+
+if(saveTF)
+    figure(30);
+    savesubfolder = 'TCRPDBConfig/Plots/Visuals';
+    savename = 'TCRBaseConfig_BaseTCRPDBConfigLabels';
     saveas(gcf,fullfile(savefolder,savesubfolder,savename),'epsc');
     saveas(gcf,fullfile(savefolder,savesubfolder,savename),'fig');
 end
