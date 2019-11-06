@@ -3,11 +3,11 @@ clear all; close all;
 
 %% Initialize model parameters
 
-saveTF = 1; % save figures
+saveTF = 0; % save figures
 
 spacing = 0; % 0 = CD3Zeta spacing, 1 = evenly spaced tyrosines
 membrane = 1; % 0 = no membrane, 1 = membrane
-constant = 0; % 0 = steric-influenced dephosphorylation, 1 = steric-influenced dephosphorylation, 2 = constant phosphorylation
+constant = 0; % 0 = steric-independent dephosphorylation, 1 = steric-influenced dephosphorylation, 2 = constant phosphorylation
 
 % parameters to file label conversion
 if (spacing)
@@ -42,6 +42,7 @@ savesubfolder = [iSiteSpacing,'/Membrane',membraneState,'/Plots/Hill/',typeRever
 
 % range of parameter sweep
 sweep = -1:1:5;
+%sweep = -1
 totalAAImmPerMod = [0, sweep(2:end)*2+1];
 % figure parameters
 colors = flipud(cool(max(sweep)+2));
@@ -62,115 +63,105 @@ for s = 1:length(sweep)
     M = dlmread(fullfile(filefolder,filesubfolder,filename));
 
     iSiteTotal     = M(1,2);
-    reverseRate    = M(:,1);
-    avgSteadyState = M(:,4);
-    avgBound       = M(:,5);
+    reverseRate    = M(:,1); % rate of phosphatase
+    avgSteadyState = M(:,4); % fraction phosphorylated as function of increasing phosphatase
+    avgBound       = M(:,5); % total number phosphorylated as function of increasing phosphatase
     iterations_End = M(:,6);
+    
+    kinaseIntrinsicRate = 1./reverseRate; % kinase:phosphatase
     
     %% Find 0.1 and 0.9 x values for estimating Hill coefficient
     % This is super ugly - clean this up - better variable names etc
     
-    i11 = find((1-avgSteadyState)-0.1<0,1,'last');
-    i12 = find((1-avgSteadyState)-0.1>0,1,'first');
-    x11 = reverseRate(i11);
-    x12 = reverseRate(i12);
-    slope1 = ((1-avgSteadyState(i11))-(1-avgSteadyState(i12)))/(reverseRate(i11)-reverseRate(i12));
+    i11 = find((avgSteadyState)-0.1<0,1,'first');
+    i12 = find((avgSteadyState)-0.1>0,1,'last');
+    x11 = kinaseIntrinsicRate(i11);
+    x12 = kinaseIntrinsicRate(i12);
+    slope1 = ((avgSteadyState(i11))-(avgSteadyState(i12)))/(kinaseIntrinsicRate(i11)-kinaseIntrinsicRate(i12));
     
-    i91 = find((1-avgSteadyState)-0.9<0,1,'last');
-    i92 = find((1-avgSteadyState)-0.9>0,1,'first');
-    x91 = reverseRate(i91);
-    x92 = reverseRate(i92);
-    slope9 = ((1-avgSteadyState(i91))-(1-avgSteadyState(i92)))/(reverseRate(i91)-reverseRate(i92));
+    i91 = find((avgSteadyState)-0.9<0,1,'first');
+    i92 = find((avgSteadyState)-0.9>0,1,'last');
+    x91 = kinaseIntrinsicRate(i91);
+    x92 = kinaseIntrinsicRate(i92);
+    slope9 = ((avgSteadyState(i91))-(avgSteadyState(i92)))/(kinaseIntrinsicRate(i91)-kinaseIntrinsicRate(i92));
     
-    x1 = (0.1-(1-avgSteadyState(i11)))/slope1 + x11;
-    x9 = (0.9-(1-avgSteadyState(i91)))/slope9 + x91;
+    x1 = (0.1-(avgSteadyState(i11)))/slope1 + x11;
+    x9 = (0.9-(avgSteadyState(i91)))/slope9 + x91;
     
     hillcoeffEst(s) = log10(81)/(log10(x9/x1));
  
     %% Find KA
     
-    i51 = find((1-avgSteadyState)-0.5<0,1,'last');
-    i52 = find((1-avgSteadyState)-0.5>0,1,'first');
-    x51 = reverseRate(i51);
-    x52 = reverseRate(i52);
-    slope5 = ((1-avgSteadyState(i51))-(1-avgSteadyState(i52)))/(reverseRate(i51)-reverseRate(i52));
+    i51 = find((avgSteadyState)-0.5<0,1,'first');
+    i52 = find((avgSteadyState)-0.5>0,1,'last');
+    x51 = kinaseIntrinsicRate(i51);
+    x52 = kinaseIntrinsicRate(i52);
+    slope5 = ((avgSteadyState(i51))-(avgSteadyState(i52)))/(kinaseIntrinsicRate(i51)-kinaseIntrinsicRate(i52));
     
-    KA_Est(s) = (0.5-(1-avgSteadyState(i51)))/slope5 + x51;
+    KA_Est(s) = (0.5-(avgSteadyState(i51)))/slope5 + x51;
    
     %% MAX LOG SLOPE Hill Coeff Estimate
 
     switch (constant)
-        case 0
-            diffy = diff(movmean(log10((1-avgSteadyState(45:end-20))./(avgSteadyState(45:end-20))),3));
-            diffx = diff(log10(reverseRate(45:end-20)));
-            slope = diffy./diffx;
+        case 0 % 45:end-20
+            %diffy = diff(movmean(log10((avgSteadyState(41:81))./(1-avgSteadyState(41:81))),3));
+            diffy = diff((log10((avgSteadyState(41:81))./(1-avgSteadyState(41:81)))));
+            diffx = diff(log10(kinaseIntrinsicRate(41:81)));
+            %slope = diffy./diffx;
+            slope = movmean(diffy./diffx,4);
             HillCoeffMaxSlope(s) = max(slope);
             
-            reverseRatePlot = log10(reverseRate(46:end-20));
+            kinaseIntrinsicRatePlot = log10(kinaseIntrinsicRate(42:81));
         case 1
-            diffy = diff(movmean(log10((1-avgSteadyState(45:end-20))./(avgSteadyState(45:end-20))),3));
-            diffx = diff(log10(reverseRate(45:end-20)));
-            slope = diffy./diffx;
+            %diffy = diff(movmean(log10((avgSteadyState(45:end-20))./(1-avgSteadyState(45:end-20))),3));
+            diffy = diff((log10((avgSteadyState(41:81))./(1-avgSteadyState(41:81)))));
+            diffx = diff(log10(kinaseIntrinsicRate(41:81)));
+            slope = movmean(diffy./diffx,4);
             HillCoeffMaxSlope(s) = max(slope);
             
-            reverseRatePlot = log10(reverseRate(46:end-20));
+            kinaseIntrinsicRatePlot = log10(kinaseIntrinsicRate(42:81));
         case 2
-            diffy = diff(movmean(log10((1-avgSteadyState(45:end))./(avgSteadyState(45:end))),3));
-            diffx = diff(log10(reverseRate(45:end)));
-            slope = diffy./diffx;
+            %diffy = diff(movmean(log10((avgSteadyState(45:end))./(1-avgSteadyState(45:end))),3));
+            diffy = diff((log10((avgSteadyState(41:81))./(1-avgSteadyState(41:81)))));
+            diffx = diff(log10(kinaseIntrinsicRate(41:81)));
+            slope = movmean(diffy./diffx,4);
             HillCoeffMaxSlope(s) = max(slope);
             
-            reverseRatePlot = log10(reverseRate(46:end));
+            kinaseIntrinsicRatePlot = log10(kinaseIntrinsicRate(42:81));
     end
 
     % Plot
-    figure(33); hold on;
-    plot(reverseRatePlot,slope,'-*k','LineWidth',2,'Color',colors(s,:));
-    xlabel('Phosphatase Rate');
+    figure(33); hold on; box on;
+    plot(kinaseIntrinsicRatePlot,slope,'-*k','LineWidth',2,'Color',colors(s,:));
+    xlabel('Kinase Intrinsic Rate');
     ylabel('Slope of Hill curve');
+    if(saveTF)
+        saveas(gcf,fullfile(savefolder,savesubfolder,'SlopeVSPhosRate'),'fig');
+        saveas(gcf,fullfile(savefolder,savesubfolder,'SlopeVSPhosRate'),'epsc');
+    end
 
     %% Plot Hill curves
 
     % plot 
     figure(1); box on; hold on;
-    plot(1./reverseRate, avgSteadyState,'-o','Color',colors(s,:),'LineWidth',lw,'MarkerSize',ms_hill,'MarkerFaceColor',colors(s,:));
+    plot(kinaseIntrinsicRate, avgSteadyState,'-o','Color',colors(s,:),'LineWidth',lw,'MarkerSize',ms_hill,'MarkerFaceColor',colors(s,:));
 
     
     figure(10); box on; hold on;
-    plot(1./reverseRate, avgSteadyState,'-o','Color',colors(s,:),'LineWidth',lw,'MarkerSize',ms_hill,'MarkerFaceColor',colors(s,:));
-
-
-    %
-    figure(11); box on; hold on;
-    plot(reverseRate, avgSteadyState,'-o','Color',colors(s,:),'LineWidth',lw,'MarkerSize',ms_hill);
-    %plot(reverseRate,reverseRate,'-','Color',[1.0000, 0.2857, 0],'LineWidth',10);
-    %set(gca,'XScale','log');
-    xlabel1 = 'Phosphatase Rate';
-    ylabel1 = 'Fraction of sites phosphorylated';
-    
-    xlabel(xlabel1,'FontName','Arial','FontSize',18);
-    ylabel(ylabel1,'FontName','Arial','FontSize',18);
-    
-    %
-    figure(2); clf; box on; hold on;
-    plot(reverseRate, avgBound, '-ob','Color',colors(s,:),'LineWidth',lw);
-    plot(reverseRate, avgSteadyState*iSiteTotal,'-or','LineWidth',lw);
-    set(gca,'XScale','log');
-    legend('avgBound','fractionBound*iSiteTotal');
-    xlabel1 = 'Phosphatase Rate';
-    ylabel1 = 'Number of sites phosphorylated';
-
-    xlabel(xlabel1);
-    ylabel(ylabel1);
+    plot(kinaseIntrinsicRate, avgSteadyState,'-o','Color',colors(s,:),'LineWidth',lw,'MarkerSize',ms_hill,'MarkerFaceColor',colors(s,:));
     
     %
     figure(3); box on; hold on;
-    plot(log10(reverseRate), log10((1-avgSteadyState)./(avgSteadyState)),'-o','Color',colors(s,:),'LineWidth',lw);
-    xlabel1 = 'log(Phosphatase Rate)';
+    plot(log10(kinaseIntrinsicRate), log10((avgSteadyState)./(1-avgSteadyState)),'-o','Color',colors(s,:),'LineWidth',lw);
+    xlabel1 = 'log(Kinase Intrinsic Rate)';
     ylabel1 = 'log(\theta/(1-\theta)';
 
     xlabel(xlabel1);
     ylabel(ylabel1);
+    if(saveTF)
+        saveas(gcf,fullfile(savefolder,savesubfolder,'LogLogDoseResponse'),'fig');
+        saveas(gcf,fullfile(savefolder,savesubfolder,'LogLogDoseResponse'),'epsc');
+    end
 
 
 end
@@ -187,7 +178,7 @@ KA = KA_Est(1);
 %% Plot Hill Curves - no labels
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 figure(1);
-plot(1./reverseRate,1-((reverseRate).^n./((KA^n)+(reverseRate.^n))),'--k','LineWidth',2.5);
+plot(kinaseIntrinsicRate,((kinaseIntrinsicRate).^n./((KA^n)+(kinaseIntrinsicRate.^n))),'--k','LineWidth',2.5);
 set(gca,'XScale','log');
 set(gca,'XTickLabel',[]);
 set(gca,'YTickLabel',[]);
@@ -214,7 +205,7 @@ end
 %% Plot Hill Curves - with labels
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 figure(10);
-plot(1./reverseRate,1-((reverseRate).^n./((KA^n)+(reverseRate.^n))),'--k','LineWidth',2.5);
+plot(kinaseIntrinsicRate,((kinaseIntrinsicRate).^n./((KA^n)+(kinaseIntrinsicRate.^n))),'--k','LineWidth',2.5);
 
 set(gca,'XScale','log');
 xlabel1 = 'Kinase intrinsic rate';
