@@ -7,17 +7,17 @@ close all;
 %% Initialize model
 
 % Pick model
-spacing = 0; % 0 = CD3Zeta, 1 = EvenSites, 2 = TCR, 3 = CD3Epsilon
+spacing = 2; % 0 = CD3Zeta, 1 = EvenSites, 2 = TCR, 3 = CD3Epsilon
 membrane = 1; % 0 for membrane off, 1 for membrane on
-model = 21; % 1x = LocalStructuring, 2x = Membrane Association, 3x = Simultaneous Binding
+model = 35; % 1x = LocalStructuring, 2x = Membrane Association, 3x = Simultaneous Binding
 
 % 10 = Local Structuring
 
 % 30 = Simultaneous Binding SH2
 
 % Save Transition Matrices and Figures
-writeTransitionMatrix = 1; % 0 = do not create transitionMatrix files, 1 = create transitionMatrix files
-saveTF = 1;
+writeTransitionMatrix = 0; % 0 = do not create transitionMatrix files, 1 = create transitionMatrix files
+saveTF = 0;
 
 %% 
 
@@ -308,7 +308,7 @@ switch (model)
         lw = 2;
         modificationLabel = '(Bound)';
         
-    case 34 % TCR - separation distance175 Kuhn
+    case 34 % TCR - separation distance 17 Kuhn
         
         % model name
         modelName = 'SimultaneousBindingibEqual';
@@ -336,6 +336,40 @@ switch (model)
         legendlabels = {'ibRadius = 1','ibRadius = 2','ibRadius = 3','ibRadius = 4','ibRadius = 5','ibRadius = 6','ibRadius = 7','ibRadius = 8','ibRadius = 9','ibRadius = 10','ibRadius = 11','ibRadius = 12','ibRadius = 13','ibRadius = 14'};
         colorIndices = sweep;
         colors = flipud(cool(max(sweep)));
+        ms = 10;
+        lw = 2;
+        modificationLabel = '(Bound)';
+        
+                
+    case 35 % TCR - separation distance TCR Config
+        
+        % model name
+        modelName = 'SimultaneousBindingibEqual';
+        
+        % find files
+        filefolder    = '~/Documents/Papers/MultisiteDisorder/Data/3.SimultaneousBinding';
+        filesubfolder = [iSiteSpacing,'/Membrane',membraneState,'/TCRPDBConfig/1.OcclusionProbabilities/CatFiles'];
+        filetitle     = strcat(iSiteSpacing,'Membrane',num2str(membrane));
+        
+        % save transition matrices location
+        transitionMatrixfolder    = '~/Documents/Papers/MultisiteDisorder/Data/3.SimultaneousBinding/';
+        transitionMatrixsubfolder = [iSiteSpacing,'/Membrane',membraneState,'/TCRPDBConfig/2.TransitionMatrices'];
+        
+        % save figures location
+        savesubfolder = ['3.SimultaneousBinding/',iSiteSpacing,'/Membrane',membraneState,'/TCRPDBConfig/Plots'];
+        
+        % 
+        locationTotal = 10;
+        NFil = 6;
+        iSiteTotal(1:NFil) = [1 1 3 3 1 1];
+        sweep = 1:1:10;
+        sweepParameter = 'ibRadius';
+        
+        % figure parameters
+        legendlabels = {'ibRadius = 1','ibRadius = 2','ibRadius = 3','ibRadius = 4','ibRadius = 5','ibRadius = 6','ibRadius = 7','ibRadius = 8','ibRadius = 9','ibRadius = 10','ibRadius = 11','ibRadius = 12','ibRadius = 13','ibRadius = 14'};
+        colorIndices = sweep;
+        %colors = flipud(cool(max(sweep)));
+        colors = flipud(cool(13)); % use colors from TCR above with bigger range
         ms = 10;
         lw = 2;
         modificationLabel = '(Bound)';
@@ -592,7 +626,7 @@ switch (model)
             end
         end  
         
-    case {33,34} % sim bind ibEqual TCR
+    case {33,34,35} % sim bind ibEqual TCR
         set(gca,'YScale','log');
         if(spacing==2)
             ylim([10^(-7),10^0]); % TCRMembrane1
@@ -692,7 +726,7 @@ switch (model)
             end
         end 
         
-    case {33,34} % sim bind ibEqual TCR
+    case {33,34,35} % sim bind ibEqual TCR
         set(gca,'YScale','log');
         if(spacing==2)
             ylim([10^(-7),10^0]); % TCRMembrane1
@@ -816,7 +850,7 @@ switch (model)
             end
         end
 
-    case {3,33,34}
+    case {3,33,34,35}
         set(gca,'YScale','log');
 end
 
