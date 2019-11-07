@@ -3,11 +3,11 @@ clear all; close all;
 
 %% Initialize model parameters
 
-saveTF = 0; % save figures
+saveTF = 1; % save figures
 
 spacing = 0; % 0 = CD3Zeta spacing, 1 = evenly spaced tyrosines
 membrane = 1; % 0 = no membrane, 1 = membrane
-constant = 0; % 0 = steric-independent dephosphorylation, 1 = steric-influenced dephosphorylation, 2 = constant phosphorylation
+constant = 1; % 0 = steric-independent dephosphorylation, 1 = steric-influenced dephosphorylation, 2 = constant phosphorylation
 
 % parameters to file label conversion
 if (spacing)
@@ -53,6 +53,11 @@ ms_lw = 1.5;
 
 hillcoeffEst = zeros(length(sweep),1);
 hillcoeffEstPhos = zeros(length(sweep),1);
+HillCoeffMaxSlope = zeros(length(sweep),1);
+hillcoeffEst_Bootstrap_Mean = zeros(length(sweep),1);
+hillcoeffEst_Bootstrap_Std = zeros(length(sweep),1);
+HillCoeffMaxSlope_Bootstrap_Mean = zeros(length(sweep),1);
+HillCoeffMaxSlope_Bootstrap_Std = zeros(length(sweep),1);
 
 for s = 1:length(sweep)
 
@@ -69,88 +74,15 @@ for s = 1:length(sweep)
     iterations_End = M(:,6);
     
     kinaseIntrinsicRate = 1./reverseRate; % kinase:phosphatase
-    
-    %% Find 0.1 and 0.9 x values for estimating Hill coefficient
-    % This is super ugly - clean this up - better variable names etc
-    
-    i11 = find((avgSteadyState)-0.1<0,1,'first');
-    i12 = find((avgSteadyState)-0.1>0,1,'last');
-    x11 = kinaseIntrinsicRate(i11);
-    x12 = kinaseIntrinsicRate(i12);
-    slope1 = ((avgSteadyState(i11))-(avgSteadyState(i12)))/(kinaseIntrinsicRate(i11)-kinaseIntrinsicRate(i12));
-    
-    i91 = find((avgSteadyState)-0.9<0,1,'first');
-    i92 = find((avgSteadyState)-0.9>0,1,'last');
-    x91 = kinaseIntrinsicRate(i91);
-    x92 = kinaseIntrinsicRate(i92);
-    slope9 = ((avgSteadyState(i91))-(avgSteadyState(i92)))/(kinaseIntrinsicRate(i91)-kinaseIntrinsicRate(i92));
-    
-    x1 = (0.1-(avgSteadyState(i11)))/slope1 + x11;
-    x9 = (0.9-(avgSteadyState(i91)))/slope9 + x91;
-    
-    hillcoeffEst(s) = log10(81)/(log10(x9/x1));
- 
-    %% Find KA
-    
-    i51 = find((avgSteadyState)-0.5<0,1,'first');
-    i52 = find((avgSteadyState)-0.5>0,1,'last');
-    x51 = kinaseIntrinsicRate(i51);
-    x52 = kinaseIntrinsicRate(i52);
-    slope5 = ((avgSteadyState(i51))-(avgSteadyState(i52)))/(kinaseIntrinsicRate(i51)-kinaseIntrinsicRate(i52));
-    
-    KA_Est(s) = (0.5-(avgSteadyState(i51)))/slope5 + x51;
-   
-    %% MAX LOG SLOPE Hill Coeff Estimate
 
-    switch (constant)
-        case 0 % 45:end-20
-            %diffy = diff(movmean(log10((avgSteadyState(41:81))./(1-avgSteadyState(41:81))),3));
-            diffy = diff((log10((avgSteadyState(41:81))./(1-avgSteadyState(41:81)))));
-            diffx = diff(log10(kinaseIntrinsicRate(41:81)));
-            %slope = diffy./diffx;
-            slope = movmean(diffy./diffx,4);
-            HillCoeffMaxSlope(s) = max(slope);
-            
-            kinaseIntrinsicRatePlot = log10(kinaseIntrinsicRate(42:81));
-        case 1
-            %diffy = diff(movmean(log10((avgSteadyState(45:end-20))./(1-avgSteadyState(45:end-20))),3));
-            diffy = diff((log10((avgSteadyState(41:81))./(1-avgSteadyState(41:81)))));
-            diffx = diff(log10(kinaseIntrinsicRate(41:81)));
-            slope = movmean(diffy./diffx,4);
-            HillCoeffMaxSlope(s) = max(slope);
-            
-            kinaseIntrinsicRatePlot = log10(kinaseIntrinsicRate(42:81));
-        case 2
-            %diffy = diff(movmean(log10((avgSteadyState(45:end))./(1-avgSteadyState(45:end))),3));
-            diffy = diff((log10((avgSteadyState(41:81))./(1-avgSteadyState(41:81)))));
-            diffx = diff(log10(kinaseIntrinsicRate(41:81)));
-            slope = movmean(diffy./diffx,4);
-            HillCoeffMaxSlope(s) = max(slope);
-            
-            kinaseIntrinsicRatePlot = log10(kinaseIntrinsicRate(42:81));
-    end
-
-    % Plot
-    figure(33); hold on; box on;
-    plot(kinaseIntrinsicRatePlot,slope,'-*k','LineWidth',2,'Color',colors(s,:));
-    xlabel('Kinase Intrinsic Rate');
-    ylabel('Slope of Hill curve');
-    if(saveTF)
-        saveas(gcf,fullfile(savefolder,savesubfolder,'SlopeVSPhosRate'),'fig');
-        saveas(gcf,fullfile(savefolder,savesubfolder,'SlopeVSPhosRate'),'epsc');
-    end
-
-    %% Plot Hill curves
-
-    % plot 
-    figure(1); box on; hold on;
-    plot(kinaseIntrinsicRate, avgSteadyState,'-o','Color',colors(s,:),'LineWidth',lw,'MarkerSize',ms_hill,'MarkerFaceColor',colors(s,:));
-
+    %% Find hill coeff for original data
+    [hillcoeffEstTemp, KA_EstTemp, HillCoeffMaxSlopeTemp, kinaseIntrinsicRatePlot,slopeLogLog] = computeHillCoeff(constant, kinaseIntrinsicRate, avgSteadyState);
     
-    figure(10); box on; hold on;
-    plot(kinaseIntrinsicRate, avgSteadyState,'-o','Color',colors(s,:),'LineWidth',lw,'MarkerSize',ms_hill,'MarkerFaceColor',colors(s,:));
+    hillcoeffEst(s) = hillcoeffEstTemp;
+    KA_Est(s) = KA_EstTemp;
+    HillCoeffMaxSlope(s) = HillCoeffMaxSlopeTemp;
     
-    %
+    %% Plot Log(y/(1-y)) VS Log(K/P)
     figure(3); box on; hold on;
     plot(log10(kinaseIntrinsicRate), log10((avgSteadyState)./(1-avgSteadyState)),'-o','Color',colors(s,:),'LineWidth',lw);
     xlabel1 = 'log(Kinase Intrinsic Rate)';
@@ -162,6 +94,58 @@ for s = 1:length(sweep)
         saveas(gcf,fullfile(savefolder,savesubfolder,'LogLogDoseResponse'),'fig');
         saveas(gcf,fullfile(savefolder,savesubfolder,'LogLogDoseResponse'),'epsc');
     end
+
+    %% Plot Slope vs Kinase Intrinsic Rate
+    figure(33); hold on; box on;
+    plot(kinaseIntrinsicRatePlot,slopeLogLog,'-*k','LineWidth',2,'Color',colors(s,:));
+    xlabel('Kinase Intrinsic Rate');
+    ylabel('Slope of Hill curve');
+    if(saveTF)
+        saveas(gcf,fullfile(savefolder,savesubfolder,'SlopeVSPhosRate'),'fig');
+        saveas(gcf,fullfile(savefolder,savesubfolder,'SlopeVSPhosRate'),'epsc');
+    end
+
+    %% Plot Hill curves
+
+    % plot - for no labels version
+    figure(1); box on; hold on;
+    plot(kinaseIntrinsicRate, avgSteadyState,'-o','Color',colors(s,:),'LineWidth',lw,'MarkerSize',ms_hill,'MarkerFaceColor',colors(s,:));
+
+    % plot - for labels version
+    figure(10); box on; hold on;
+    plot(kinaseIntrinsicRate, avgSteadyState,'-o','Color',colors(s,:),'LineWidth',lw,'MarkerSize',ms_hill,'MarkerFaceColor',colors(s,:));
+    
+
+    %% Bootstrap Hill coefficients for error
+    N_Bootstrap = 100000;
+    
+    % initialize arrays
+    hillcoeffEst_Bootstrap = zeros(N_Bootstrap,1);
+    HillCoeffMaxSlope_Bootstrap = zeros(N_Bootstrap,1);
+    
+    % compute bootstrap distribution
+    for bootIter = 1:N_Bootstrap   
+        %sample = sort(randsample(length(kinaseIntrinsicRate),length(kinaseIntrinsicRate)-ceil(0.2*length(kinaseIntrinsicRate)))); % create and sort a random sample with replacement from indices of kinaseIntrinsicRate
+        sample = sort(unique(randi(length(kinaseIntrinsicRate),length(kinaseIntrinsicRate),1))); % create and sort a random sample with replacement from indices of kinaseIntrinsicRate
+        kIR_sample = kinaseIntrinsicRate(sample);
+        aSS_sample = avgSteadyState(sample);
+        [hillcoeffEstTemp, ~, HillCoeffMaxSlopeTemp, ~,~] = computeHillCoeff(constant, kIR_sample, aSS_sample);
+        hillcoeffEst_Bootstrap(bootIter) = hillcoeffEstTemp;
+        HillCoeffMaxSlope_Bootstrap(bootIter) = HillCoeffMaxSlopeTemp;        
+    end
+        
+    % for debugging
+    figure(4);
+    hist(hillcoeffEst_Bootstrap);
+
+    figure(40);
+    hist(HillCoeffMaxSlope_Bootstrap);
+    
+    hillcoeffEst_Bootstrap_Mean(s) = mean(hillcoeffEst_Bootstrap);
+    hillcoeffEst_Bootstrap_Std(s) = std(hillcoeffEst_Bootstrap);
+    
+    HillCoeffMaxSlope_Bootstrap_Mean(s) = mean(HillCoeffMaxSlope_Bootstrap);
+    HillCoeffMaxSlope_Bootstrap_Std(s) = std(HillCoeffMaxSlope_Bootstrap);
 
 
 end
@@ -256,11 +240,13 @@ gray = [0.7 0.7 0.7];
 figure(34); hold on; box on;
 plot(totalAAImmPerMod,HillCoeffMaxSlope,'-k','LineWidth',lw);
 for s=1:length(sweep)
-    plot(totalAAImmPerMod(s),HillCoeffMaxSlope(s),'o','LineWidth',ms_lw,'Color',colors(s,:),'MarkerSize',ms_coeff,'MarkerFaceColor',colors(s,:),'MarkerEdgeColor','k');
+    %plot(totalAAImmPerMod(s),HillCoeffMaxSlope(s),'o','LineWidth',ms_lw,'Color',colors(s,:),'MarkerSize',ms_coeff,'MarkerFaceColor',colors(s,:),'MarkerEdgeColor','k');
+    errorbar(totalAAImmPerMod(s),HillCoeffMaxSlope(s),HillCoeffMaxSlope_Bootstrap_Std(s),'o','LineWidth',ms_lw,'Color',colors(s,:),'MarkerSize',ms_coeff,'MarkerFaceColor',colors(s,:),'MarkerEdgeColor','k');
 end
 plot(totalAAImmPerMod,hillcoeffEst,'-','Color',gray,'LineWidth',lw);
 for s=1:length(sweep)
-    plot(totalAAImmPerMod(s),hillcoeffEst(s),'o','LineWidth',ms_lw,'Color',colors(s,:),'MarkerSize',ms_coeff,'MarkerFaceColor',colors(s,:),'MarkerEdgeColor',gray);
+    %plot(totalAAImmPerMod(s),hillcoeffEst(s),'o','LineWidth',ms_lw,'Color',colors(s,:),'MarkerSize',ms_coeff,'MarkerFaceColor',colors(s,:),'MarkerEdgeColor',gray);
+    errorbar(totalAAImmPerMod(s),hillcoeffEst(s),hillcoeffEst_Bootstrap_Std(s),'o','LineWidth',ms_lw,'Color',colors(s,:),'MarkerSize',ms_coeff,'MarkerFaceColor',colors(s,:),'MarkerEdgeColor',gray);
 end
 switch constant
     case {0,1}
@@ -283,11 +269,13 @@ end
 figure(340); hold on; box on;
 plot(totalAAImmPerMod,HillCoeffMaxSlope,'-k','LineWidth',lw);
 for s=1:length(sweep)
-    plot(totalAAImmPerMod(s),HillCoeffMaxSlope(s),'o','LineWidth',ms_lw,'Color',colors(s,:),'MarkerSize',ms_coeff,'MarkerFaceColor',colors(s,:),'MarkerEdgeColor','k');
+    %plot(totalAAImmPerMod(s),HillCoeffMaxSlope(s),'o','LineWidth',ms_lw,'Color',colors(s,:),'MarkerSize',ms_coeff,'MarkerFaceColor',colors(s,:),'MarkerEdgeColor','k');
+    errorbar(totalAAImmPerMod(s),HillCoeffMaxSlope(s),HillCoeffMaxSlope_Bootstrap_Std(s),'o','LineWidth',ms_lw,'Color',colors(s,:),'MarkerSize',ms_coeff,'MarkerFaceColor',colors(s,:),'MarkerEdgeColor','k');
 end
 plot(totalAAImmPerMod,hillcoeffEst,'-','Color',gray,'LineWidth',lw);
 for s=1:length(sweep)
-    plot(totalAAImmPerMod(s),hillcoeffEst(s),'o','LineWidth',ms_lw,'Color',colors(s,:),'MarkerSize',ms_coeff,'MarkerFaceColor',colors(s,:),'MarkerEdgeColor',gray);
+    %plot(totalAAImmPerMod(s),hillcoeffEst(s),'o','LineWidth',ms_lw,'Color',colors(s,:),'MarkerSize',ms_coeff,'MarkerFaceColor',colors(s,:),'MarkerEdgeColor',gray);
+    errorbar(totalAAImmPerMod(s),hillcoeffEst(s),hillcoeffEst_Bootstrap_Std(s),'o','LineWidth',ms_lw,'Color',colors(s,:),'MarkerSize',ms_coeff,'MarkerFaceColor',colors(s,:),'MarkerEdgeColor',gray);
 end
 xlabel1 = {'Total amino acids', 'immobiziled per modification'};
 ylabel1 = 'Hill coefficient';
