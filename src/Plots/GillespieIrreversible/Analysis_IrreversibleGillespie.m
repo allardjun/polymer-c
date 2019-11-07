@@ -3,54 +3,51 @@
 
 clear all;
 close all;
-
+overwriteTF = 0;
 %% Initialize Model Choice
 
 % temporary for loop
 
-% spacing = 0; % 0 = CD3Zeta, 1 = EvenSites, 2 = CD3Epsilon, 3 = TCR
-% membrane = 1; % 0 for membrane off, 1 for membrane on
-% phos = 0; % 1 = phosphorylation, 0 = dephosphorylation
-for spacing = 0
-    for membrane = 1
-        for phos = 1
-            sf = 1
+spacing = 3; % 0 = CD3Zeta, 1 = EvenSites, 2 = CD3Epsilon, 3 = TCR
+membrane = 1; % 0 for membrane off, 1 for membrane on
+phos = 1; % 1 = phosphorylation, 0 = dephosphorylation
+
+
+sf = 3 % for changing sweep of local stiffening
 %             for sf = 0
 %                 clearvars -except spacing membrane phos sf
-% 
-%                 switch sf
-%                     case 0
-%                         %sweep = -1:1:103;
-%                         %sweep = [-1:2:45 47:4:103]; % acceptably many curves
-%                         %sweep = [-1:2:45 48:5:103];% acceptably many curves
-%                         sweep = [-1:3:4 5:2:31 33:3:45 48:5:103]; % probably correct
-%                         savefilesubsubfolder = ['/FullStiffenRange'];
-%                         saveRatesPlot = 1;
-%                         saveSeqPlot = 0;
-% 
-%                     case 1
-%                         savefilesubsubfolder = [''];
-%                         sweep = -1:1:10;
-%                         saveRatesPlot = 0;
-%                         saveSeqPlot = 1;
-% 
-%                     case 2
-%                         savefilesubsubfolder = [''];
-%                         sweep = -1:1:5;
-%                         saveRatesPlot = 1;
-%                         saveSeqPlot = 0;
-% 
-%                 end
+
+switch sf
+    case 0
+        %sweep = -1:1:103;
+        %sweep = [-1:2:45 47:4:103]; % acceptably many curves
+        %sweep = [-1:2:45 48:5:103];% acceptably many curves
+        sweep = [-1:3:4 5:2:31 33:3:45 48:5:103]; % probably correct
+        savefilesubsubfolder = ['FullStiffenRange'];
+        saveRatesPlot = 1;
+        saveSeqPlot = 0;
+
+    case 1
+        savefilesubsubfolder = [''];
+        sweep = -1:1:10;
+        saveRatesPlot = 0;
+        saveSeqPlot = 1;
+
+    case 2
+        savefilesubsubfolder = [''];
+        sweep = -1:1:5;
+        saveRatesPlot = 1;
+        saveSeqPlot = 0;
+    otherwise
+
+end
 
             
 % initialization switch for which model we're inspecting
-model = 20; % 1x = stiffening, 2x = electrostatics, 3x = multiple binding - ibEqual
+model = 33; % 1x = stiffening, 2x = electrostatics, 3x = multiple binding - ibEqual
 
-saveRatesPlot = 1;
+saveRatesPlot = 0;
 saveSeqPlot = 0;
-
-
-
 
 
 %% Model Parameters
@@ -269,7 +266,10 @@ switch (model)
         % create location to save figures
         savefilesubfolder = ['3.SimultaneousBinding/','TCR','/Membrane',membraneState,'/SepDist5/Plots/',phosDirection,'/Sequence'];
         
-        colors = flipud(cool(length(sweep)));
+        %colors = flipud(cool(length(sweep)));
+        colors = spring(14);
+        colormapName = spring;
+        clims = [0 13/14];
         lw = 1.5;
         ms = 10;
         
@@ -295,9 +295,40 @@ switch (model)
         % create location to save figures
         savefilesubfolder = ['3.SimultaneousBinding/','TCR','/Membrane',membraneState,'/SepDist17/Plots/',phosDirection,'/Sequence'];
         
-        colors = flipud(cool(13));
+        %colors = flipud(cool(13));
+        colors = spring(14);
+        colormapName = spring;
+        clims = [0 13/14];
         lw = 1.5;
         ms = 10;
+        
+        modificationLabel = '(Phosphorylated)';
+        
+        GillespieRuns = 1000000000;
+        
+      case 34
+        
+        filefolder    = '~/Documents/Papers/MultisiteDisorder/Data/3.SimultaneousBinding/';
+        filesubfolder = [iSiteSpacing,'/Membrane',membraneState,'/TCRPDBConfig/3.Gillespie/Irreversible/','CatFiles/',phosDirection];
+        filetitle = strcat('IrreversibleGillespie',iSiteSpacing,'Membrane',membraneState,phosDirection);
+        
+        sweepParameter = 'ibRadius';
+        legendlabelsAbbrev = 1:10;
+        
+        locationTotal = 10;
+        sweep = 1:1:10;
+        
+        xlabelModel = 'Radius of Ligand';
+        units = '(Kuhn lengths)';
+        %
+        % create location to save figures
+        savefilesubfolder = ['3.SimultaneousBinding/','TCR','/Membrane',membraneState,'/TCRPDBConfig/Plots/',phosDirection,'/Sequence'];
+        
+        colors = spring(14);
+        lw = 1.5;
+        ms = 10;
+        colormapName = spring;
+        clims = [0 13/14];
         
         modificationLabel = '(Phosphorylated)';
         
@@ -306,111 +337,117 @@ switch (model)
         
 end
 
+if(~exist(fullfile(savefilefolder,savefilesubfolder,'Data.mat'),'file') || overwriteTF)
+    %% CREATE PERMUTATION LIST
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%% CREATE PERMUTATION LIST %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% CREATE PERMUTATION LIST
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%% CREATE PERMUTATION LIST %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % initialize
+    path = zeros(factorial(locationTotal),1);
+    avgTime = zeros(factorial(locationTotal),size(sweep,2)+1);
+    probability = zeros(factorial(locationTotal),size(sweep,2)+1);
+    stdErrGillespie = zeros(factorial(locationTotal),size(sweep,2)+1);
 
-% initialize
-path = zeros(factorial(locationTotal),1);
-avgTime = zeros(factorial(locationTotal),size(sweep,2)+1);
-probability = zeros(factorial(locationTotal),size(sweep,2)+1);
-stdErrGillespie = zeros(factorial(locationTotal),size(sweep,2)+1);
+    % create list of permutations of numbers 1-6
+    permutations = sortrows(perms(1:1:locationTotal));
 
-% create list of permutations of numbers 1-6
-permutations = sortrows(perms(1:1:locationTotal));
-
-% create permutation strings then convert to number
-for j=1:factorial(locationTotal)
-    permString = '';
-    for k=1:locationTotal
-        permString = strcat(permString,num2str(permutations(j,k)));
-    end
-    path(j) = str2num(permString);
-end
-
-% attach path to each so becomes vector e.g. [path, avgTime]
-avgTime(:,1) = path(:);
-probability(:,1) = path(:);
-stdErrGillespie(:,1) = path(:);
-
-%% Find indices of paths where x is i-th event
-% Only works for locationTotal <= 9 (NOT TCR)
-switch model
-    case {32,33}
-    otherwise
-        % initialize
-        eventIndices = zeros(locationTotal,factorial(locationTotal)/locationTotal);
-        secondToLastEventProbability = zeros(locationTotal,length(sweep));
-
-        % find second to last event
-        eventIndex = locationTotal-1; % options: 1 to locationTotal
-        eventModifier = locationTotal-eventIndex;
-
-        % find index of paths where designated event is x
-        secondToLastEvent = mod(floor(path(:)/10^(eventModifier)),10);
-
-        for eInd = 1:locationTotal
-            eventIndices(eInd,:) = find(secondToLastEvent == eInd);
+    % create permutation strings then convert to number
+    for j=1:factorial(locationTotal)
+        permString = '';
+        for k=1:locationTotal
+            permString = strcat(permString,num2str(permutations(j,k)));
         end
-end
-%% READ FILES
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% READ FILES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-for s=1:length(sweep)
-   
-    clear M;
-    
-    % set up filename
-    filename = strcat(filetitle,sweepParameter,'.',num2str(sweep(s)),'.AllData');
-    
-    % read in file
-    M = dlmread(fullfile(filefolder,filesubfolder,filename));
-    disp(s);
-    disp(size(M));
-    % read in average times and rates
-    transitionTime_Avg(s,1:locationTotal) = M(end-(locationTotal-1):end,2);
-    transitionRate_Avg(s,1:locationTotal) = M(end-(locationTotal-1):end,3);
-
-    
-    % check size of M for possible error
-    if (size(M,1) < (1+factorial(locationTotal)+locationTotal))
-        disp('File:');
-        disp(s);
-        disp('Warning! File might not contain all paths!');
-        disp(size(M));
+        path(j) = str2num(permString);
     end
-    
-    % find probability and avgTime from matrix
-    for k=1:(size(M,1)-1-locationTotal)
-        probability(k,s+1) = M(k+1,4);
-        avgTime(k,s+1) = M(k+1,5);
-    end
-    
-    stdErrGillespie(:,s+1) = sqrt(probability(:,s+1).*(1-probability(:,s+1)))./sqrt(GillespieRuns);
-    
-    
-    %% Find probability path has x as i-th event
+
+    % attach path to each so becomes vector e.g. [path, avgTime]
+    avgTime(:,1) = path(:);
+    probability(:,1) = path(:);
+    stdErrGillespie(:,1) = path(:);
+
+    %% Find indices of paths where x is i-th event
     % Only works for locationTotal <= 9 (NOT TCR)
     switch model
-        case {32,33}
+        case {32,33,34}
         otherwise
-        for eInd = 1:locationTotal
-            secondToLastEventProbability(eInd,s) = sum(probability(eventIndices(eInd,:),s+1));
-            %disp(secondToLastEventProbability(eInd,s));
-        end
+            % initialize
+            eventIndices = zeros(locationTotal,factorial(locationTotal)/locationTotal);
+            secondToLastEventProbability = zeros(locationTotal,length(sweep));
+
+            % find second to last event
+            eventIndex = locationTotal-1; % options: 1 to locationTotal
+            eventModifier = locationTotal-eventIndex;
+
+            % find index of paths where designated event is x
+            secondToLastEvent = mod(floor(path(:)/10^(eventModifier)),10);
+
+            for eInd = 1:locationTotal
+                eventIndices(eInd,:) = find(secondToLastEvent == eInd);
+            end
     end
-    
+    %% READ FILES
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% READ FILES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    for s=1:length(sweep)
+
+        clear M;
+
+        % set up filename
+        filename = strcat(filetitle,sweepParameter,'.',num2str(sweep(s)),'.AllData')
+
+        % read in file
+        M = dlmread(fullfile(filefolder,filesubfolder,filename));
+        disp(s);
+        disp(size(M));
+        % read in average times and rates
+        transitionTime_Avg(s,1:locationTotal) = M(end-(locationTotal-1):end,2);
+        transitionRate_Avg(s,1:locationTotal) = M(end-(locationTotal-1):end,3);
+
+
+        % check size of M for possible error
+        if (size(M,1) < (1+factorial(locationTotal)+locationTotal))
+            disp('File:');
+            disp(s);
+            disp('Warning! File might not contain all paths!');
+            disp(size(M));
+        end
+
+        % find probability and avgTime from matrix
+        for k=1:(size(M,1)-1-locationTotal)
+            probability(k,s+1) = M(k+1,4);
+            avgTime(k,s+1) = M(k+1,5);
+        end
+
+        stdErrGillespie(:,s+1) = sqrt(probability(:,s+1).*(1-probability(:,s+1)))./sqrt(GillespieRuns);
+
+
+        %% Find probability path has x as i-th event
+        % Only works for locationTotal <= 9 (NOT TCR)
+        switch model
+            case {32,33,34}
+            otherwise
+            for eInd = 1:locationTotal
+                secondToLastEventProbability(eInd,s) = sum(probability(eventIndices(eInd,:),s+1));
+                %disp(secondToLastEventProbability(eInd,s));
+            end
+        end
+
+    end
+
+    switch model
+        case {32,33,34}
+            save_vars = {'path','avgTime','probability','stdErrGillespie','permutations'};
+        otherwise
+            save_vars = {'path','avgTime','probability','stdErrGillespie','permutations','eventIndices','secondToLastEventProbability'};
+    end
+    %% save workspace
+    save(fullfile(savefilefolder,savefilesubfolder,'Data.mat'));
 end
-
-
-%% save workspace
-save(fullfile(savefilefolder,savefilesubfolder,'Data.mat'));
 
 %% load workspace
 load(fullfile(savefilefolder,savefilesubfolder,'Data.mat'));
@@ -499,8 +536,8 @@ set(gcf,'units','inches','position',[1,1,3,3]); set(gca,'units','inches','positi
 if (saveRatesPlot)
     % % save figure
     savefiletitle = 'AvgTransRateVSNumberModified';
-    saveas(gcf,fullfile(savefilefolder,savefilesubfolder,savefiletitle),'fig');
-    print('-painters',fullfile(savefilefolder,savefilesubfolder,savefiletitle),'-depsc');
+    saveas(gcf,fullfile(savefilefolder,savefilesubfolder,savefilesubsubfolder,savefiletitle),'fig');
+    print('-painters',fullfile(savefilefolder,savefilesubfolder,savefilesubsubfolder,savefiletitle),'-depsc');
 end
 
 %% Average Transition Rates VS Number of Modified Sites - Labels
@@ -518,7 +555,7 @@ for s=1:length(sweep)
     end
 end
 switch model
-    case {30,31,32,33}
+    case {30,31,32,33,34}
         set(gca,'yscale','log');
     otherwise
 end
@@ -573,16 +610,23 @@ switch model
         
     case {30}
         ylim([0 1]);
-    case {32,33}
+    case {32,33,34}
         xlim([0 locationTotal-1])
         set(gca,'YScale','log');
         ylim([10^(-10) 10^(0)]);
+        
 end
-%set(gcf,'Colormap',colormapName);
-colormap parula;
+set(gcf,'Colormap',colormapName);
+%colormap parula;
 h = colorbar;
 h = colorbar('Ticks',[0 1],'TickLabels',{'',''},'YDir','reverse');
-set(h,'ylim',[0 1]);
+switch model
+    case {32,33,34}
+        set(h,'ylim',clims);
+    otherwise
+        set(h,'ylim',[0 1]);
+end
+
 
 pos = get(gcf, 'position');
 set(gcf,'units','centimeters','position',[1,4,40,30]);
@@ -594,8 +638,8 @@ title(title1,'FontName','Arial','FontSize',24);
 if (saveRatesPlot)
     % % save figure
     savefiletitle = 'AvgTransRateVSNumberModifiedLabels';
-    saveas(gcf,fullfile(savefilefolder,savefilesubfolder,savefiletitle),'fig');
-    print('-painters',fullfile(savefilefolder,savefilesubfolder,savefiletitle),'-depsc');
+    saveas(gcf,fullfile(savefilefolder,savefilesubfolder,savefilesubsubfolder,savefiletitle),'fig');
+    print('-painters',fullfile(savefilefolder,savefilesubfolder,savefilesubsubfolder,savefiletitle),'-depsc');
 end
 
 %% SEQUENCE PROBABILITY PLOTS
@@ -929,10 +973,6 @@ end
 
 end
 
-            %end
-        end
-    end
-end
 
 %% EXTRA PLOTS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
