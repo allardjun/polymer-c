@@ -446,7 +446,7 @@ if(~exist(fullfile(savefilefolder,savefilesubfolder,'Data.mat'),'file') || overw
             save_vars = {'path','avgTime','probability','stdErrGillespie','permutations','eventIndices','secondToLastEventProbability'};
     end
     %% save workspace
-    save(fullfile(savefilefolder,savefilesubfolder,'Data.mat'));
+    save(fullfile(savefilefolder,savefilesubfolder,'Data.mat'),save_vars{:});
 end
 
 %% load workspace
