@@ -1,7 +1,7 @@
 %% Function to find inverse of hill curve 
 % Find approximate x value for given y value
 
-function [hillcoeffEst, KA_Est, HillCoeffMaxSlope, kinaseIntrinsicRatePlot,slope] = computeHillCoeff(constant, kinaseIntrinsicRate, avgSteadyState) 
+function [hillcoeffEst, KA_Est, HillCoeffMaxSlope, kinaseIntrinsicRatePlot,slope] = computeHillCoeff(model,constant,spacing, kinaseIntrinsicRate, avgSteadyState) 
     %% Find 0.1 and 0.9 x values for estimating Hill coefficient
     % This is super ugly - clean this up - better variable names etc
     
@@ -33,36 +33,44 @@ function [hillcoeffEst, KA_Est, HillCoeffMaxSlope, kinaseIntrinsicRatePlot,slope
     KA_Est = (0.5-(avgSteadyState(i51)))/slope5 + x51;
    
     %% MAX LOG SLOPE Hill Coeff Estimate
-    start_ind = find(log10(kinaseIntrinsicRate) < 2,1, 'first');
-    end_ind = find(log10(kinaseIntrinsicRate) < -2,1, 'first');
-    
-    switch (constant)
-        case 0 
-            %diffy = diff(movmean(log10((avgSteadyState(41:81))./(1-avgSteadyState(41:81))),3));
-            diffy = diff((log10((avgSteadyState(start_ind:end_ind))./(1-avgSteadyState(start_ind:end_ind)))));
-            diffx = diff(log10(kinaseIntrinsicRate(start_ind:end_ind)));
-            %slope = diffy./diffx;
-            slope = movmean(diffy./diffx,4);
-            HillCoeffMaxSlope = max(slope);
-            
-            kinaseIntrinsicRatePlot = log10(kinaseIntrinsicRate(start_ind+1:end_ind));
-        case 1
-            %diffy = diff(movmean(log10((avgSteadyState(45:end-20))./(1-avgSteadyState(45:end-20))),3));
-            diffy = diff((log10((avgSteadyState(start_ind:end_ind))./(1-avgSteadyState(start_ind:end_ind)))));
-            diffx = diff(log10(kinaseIntrinsicRate(start_ind:end_ind)));
-            slope = movmean(diffy./diffx,4);
-            HillCoeffMaxSlope = max(slope);
-            
-            kinaseIntrinsicRatePlot = log10(kinaseIntrinsicRate(start_ind+1:end_ind));
-        case 2
-            %diffy = diff(movmean(log10((avgSteadyState(45:end))./(1-avgSteadyState(45:end))),3));
-            diffy = diff((log10((avgSteadyState(start_ind:end_ind))./(1-avgSteadyState(start_ind:end_ind)))));
-            diffx = diff(log10(kinaseIntrinsicRate(start_ind:end_ind)));
-            slope = movmean(diffy./diffx,4);
-            HillCoeffMaxSlope = max(slope);
-            
-            kinaseIntrinsicRatePlot = log10(kinaseIntrinsicRate(start_ind+1:end_ind));
+    switch model
+        case 10
+            domainStart = find(log10(kinaseIntrinsicRate) < 2,1, 'first');
+            domainEnd = find(log10(kinaseIntrinsicRate) < -2,1, 'first');
+
+        case 20
+            switch(spacing)
+                case {0,2}
+                    switch constant
+                        case 0
+                            % for constant:
+                            % use domain on right of axis
+                            domainStart = find(log10(kinaseIntrinsicRate) < 3,1,'first');
+                            domainEnd = find(log10(kinaseIntrinsicRate) < 1,1,'first');
+                            if( isempty(domainStart) || isempty(domainEnd) )
+                                disp('Warning: domain index extends past domain!');
+                            end
+                        case 1
+                            % for prefactor:
+                            domainStart = find(log10(kinaseIntrinsicRate) < 1,1,'first');
+                            domainEnd = find(log10(kinaseIntrinsicRate) < -1,1,'first');
+                    end
+                case 1
+                    domainStart = 1;
+                    domainEnd = length(kinaseIntrinsicRate);
+                    disp("Warning: no bounds set for EvenSite spacing!");
+            end
     end
+    
+    %diffy = diff(movmean(log10((avgSteadyState(41:81))./(1-avgSteadyState(41:81))),3));
+    diffy = diff((log10((avgSteadyState(domainStart:domainEnd))./(1-avgSteadyState(domainStart:domainEnd)))));
+    diffx = diff(log10(kinaseIntrinsicRate(domainStart:domainEnd)));
+    %slope = diffy./diffx;
+    slope = movmean(diffy./diffx,4);
+    HillCoeffMaxSlope = max(slope);
+
+    kinaseIntrinsicRatePlot = log10(kinaseIntrinsicRate(domainStart+1:domainEnd));
+
     
     
 end
