@@ -44,9 +44,9 @@ end
 
             
 % initialization switch for which model we're inspecting
-model = 33; % 1x = stiffening, 2x = electrostatics, 3x = multiple binding - ibEqual
+model = 32; % 1x = stiffening, 2x = electrostatics, 3x = multiple binding - ibEqual
 
-saveRatesPlot = 0;
+saveRatesPlot = 1;
 saveSeqPlot = 0;
 
 
@@ -142,6 +142,7 @@ switch (model)
         
         % create location to save figures
         savefilesubfolder = ['2.MembraneAssociation/',iSiteSpacing,'/Membrane',membraneState,'/Plots/',phosDirection,'/Sequence'];
+        savefilesubsubfolder = [''];
         
         % figure parameters
         lw = 2;
@@ -172,6 +173,7 @@ switch (model)
         
         % create location to save figures
         savefilesubfolder = ['2.MembraneAssociation/',iSiteSpacing,'/Membrane',membraneState,'/Plots/',phosDirection,'/Sequence'];
+        savefilesubsubfolder = [''];
         
         % figure parameters
         lw = 2;
@@ -208,6 +210,7 @@ switch (model)
         
         % create location to save figures
         savefilesubfolder = ['1.LocalStructuring/',iSiteSpacing,'/Membrane',membraneState,'/',phosDirection,'/Sequence'];
+        savefilesubsubfolder = [''];
         
         % figure parameters
         lw = 2;
@@ -235,6 +238,7 @@ switch (model)
         
         % create location to save figures
         savefilesubfolder = ['1.LocalStructuring/',iSiteSpacing,'/Membrane',membraneState,'/',phosDirection,'/Sequence'];
+        savefilesubsubfolder = [''];
         
         % figure parameters
         lw = 2;
@@ -265,6 +269,7 @@ switch (model)
         %
         % create location to save figures
         savefilesubfolder = ['3.SimultaneousBinding/','TCR','/Membrane',membraneState,'/SepDist5/Plots/',phosDirection,'/Sequence'];
+        savefilesubsubfolder = [''];
         
         %colors = flipud(cool(length(sweep)));
         colors = spring(14);
@@ -294,6 +299,7 @@ switch (model)
         %
         % create location to save figures
         savefilesubfolder = ['3.SimultaneousBinding/','TCR','/Membrane',membraneState,'/SepDist17/Plots/',phosDirection,'/Sequence'];
+        savefilesubsubfolder = [''];
         
         %colors = flipud(cool(13));
         colors = spring(14);
@@ -323,6 +329,7 @@ switch (model)
         %
         % create location to save figures
         savefilesubfolder = ['3.SimultaneousBinding/','TCR','/Membrane',membraneState,'/TCRPDBConfig/Plots/',phosDirection,'/Sequence'];
+        savefilesubsubfolder = [''];
         
         colors = spring(14);
         lw = 1.5;
@@ -441,9 +448,9 @@ if(~exist(fullfile(savefilefolder,savefilesubfolder,'Data.mat'),'file') || overw
 
     switch model
         case {32,33,34}
-            save_vars = {'path','avgTime','probability','stdErrGillespie','permutations'};
+            save_vars = {'path','avgTime','probability','stdErrGillespie','permutations','transitionRate_Avg'};
         otherwise
-            save_vars = {'path','avgTime','probability','stdErrGillespie','permutations','eventIndices','secondToLastEventProbability'};
+            save_vars = {'path','avgTime','probability','stdErrGillespie','permutations','transitionRate_Avg','eventIndices','secondToLastEventProbability'};
     end
     %% save workspace
     save(fullfile(savefilefolder,savefilesubfolder,'Data.mat'),save_vars{:});
@@ -618,12 +625,13 @@ switch model
 end
 set(gcf,'Colormap',colormapName);
 %colormap parula;
-h = colorbar;
-h = colorbar('Ticks',[0 1],'TickLabels',{'',''},'YDir','reverse');
+
 switch model
     case {32,33,34}
+        h = colorbar('Ticks',clims,'TickLabels',{'',''});
         set(h,'ylim',clims);
     otherwise
+        h = colorbar('Ticks',[0 1],'TickLabels',{'',''},'YDir','reverse');
         set(h,'ylim',[0 1]);
 end
 
