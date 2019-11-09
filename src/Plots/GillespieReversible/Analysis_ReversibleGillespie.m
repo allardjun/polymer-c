@@ -7,7 +7,7 @@ saveTF = 0; % save figures
 model = 10; % 10 = Stiffening, 20 = electrostatics
 spacing = 0; % 0 = CD3Zeta spacing, 1 = evenly spaced tyrosines, 2 = CD3Epsilon
 membrane = 1; % 0 = no membrane, 1 = membrane
-constant = 0; % 0 = steric-independent dephosphorylation, 1 = steric-influenced dephosphorylation, 2 = constant phosphorylation
+constant = 1; % 0 = steric-independent dephosphorylation, 1 = steric-influenced dephosphorylation, 2 = constant phosphorylation
 
 % parameters to file label conversion
 switch (spacing)
@@ -75,6 +75,7 @@ switch model
         ms_coeff = 7;
         ms_lw = 1.5;
         sweep = 0:2:20;
+        %sweep = 20
         sweepVariable = 0.5*(sweep); % EP0
         colors = parula(length(sweep));
         colormapName = parula;
@@ -85,10 +86,10 @@ end
 hillcoeffEst = zeros(length(sweep),1);
 hillcoeffEstPhos = zeros(length(sweep),1);
 HillCoeffMaxSlope = zeros(length(sweep),1);
-hillcoeffEst_Bootstrap_Mean = zeros(length(sweep),1);
-hillcoeffEst_Bootstrap_Std = zeros(length(sweep),1);
-HillCoeffMaxSlope_Bootstrap_Mean = zeros(length(sweep),1);
-HillCoeffMaxSlope_Bootstrap_Std = zeros(length(sweep),1);
+hillcoeffEst_Mean = zeros(length(sweep),1);
+hillcoeffEst_Std = zeros(length(sweep),1);
+HillCoeffMaxSlope_Mean = zeros(length(sweep),1);
+HillCoeffMaxSlope_RMSE = zeros(length(sweep),1);
 
 %% Loop through data
 for s = 1:length(sweep)
@@ -113,11 +114,12 @@ for s = 1:length(sweep)
     kinaseIntrinsicRate = 1./reverseRate; % kinase:phosphatase
 
     %% Find hill coeff for original data
-    [hillcoeffEstTemp, KA_EstTemp, HillCoeffMaxSlopeTemp, kinaseIntrinsicRatePlot,slopeLogLog] = computeHillCoeff(model,constant,spacing,kinaseIntrinsicRate, avgSteadyState);
+    [hillcoeffEstTemp, KA_EstTemp, HillCoeffMaxSlopeTemp,HillCoeffMaxSlopeRMSETemp, kinaseIntrinsicRatePlot,slopeLogLog,slope_fit] = computeHillCoeff(model,constant,spacing,kinaseIntrinsicRate, avgSteadyState);
     
     hillcoeffEst(s) = hillcoeffEstTemp;
     KA_Est(s) = KA_EstTemp;
     HillCoeffMaxSlope(s) = HillCoeffMaxSlopeTemp;
+    HillCoeffMaxSlope_RMSE(s) = HillCoeffMaxSlopeRMSETemp;
     
     %% Plot Log(y/(1-y)) VS Log(K/P)
     figure(3); box on; hold on;
@@ -127,20 +129,14 @@ for s = 1:length(sweep)
 
     xlabel(xlabel1);
     ylabel(ylabel1);
-    if(saveTF)
-        saveas(gcf,fullfile(savefolder,savesubfolder,'LogLogDoseResponse'),'fig');
-        saveas(gcf,fullfile(savefolder,savesubfolder,'LogLogDoseResponse'),'epsc');
-    end
 
     %% Plot Slope vs Kinase Intrinsic Rate
     figure(33); hold on; box on;
-    plot(kinaseIntrinsicRatePlot,slopeLogLog,'-*k','LineWidth',2,'Color',colors(s,:));
+    plot(kinaseIntrinsicRatePlot,slopeLogLog,'*','LineWidth',2,'Color',colors(s,:));
+    plot(kinaseIntrinsicRatePlot,slope_fit,'-','LineWidth',2,'Color',colors(s,:));
     xlabel('Kinase Intrinsic Rate');
     ylabel('Slope of Hill curve');
-    if(saveTF)
-        saveas(gcf,fullfile(savefolder,savesubfolder,'SlopeVSPhosRate'),'fig');
-        saveas(gcf,fullfile(savefolder,savesubfolder,'SlopeVSPhosRate'),'epsc');
-    end
+
 
     %% Plot Hill curves
 
@@ -151,43 +147,20 @@ for s = 1:length(sweep)
     % plot - for labels version
     figure(10); box on; hold on;
     plot(kinaseIntrinsicRate, avgSteadyState,'-o','Color',colors(s,:),'LineWidth',lw,'MarkerSize',ms_hill,'MarkerFaceColor',colors(s,:));
-    
-if(1)
-    %% Bootstrap Hill coefficients for error
-    N_Bootstrap = 100000;
-    
-    % initialize arrays
-    hillcoeffEst_Bootstrap = zeros(N_Bootstrap,1);
-    HillCoeffMaxSlope_Bootstrap = zeros(N_Bootstrap,1);
-    
-    % compute bootstrap distribution
-    for bootIter = 1:N_Bootstrap   
-        %sample = sort(randsample(length(kinaseIntrinsicRate),length(kinaseIntrinsicRate)-ceil(0.2*length(kinaseIntrinsicRate)))); % create and sort a random sample with replacement from indices of kinaseIntrinsicRate
-        sample = sort(unique(randi(length(kinaseIntrinsicRate),length(kinaseIntrinsicRate),1))); % create and sort a random sample with replacement from indices of kinaseIntrinsicRate
-        kIR_sample = kinaseIntrinsicRate(sample);
-        aSS_sample = avgSteadyState(sample);
-        [hillcoeffEstTemp, ~, HillCoeffMaxSlopeTemp, ~,~] = computeHillCoeff(model,constant,spacing, kIR_sample, aSS_sample);
-        hillcoeffEst_Bootstrap(bootIter) = hillcoeffEstTemp;
-        HillCoeffMaxSlope_Bootstrap(bootIter) = HillCoeffMaxSlopeTemp;        
-    end
-        
-    % for debugging
-    figure(4);
-    hist(hillcoeffEst_Bootstrap);
-
-    figure(40);
-    hist(HillCoeffMaxSlope_Bootstrap);
-    
-    hillcoeffEst_Bootstrap_Mean(s) = mean(hillcoeffEst_Bootstrap);
-    hillcoeffEst_Bootstrap_Std(s) = std(hillcoeffEst_Bootstrap);
-    
-    HillCoeffMaxSlope_Bootstrap_Mean(s) = mean(HillCoeffMaxSlope_Bootstrap);
-    HillCoeffMaxSlope_Bootstrap_Std(s) = std(HillCoeffMaxSlope_Bootstrap);
-end
 
 end
 
+figure(3);
+if(saveTF)
+    saveas(gcf,fullfile(savefolder,savesubfolder,'LogLogDoseResponse'),'fig');
+    saveas(gcf,fullfile(savefolder,savesubfolder,'LogLogDoseResponse'),'epsc');
+end
 
+figure(33);
+if(saveTF)
+    saveas(gcf,fullfile(savefolder,savesubfolder,'SlopeVSPhosRate'),'fig');
+    saveas(gcf,fullfile(savefolder,savesubfolder,'SlopeVSPhosRate'),'epsc');
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Parameters for theoretical hill curve
@@ -310,15 +283,15 @@ end
 
 gray = [0.7 0.7 0.7];
 figure(34); hold on; box on;
-errorbar(sweepVariable,HillCoeffMaxSlope,HillCoeffMaxSlope_Bootstrap_Std,'-k','LineWidth',lw);
+errorbar(sweepVariable,HillCoeffMaxSlope,HillCoeffMaxSlope_RMSE,'-k','LineWidth',lw);
 for s=1:length(sweep)
     plot(sweepVariable(s),HillCoeffMaxSlope(s),'o','LineWidth',ms_lw,'Color',colors(s,:),'MarkerSize',ms_coeff,'MarkerFaceColor',colors(s,:),'MarkerEdgeColor','k');
 end
-errorbar(sweepVariable,hillcoeffEst,hillcoeffEst_Bootstrap_Std,'-','Color',gray,'LineWidth',lw);
-for s=1:length(sweep)
-    plot(sweepVariable(s),hillcoeffEst(s),'o','LineWidth',ms_lw,'Color',colors(s,:),'MarkerSize',ms_coeff,'MarkerFaceColor',colors(s,:),'MarkerEdgeColor',gray);
-    %errorbar(sweepVariable(s),hillcoeffEst(s),hillcoeffEst_Bootstrap_Std(s),'o','LineWidth',ms_lw,'Color',colors(s,:),'MarkerSize',ms_coeff,'MarkerFaceColor',colors(s,:),'MarkerEdgeColor',gray);
-end
+% errorbar(sweepVariable,hillcoeffEst,hillcoeffEst_Std,'-','Color',gray,'LineWidth',lw);
+% for s=1:length(sweep)
+%     plot(sweepVariable(s),hillcoeffEst(s),'o','LineWidth',ms_lw,'Color',colors(s,:),'MarkerSize',ms_coeff,'MarkerFaceColor',colors(s,:),'MarkerEdgeColor',gray);
+%     %errorbar(sweepVariable(s),hillcoeffEst(s),hillcoeffEst_Bootstrap_Std(s),'o','LineWidth',ms_lw,'Color',colors(s,:),'MarkerSize',ms_coeff,'MarkerFaceColor',colors(s,:),'MarkerEdgeColor',gray);
+% end
 switch model
     case 10
         xlim([0 11]);
@@ -343,15 +316,50 @@ if(saveTF)
     saveas(gcf,fullfile(savefolder,savesubfolder,'HillCoeffVSSweepParameter'),'epsc');
 end
 
+%% Hill Numbers with EC90/EC10 Estimate
+figure(35); hold on; box on;
+errorbar(sweepVariable,HillCoeffMaxSlope,HillCoeffMaxSlope_RMSE,'-k','LineWidth',lw);
+for s=1:length(sweep)
+    plot(sweepVariable(s),HillCoeffMaxSlope(s),'o','LineWidth',ms_lw,'Color',colors(s,:),'MarkerSize',ms_coeff,'MarkerFaceColor',colors(s,:),'MarkerEdgeColor','k');
+end
+errorbar(sweepVariable,hillcoeffEst,hillcoeffEst_Std,'-','Color',gray,'LineWidth',lw);
+for s=1:length(sweep)
+    plot(sweepVariable(s),hillcoeffEst(s),'o','LineWidth',ms_lw,'Color',colors(s,:),'MarkerSize',ms_coeff,'MarkerFaceColor',colors(s,:),'MarkerEdgeColor',gray);
+    %errorbar(sweepVariable(s),hillcoeffEst(s),hillcoeffEst_Bootstrap_Std(s),'o','LineWidth',ms_lw,'Color',colors(s,:),'MarkerSize',ms_coeff,'MarkerFaceColor',colors(s,:),'MarkerEdgeColor',gray);
+end
+switch model
+    case 10
+        xlim([0 11]);
+        set(gca,'XTick',0:1:11);
+        switch constant
+            case {0,1}
+                ylim([0.8 2]);
+            case 2
+                ylim([0.6 1.5]);
+        end
+    case 20
+        ylim([0.9 1.5]);
+        xlim([0 10]);
+        set(gca,'XTick',0:1:10);
+end
+set(gca,'XTickLabel',[]);
+set(gca,'YTickLabel',[]);
+set(gcf,'units','inches','position',[[1,1],3.5,3.5]);
+set(gca,'units','inches','position',[[0.5,0.5],2.5,2.5]);
+if(saveTF)
+    saveas(gcf,fullfile(savefolder,savesubfolder,'HillCoeffVSSweepParameter_EC90EC10'),'fig');
+    saveas(gcf,fullfile(savefolder,savesubfolder,'HillCoeffVSSweepParameter_EC90EC10'),'epsc');
+end
+
 
 %% Hill Numbers With Labels
 figure(340); hold on; box on;
-errorbar(sweepVariable,HillCoeffMaxSlope,HillCoeffMaxSlope_Bootstrap_Std,'-k','LineWidth',lw);
+errorbar(sweepVariable,HillCoeffMaxSlope,HillCoeffMaxSlope_RMSE,'-k','LineWidth',lw);
 for s=1:length(sweep)
     plot(sweepVariable(s),HillCoeffMaxSlope(s),'o','LineWidth',ms_lw,'Color',colors(s,:),'MarkerSize',ms_coeff,'MarkerFaceColor',colors(s,:),'MarkerEdgeColor','k');
     %errorbar(sweepVariable(s),HillCoeffMaxSlope(s),HillCoeffMaxSlope_Bootstrap_Std(s),'o','LineWidth',ms_lw,'Color',colors(s,:),'MarkerSize',ms_coeff,'MarkerFaceColor',colors(s,:),'MarkerEdgeColor','k');
 end
-errorbar(sweepVariable,hillcoeffEst,hillcoeffEst_Bootstrap_Std,'-','Color',gray,'LineWidth',lw);
+errorbar(sweepVariable,hillcoeffEst,hillcoeffEst_Std,'-','Color',gray,'LineWidth',lw);
 for s=1:length(sweep)
     plot(sweepVariable(s),hillcoeffEst(s),'o','LineWidth',ms_lw,'Color',colors(s,:),'MarkerSize',ms_coeff,'MarkerFaceColor',colors(s,:),'MarkerEdgeColor',gray);
     %errorbar(sweepVariable(s),hillcoeffEst(s),hillcoeffEst_Bootstrap_Std(s),'o','LineWidth',ms_lw,'Color',colors(s,:),'MarkerSize',ms_coeff,'MarkerFaceColor',colors(s,:),'MarkerEdgeColor',gray);
