@@ -4,8 +4,8 @@ clear all; close all;
 %% Initialize model parameters
 
 saveTF = 0; % save figures
-model = 10; % 10 = Stiffening, 20 = electrostatics
-spacing = 0; % 0 = CD3Zeta spacing, 1 = evenly spaced tyrosines, 2 = CD3Epsilon
+model = 20; % 10 = Stiffening, 20 = electrostatics
+spacing = 2; % 0 = CD3Zeta spacing, 1 = evenly spaced tyrosines, 2 = CD3Epsilon
 membrane = 1; % 0 = no membrane, 1 = membrane
 constant = 1; % 0 = steric-independent dephosphorylation, 1 = steric-influenced dephosphorylation, 2 = constant phosphorylation
 
@@ -140,9 +140,6 @@ for s = 1:length(sweep)
     % for debugging
     figure(4);
     hist(hillEC90EC10Est_Bootstrap);
-
-    figure(40);
-    hist(HillCoeffMaxSlope_Bootstrap);
 
     hillEC90EC10Est_Mean(s) = mean(hillEC90EC10Est_Bootstrap);
     hillEC90EC10Est_Std(s) = std(hillEC90EC10Est_Bootstrap);
