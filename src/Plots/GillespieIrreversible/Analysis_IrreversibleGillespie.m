@@ -44,9 +44,9 @@ end
 
             
 % initialization switch for which model we're inspecting
-model = 32; % 1x = stiffening, 2x = electrostatics, 3x = multiple binding - ibEqual
+model = 34; % 1x = stiffening, 2x = electrostatics, 3x = multiple binding - ibEqual
 
-saveRatesPlot = 1;
+saveRatesPlot = 0;
 saveSeqPlot = 0;
 
 
