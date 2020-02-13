@@ -8,12 +8,12 @@ overwriteTF = 0;
 
 % temporary for loop
 
-spacing = 3; % 0 = CD3Zeta, 1 = EvenSites, 2 = CD3Epsilon, 3 = TCR
+spacing = 2; % 0 = CD3Zeta, 1 = EvenSites, 2 = CD3Epsilon, 3 = TCR
 membrane = 1; % 0 for membrane off, 1 for membrane on
 phos = 1; % 1 = phosphorylation, 0 = dephosphorylation
 
 
-sf = 3 % for changing sweep of local stiffening
+sf = -1 % for changing sweep of local stiffening
 %             for sf = 0
 %                 clearvars -except spacing membrane phos sf
 
@@ -42,9 +42,9 @@ switch sf
 
 end
 
-            
+
 % initialization switch for which model we're inspecting
-model = 34; % 1x = stiffening, 2x = electrostatics, 3x = multiple binding - ibEqual
+model = 21; % 1x = stiffening, 2x = electrostatics, 3x = multiple binding - ibEqual
 
 saveRatesPlot = 0;
 saveSeqPlot = 0;
@@ -81,25 +81,25 @@ else
 end
 
 switch (model)
-    
+
     case 10 % Local Structuring
-        
+
         % find files
         filefolder    = '~/Documents/Papers/MultisiteDisorder/Data/1.LocalStructuring/';
         filesubfolder = [iSiteSpacing,'/Membrane',membraneState,'/3.Gillespie/Irreversible/','/CatFiles/',phosDirection];
         filetitle = strcat('IrreversibleGillespie',iSiteSpacing,'Membrane',membraneState,phosDirection);
-        
+
         %
         locationTotal = 6;
         %sweep = -1:1:10; % includes control
         sweepParameter = 'StiffenRange';
-        
+
         xlabelModel = 'Range of Stiffening';
         units = '(Kuhn lengths)';
-        
+
         % create location to save figures
         savefilesubfolder = ['1.LocalStructuring/',iSiteSpacing,'/Membrane',membraneState,'/Plots/',phosDirection];
-        
+
         % figure parameters
         if (sf==0)
             lw = 1;
@@ -115,66 +115,66 @@ switch (model)
         colormapName = cool;
         legendlabels = {'No Stiffening', 'StiffenRange = 0','StiffenRange = 1','StiffenRange = 2','StiffenRange = 3','StiffenRange = 4','StiffenRange = 5','StiffenRange = 6','StiffenRange = 7','StiffenRange = 8','StiffenRange = 9','StiffenRange = 10'};
         legendlabelsAbbrev = {'None', '0','1','2','3','4','5','6','7','8','9','10'};
-        
+
         modificationLabel = '(Phosphorylated)';
-        
+
         % set GillespieRuns from Gillespie algorithm
         % this would be better if printed in Gillespie output
         GillespieRuns = 200000000;
-        
-      
-        
+
+
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        
+
     case 20 % Membrane Association - Zeta
-      
+
         % find files
         filefolder    = '~/Documents/Papers/MultisiteDisorder/Data/2.MembraneAssociation/';
         filesubfolder = [iSiteSpacing,'/Membrane',membraneState,'/3.Gillespie/Irreversible/CatFiles/',phosDirection];
         filetitle = strcat('IrreversibleGillespie',iSiteSpacing,'Membrane',membraneState,phosDirection);
-        
+
         %
         locationTotal = 6;
         sweep = 0:2:20; % includes control
         sweepParameter = 'EP0';
-        
+
         % create location to save figures
         savefilesubfolder = ['2.MembraneAssociation/',iSiteSpacing,'/Membrane',membraneState,'/Plots/',phosDirection,'/Sequence'];
         savefilesubsubfolder = [''];
-        
+
         % figure parameters
         lw = 2;
         ms = 10;
         colors = parula(11);
         legendlabelsAbbrev = {'0','1','2','3','4','5','6','7','8','9','10'};
         legendlabels = {['EP0', num2str(sweep)]};
-        
+
         xlabelModel = 'EP0';
-        units = 'kBT'; 
-        
+        units = 'kBT';
+
         modificationLabel = '(Phosphorylated)';
         colormapName = 'parula';
-        
+
         GillespieRuns = 200000000;
-        
+
      case 21 % Membrane Association - Epsilon
-      
+
         % find files
         filefolder    = '~/Documents/Papers/MultisiteDisorder/Data/2.MembraneAssociation/';
         filesubfolder = [iSiteSpacing,'/Membrane',membraneState,'/TwoSites/3.Gillespie/Irreversible/CatFiles/',phosDirection];
         filetitle = strcat('IrreversibleGillespie',iSiteSpacing,'Membrane',membraneState,phosDirection);
-        
+
         %
         locationTotal = 2;
         sweep = 0:2:20; % includes control
         sweepParameter = 'EP0';
-        
+
         % create location to save figures
         savefilesubfolder = ['2.MembraneAssociation/',iSiteSpacing,'/Membrane',membraneState,'/Plots/',phosDirection,'/Sequence'];
         savefilesubsubfolder = [''];
-        
+
         % figure parameters
         lw = 2;
         ms = 10;
@@ -182,166 +182,166 @@ switch (model)
         legendlabelsAbbrev = {'0','1','2','3','4','5','6','7','8','9','10'};
         legendlabels = {['EP0', num2str(sweep)]};
         colormapName = 'parula';
-        
+
         xlabelModel = 'EP0';
-        units = 'kBT'; 
+        units = 'kBT';
         modificationLabel = '(Phosphorylated)';
-        
+
         GillespieRuns = 200000000;
-        
+
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
+
      case 30
-        
+
         % find files
         filefolder    = '~/Documents/polymer-c_runs/20181206GillespieMeanRateSimBind';
         filesubfolder = 'GillespieSimultaneousBindingCD3ZetaMembrane0Phos';
         filetitle = strcat('Gillespie',iSiteSpacing,'Membrane',num2str(membrane));
-        
+
         %
         locationTotal = 3;
         sweep = 1:1:14; % includes control
         sweepParameter = 'ibRadius';
-        
+
         xlabelModel = 'Range of Stiffening';
         units = '(Kuhn lengths)';
-        
+
         % create location to save figures
         savefilesubfolder = ['1.LocalStructuring/',iSiteSpacing,'/Membrane',membraneState,'/',phosDirection,'/Sequence'];
         savefilesubsubfolder = [''];
-        
+
         % figure parameters
         lw = 2;
         ms = 10;
         colors = flipud(cool(length(sweep)+2));
         legendlabels = {'No Stiffening', 'StiffenRange = 0','StiffenRange = 1','StiffenRange = 2','StiffenRange = 3','StiffenRange = 4','StiffenRange = 5','StiffenRange = 6','StiffenRange = 7','StiffenRange = 8','StiffenRange = 9','StiffenRange = 10'};
         legendlabelsAbbrev = {'None', '0','1','2','3','4','5','6','7','8','9','10'};
-        
+
         modificationLabel = '(Phosphorylated)';
-        
+
       case 31
-        
+
         % find files
         filefolder    = '~/Documents/polymer-c_runs/20181206GillespieMeanRateSimBindibEqMemOn';
         filesubfolder = 'GillespieSimultaneousBindingCD3ZetaMembrane1Phos';
         filetitle = strcat('Gillespie',iSiteSpacing,'Membrane',num2str(membrane));
-        
+
         %
         locationTotal = 6;
         sweep = 1:1:7; % includes control
         sweepParameter = 'ibRadius';
-        
+
         xlabelModel = 'Range of Stiffening';
         units = '(Kuhn lengths)';
-        
+
         % create location to save figures
         savefilesubfolder = ['1.LocalStructuring/',iSiteSpacing,'/Membrane',membraneState,'/',phosDirection,'/Sequence'];
         savefilesubsubfolder = [''];
-        
+
         % figure parameters
         lw = 2;
         ms = 10;
         colors = flipud(cool(length(sweep)+2));
         legendlabels = {'No Stiffening', 'StiffenRange = 0','StiffenRange = 1','StiffenRange = 2','StiffenRange = 3','StiffenRange = 4','StiffenRange = 5','StiffenRange = 6','StiffenRange = 7','StiffenRange = 8','StiffenRange = 9','StiffenRange = 10'};
         legendlabelsAbbrev = {'None', '0','1','2','3','4','5','6','7','8','9','10'};
-        
+
         modificationLabel = '(Phosphorylated)';
-        
+
 
      case 32
-        
+
         filefolder    = '~/Documents/Papers/MultisiteDisorder/Data/3.SimultaneousBinding/';
         filesubfolder = [iSiteSpacing,'/Membrane',membraneState,'/SepDist5/3.Gillespie/Irreversible/','CatFiles/',phosDirection];
         filetitle = strcat('IrreversibleGillespie',iSiteSpacing,'Membrane',membraneState,phosDirection);
-        
+
         sweepParameter = 'ibRadius';
         %legendlabelsAbbrev = 1:14; % 14 finished total
         legendlabelsAbbrev = 1:13; % only plot 13 to match SepDist17
-        
+
         locationTotal = 10;
         %sweep = 1:1:14; % 14 finished total
         sweep = 1:1:13; % only plot 13 to match SepDist17
-        
+
         xlabelModel = 'Radius of Ligand';
         units = '(Kuhn lengths)';
         %
         % create location to save figures
         savefilesubfolder = ['3.SimultaneousBinding/','TCR','/Membrane',membraneState,'/SepDist5/Plots/',phosDirection,'/Sequence'];
         savefilesubsubfolder = [''];
-        
+
         %colors = flipud(cool(length(sweep)));
         colors = spring(14);
         colormapName = spring;
         clims = [0 13/14];
         lw = 1.5;
         ms = 10;
-        
+
         modificationLabel = '(Phosphorylated)';
-        
+
         GillespieRuns = 1000000000;
-        
+
      case 33
-        
+
         filefolder    = '~/Documents/Papers/MultisiteDisorder/Data/3.SimultaneousBinding/';
         filesubfolder = [iSiteSpacing,'/Membrane',membraneState,'/SepDist17/3.Gillespie/Irreversible/','CatFiles/',phosDirection];
         filetitle = strcat('IrreversibleGillespie',iSiteSpacing,'Membrane',membraneState,phosDirection);
-        
+
         sweepParameter = 'ibRadius';
         legendlabelsAbbrev = 1:10;
-        
+
         locationTotal = 10;
         sweep = 1:1:13;
-        
+
         xlabelModel = 'Radius of Ligand';
         units = '(Kuhn lengths)';
         %
         % create location to save figures
         savefilesubfolder = ['3.SimultaneousBinding/','TCR','/Membrane',membraneState,'/SepDist17/Plots/',phosDirection,'/Sequence'];
         savefilesubsubfolder = [''];
-        
+
         %colors = flipud(cool(13));
         colors = spring(14);
         colormapName = spring;
         clims = [0 13/14];
         lw = 1.5;
         ms = 10;
-        
+
         modificationLabel = '(Phosphorylated)';
-        
+
         GillespieRuns = 1000000000;
-        
+
       case 34
-        
+
         filefolder    = '~/Documents/Papers/MultisiteDisorder/Data/3.SimultaneousBinding/';
         filesubfolder = [iSiteSpacing,'/Membrane',membraneState,'/TCRPDBConfig/3.Gillespie/Irreversible/','CatFiles/',phosDirection];
         filetitle = strcat('IrreversibleGillespie',iSiteSpacing,'Membrane',membraneState,phosDirection);
-        
+
         sweepParameter = 'ibRadius';
         legendlabelsAbbrev = 1:10;
-        
+
         locationTotal = 10;
         sweep = 1:1:10;
-        
+
         xlabelModel = 'Radius of Ligand';
         units = '(Kuhn lengths)';
         %
         % create location to save figures
         savefilesubfolder = ['3.SimultaneousBinding/','TCR','/Membrane',membraneState,'/TCRPDBConfig/Plots/',phosDirection,'/Sequence'];
         savefilesubsubfolder = [''];
-        
+
         colors = spring(14);
         lw = 1.5;
         ms = 10;
         colormapName = spring;
         clims = [0 13/14];
-        
+
         modificationLabel = '(Phosphorylated)';
-        
+
         GillespieRuns = 1000000000;
-        
-        
+
+
 end
 
 if(~exist(fullfile(savefilefolder,savefilesubfolder,'Data.mat'),'file') || overwriteTF)
@@ -520,14 +520,21 @@ switch model
                         ylim([0 1]);
                     end
                 end
-            end   
+            end
         end
     case 20
         if(phos)
-            ylim([0.004 0.012]);
+            ylim([0.0 0.012]);
         else
+            ylim([0 Inf]);
         end
-                
+    case 21
+        if(phos)
+            ylim([0 Inf]);
+        else
+            ylim([0 Inf]);
+        end
+
     case {30}
         ylim([0 1]);
     case { 32,33,34}
@@ -573,7 +580,7 @@ set(gca,'XTick',0:1:locationTotal-1);
 set(gca,'XTickLabel',{'0 -> 1', '1 -> 2', '2 -> 3', '3 -> 4','4 -> 5', '5 -> 6', '6 -> 7', '7 -> 8', '8 -> 9', '9 -> 10'});
 switch model
     case 10
-        
+
         if max(sweep) > 15
             ylim([0 1]);
         elseif max(sweep) <= 15
@@ -606,27 +613,36 @@ switch model
                         ylim([0 1]);
                     end
                 end
-            end   
+            end
         end
-        
+
     case 20
         if(phos)
-            ylim([0.004 0.012]);
+            ylim([0.0 0.012]);
         else
+            ylim([0 Inf]);
         end
-        
+    case 21
+        if(phos)
+            ylim([0 Inf]);
+        else
+            ylim([0 Inf]);
+        end
+
     case {30}
         ylim([0 1]);
     case {32,33,34}
         xlim([0 locationTotal-1])
         set(gca,'YScale','log');
         ylim([10^(-10) 10^(0)]);
-        
+
 end
 set(gcf,'Colormap',colormapName);
 %colormap parula;
 
 switch model
+    case {20,21}
+        h = colorbar('Ticks',(0:1:10)./10,'TickLabels',{'',''});
     case {32,33,34}
         h = colorbar('Ticks',clims,'TickLabels',{'',''});
         set(h,'ylim',clims);
@@ -723,7 +739,7 @@ switch (model)
                 yticks([0 0.001 0.002 0.003 0.004 0.005 0.006]);
             end
         end
-        
+
     case 20
         if(phos)
             ylim([0 0.016]);
@@ -781,7 +797,7 @@ xlabel1 = 'Sequence';
 ylabel1 = 'Probability';
 title1 = 'Probability vs Sequence';
 switch (model)
-    
+
     case 10
         if(phos)
             if(max(sweep)>15)
@@ -848,7 +864,7 @@ end
 switch model
     case {32,33}
     otherwise
-        
+
 %% Plot Probability versus Sequence - No Labels
 
 ax=figure(3); clf; box on; hold on;
@@ -935,9 +951,9 @@ xlabel1 = 'Binding Site';
 ylabel1 = 'Probability';
 title1 = 'Probability of Second to Last Event Being Given Binding Site';
 switch (model)
-    
+
     case 10
-        if(phos) 
+        if(phos)
             if(max(sweep)>15)
                 ylim([0 max(max(probability(:,2:end)))]);
             else
@@ -1019,7 +1035,7 @@ end
     xlabel(xlabel1,'FontName','Arial','FontSize',24);
     ylabel(ylabel1,'FontName','Arial','FontSize',24);
     title(title1,'FontName','Arial','FontSize',24);
-    
+
     if (saveTF)
         % % save figure
         savefiletitle = 'AverageTransitionRate_TotalSitesVSNumberModified';
@@ -1048,7 +1064,7 @@ end
     xlabel(xlabel1,'FontName','Arial','FontSize',24);
     ylabel(ylabel1,'FontName','Arial','FontSize',24);
     title(title1,'FontName','Arial','FontSize',24);
-    
+
     if (saveTF)
         % % save figure
         savefiletitle = 'AverageTransitionTimeVSNumberModified';
@@ -1120,7 +1136,7 @@ end
 
     end
     %% Plot AvgTime vs Rank
-    figure(31); clf; 
+    figure(31); clf;
 
 
     figure(31); hold on; box on;
