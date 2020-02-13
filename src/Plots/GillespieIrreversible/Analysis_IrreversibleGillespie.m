@@ -47,7 +47,7 @@ end
 model = 21; % 1x = stiffening, 2x = electrostatics, 3x = multiple binding - ibEqual
 
 
-saveRatesPlot = 1;
+saveRatesPlot = 0;
 saveSeqPlot = 0;
 
 
@@ -527,13 +527,13 @@ switch model
         if(phos)
             ylim([0.0 0.012]);
         else
-            ylim([0 Inf]);
+            ylim([0 0.04]);
         end
     case 21
         if(phos)
             ylim([0 0.015]);
         else
-            ylim([0 Inf]);
+            ylim([0 0.04]);
         end
 
     case {30}
@@ -621,13 +621,13 @@ switch model
         if(phos)
             ylim([0.0 0.012]);
         else
-            ylim([0 Inf]);
+            ylim([0 0.04]);
         end
     case 21
         if(phos)
             ylim([0 0.015]);
         else
-            ylim([0 Inf]);
+            ylim([0 0.04]);
         end
 
     case {30}
