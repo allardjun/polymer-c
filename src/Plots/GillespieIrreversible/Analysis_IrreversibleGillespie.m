@@ -44,13 +44,10 @@ end
 
 
 % initialization switch for which model we're inspecting
-<<<<<<< HEAD
-model = 20; % 1x = stiffening, 2x = electrostatics, 3x = multiple binding - ibEqual
-=======
 model = 21; % 1x = stiffening, 2x = electrostatics, 3x = multiple binding - ibEqual
->>>>>>> 39517c1fbd588dd7d37cf16c81098221e2d2715f
 
-saveRatesPlot = 0;
+
+saveRatesPlot = 1;
 saveSeqPlot = 0;
 
 
@@ -159,7 +156,7 @@ switch (model)
         units = 'kBT';
 
         modificationLabel = '(Phosphorylated)';
-        colormapName = 'parula';
+        colormapName = parula;
 
         GillespieRuns = 200000000;
 
@@ -185,7 +182,7 @@ switch (model)
         colors = parula(11);
         legendlabelsAbbrev = {'0','1','2','3','4','5','6','7','8','9','10'};
         legendlabels = {['EP0', num2str(sweep)]};
-        colormapName = 'parula';
+        colormapName = parula;
 
         xlabelModel = 'EP0';
         units = 'kBT';
@@ -534,7 +531,7 @@ switch model
         end
     case 21
         if(phos)
-            ylim([0 Inf]);
+            ylim([0 0.015]);
         else
             ylim([0 Inf]);
         end
@@ -628,7 +625,7 @@ switch model
         end
     case 21
         if(phos)
-            ylim([0 Inf]);
+            ylim([0 0.015]);
         else
             ylim([0 Inf]);
         end
@@ -641,8 +638,8 @@ switch model
         ylim([10^(-10) 10^(0)]);
 
 end
-set(gcf,'Colormap',colormapName);
-%colormap parula;
+%set(gcf,'Colormap',colormapName);
+colormap(colormapName);
 
 switch model
     case {20,21}
@@ -842,7 +839,7 @@ ylabel(ylabel1,'FontName','Arial','FontSize',24);
 title(title1,'FontName','Arial','FontSize',24);
 
 % colorbar
-set(gcf,'Colormap',colormapName)
+colormap(colormapName);
 colortickind = [length(sweep) 1];
 %clims = [0 1]
 clims = [colors(colortickind(1)) colors(colortickind(2))];
