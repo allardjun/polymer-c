@@ -8,12 +8,12 @@ overwriteTF = 0;
 
 % temporary for loop
 
-spacing = 3; % 0 = CD3Zeta, 1 = EvenSites, 2 = CD3Epsilon, 3 = TCR
+spacing = 2; % 0 = CD3Zeta, 1 = EvenSites, 2 = CD3Epsilon, 3 = TCR
 membrane = 1; % 0 for membrane off, 1 for membrane on
 phos = 1; % 1 = phosphorylation, 0 = dephosphorylation
 
 
-sf = 3 % for changing sweep of local stiffening
+sf = -1 % for changing sweep of local stiffening
 %             for sf = 0
 %                 clearvars -except spacing membrane phos sf
 
@@ -44,7 +44,7 @@ end
 
             
 % initialization switch for which model we're inspecting
-model = 34; % 1x = stiffening, 2x = electrostatics, 3x = multiple binding - ibEqual
+model = 20; % 1x = stiffening, 2x = electrostatics, 3x = multiple binding - ibEqual
 
 saveRatesPlot = 0;
 saveSeqPlot = 0;
