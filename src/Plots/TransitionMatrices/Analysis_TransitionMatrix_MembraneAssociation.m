@@ -7,8 +7,8 @@ close all;
 %% Initialize
 
 % initialization switch for which model we're inspecting
-writeTransitionMatrix = 0; % 0 = do not create transitionMatrix files, 1 = create transitionMatrix files
-spacing = 0; %  0 = EvenSites, 1 = CD3Zeta, 2 = CD3Epsilon
+writeTransitionMatrix = 1; % 0 = do not create transitionMatrix files, 1 = create transitionMatrix files
+spacing = 2; %  0 = EvenSites, 1 = CD3Zeta, 2 = CD3Epsilon
 membrane = 1; % 0 for membrane off, 1 for membrane on
 model = 3; % 1 = stiffening, 2 = multiple binding, 3 = electrostatics
 saveTF = 0;
@@ -62,7 +62,8 @@ switch (model)
         transitionMatrixfolder = '~/Documents/Papers/MultisiteDisorder/Data/2.MembraneAssociation/';
         transitionMatrixsubfolder = 'CD3Epsilon/MembraneOn/TwoSites/2.TransitionMatrices/';
         transitionMatFilename = 'CD3Epsilon_MembraneAssociation_EP0Sweep';
-        sweep = 0:1:40;
+        sweep = -1;
+        %sweep = 0:1:40;
 
         
         % figure parameters
@@ -102,7 +103,7 @@ end
 WallK = 0.05;
 ParabD = 0.5;
 ParabW = ParabD/9;
-Erepul = 0.5+0.5*(sweep-1);
+Erepul = 0.5+0.5*(sweep);
 Zrepul = 3;
 params = zeros(20,5);
 % WK, PD, PW, ER, ZR
