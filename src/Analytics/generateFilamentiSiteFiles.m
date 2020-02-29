@@ -9,12 +9,13 @@ interITAMSweep = 1:20;
 ITAMlocationSweep = 1:2; % cases
 
 % initialize filenames, locations
-savefolder = '~/Documents/Papers/MultisiteDisorder/Data/3.SimultaneousBinding/TCR/MembraneOn/FilVSTime/FilamentSweep';
+savefolder = '~/Documents/Papers/MultisiteDisorder/Data/3.SimultaneousBinding/TCR/MembraneOn/FilVSTime/FilamentParamFiles';
 
 %% Set up ITAMs per filaments, filament lengths, ITAM locations
 
 for iIS = 1:length(interITAMSweep)
     for nFS = 1:length(numFilSweep)
+        clearvars ITAMperFil
         
         % set up savenames
         savename_fil_end = ['filaments_end.',num2str(interITAMSweep(iIS)),'.',num2str(numFilSweep(nFS)),'.txt'];
@@ -23,9 +24,8 @@ for iIS = 1:length(interITAMSweep)
         
         % set up number of ITAMs per filament
         nFils = numFilSweep(nFS);
-        ITAMperFil = floor(10./nFils);
-        base = floor(10./nFils);
-        extra = mod(10,nFils);
+        base = floor(ITAMTotal./nFils);
+        extra = mod(ITAMTotal,nFils);
         ITAMperFil = base.*ones(1,nFils);
         for iExtra = 1:extra
             ITAMperFil(iExtra) = ITAMperFil(iExtra)+1;
@@ -58,7 +58,8 @@ for iIS = 1:length(interITAMSweep)
         fileID = fopen(fullfile(savefolder,savename_ITAM),'w');
         iL = 1
         for ipF = 1:length(ITAMperFil)
-            fprintf(fileID,'%f ',ITAMlocations(iL:(iL+ITAMperFil(ipF)-1)));
+            fprintf(fileID,'%f ',ITAMlocations(iL:(iL+ITAMperFil(ipF)-2))); % print most iSites
+            fprintf(fileID,'%f',ITAMlocations((iL+ITAMperFil(ipF)-1))); % need to remove space at last iSite for proper code functioning
             fprintf(fileID,'\n');
             iL = iL+ITAMperFil(ipF);
         end
