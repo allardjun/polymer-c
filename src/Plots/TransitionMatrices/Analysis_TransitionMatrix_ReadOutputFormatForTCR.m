@@ -9,14 +9,16 @@ close all;
 % Pick model
 spacing = 2; % 0 = CD3Zeta, 1 = EvenSites, 2 = TCR, 3 = CD3Epsilon
 membrane = 1; % 0 for membrane off, 1 for membrane on
-model = 35; % 1x = LocalStructuring, 2x = Membrane Association, 3x = Simultaneous Binding
+itam = 0; % 0 - End, 1 - Mid (only for Filament Sweep - model 40,41)
+model = 41; % 1x = LocalStructuring, 2x = Membrane Association, 3x = Simultaneous Binding
 
 % 10 = Local Structuring
-
+% 20 = Membrane Association
 % 30 = Simultaneous Binding SH2
+% 40 = Filament Sweep
 
 % Save Transition Matrices and Figures
-writeTransitionMatrix = 0; % 0 = do not create transitionMatrix files, 1 = create transitionMatrix files
+writeTransitionMatrix = 1; % 0 = do not create transitionMatrix files, 1 = create transitionMatrix files
 saveTF = 0;
 
 %% 
@@ -45,6 +47,13 @@ else
     membraneState = 'Off';
 end
 
+switch (itam)
+    case 0
+        itamLoc = 'End';
+    case 1
+        itamLoc = 'Mid';
+end
+
 %% Set parameters for model
 
 switch (model)
@@ -67,8 +76,8 @@ switch (model)
         
         % 
         locationTotal = 6;
-        NFil = 1;
-        iSiteTotal(1:NFil) = [6];
+        NFilSweep = 1;
+        iSiteTotal(1:NFilSweep) = [6];
         %sweep = -1:1:10;
         %sweep = -1:1:103;
         %sweep = [-1 1:2:15 19:6:103];
@@ -102,8 +111,8 @@ switch (model)
         
         % 
         locationTotal = 6;
-        NFil = 1;
-        iSiteTotal(1:NFil) = [6];
+        NFilSweep = 1;
+        iSiteTotal(1:NFilSweep) = [6];
         %sweep = -1:1:10;
         sweep = -1:1:5;
         %sweep = [-1 1:2:15 19:6:103];
@@ -117,6 +126,8 @@ switch (model)
         lw = 2;
         modificationLabel = '(Phosphorylated)';
         
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
     case 20
         % model name
         modelName = 'MembraneAssociation';
@@ -129,15 +140,15 @@ switch (model)
         savesubfolder = ['2.MembraneAssociation/',iSiteSpacing,'/Membrane',membraneState,'/Plots'];
         
         locationTotal = 2;
-        NFil = 1;
-        iSiteTotal(1:NFil) = [2];
+        NFilSweep = 1;
+        iSiteTotal(1:NFilSweep) = [2];
 
 
         %phosSites = 2;
         transitionMatrixfolder = '~/Documents/Papers/MultisiteDisorder/Data/2.MembraneAssociation/';
         transitionMatrixsubfolder = 'CD3Epsilon/MembraneOn/TwoSites/2.TransitionMatrices/';
 
-        sweep = 0:1:40;
+        sweep = -1:1:40;
         sweepParameter = 'EP0';
 
         
@@ -162,14 +173,14 @@ switch (model)
         
         
         locationTotal = 6;
-        NFil = 1;
-        iSiteTotal(1:NFil) = [6];
+        NFilSweep = 1;
+        iSiteTotal(1:NFilSweep) = [6];
 
 
         transitionMatrixfolder = '~/Documents/Papers/MultisiteDisorder/Data/2.MembraneAssociation/';
         transitionMatrixsubfolder = 'CD3Zeta/MembraneOn/2.TransitionMatrices/';
 
-        sweep = 0:1:40;
+        sweep = -1:1:40;
         sweepParameter = 'EP0';
         
         % figure parameters
@@ -180,7 +191,8 @@ switch (model)
         lw = 2;
         modificationLabel = '(Phosphorylated)';
 
-        
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
     case 30
         % model name
         modelName = 'SimultaneousBindingSH2';
@@ -199,8 +211,8 @@ switch (model)
         
         % 
         locationTotal = 6;
-        NFil = 1;
-        iSiteTotal(1:NFil) = [6];
+        NFilSweep = 1;
+        iSiteTotal(1:NFilSweep) = [6];
         sweep = 1:1:14;
         sweepParameter = 'irLigand';
         
@@ -231,8 +243,8 @@ switch (model)
         
         % 
         locationTotal = 6;
-        NFil = 1;
-        iSiteTotal(1:NFil) = [6];
+        NFilSweep = 1;
+        iSiteTotal(1:NFilSweep) = [6];
         sweep = 1:1:7;
         sweepParameter = 'ibRadius';
         
@@ -263,8 +275,8 @@ switch (model)
         
         % 
         locationTotal = 3;
-        NFil = 1;
-        iSiteTotal(1:NFil) = [3];
+        NFilSweep = 1;
+        iSiteTotal(1:NFilSweep) = [3];
         sweep = 1:1:14;
         sweepParameter = 'ibRadius';
         
@@ -295,8 +307,8 @@ switch (model)
         
         % 
         locationTotal = 10;
-        NFil = 6;
-        iSiteTotal(1:NFil) = [1 1 3 3 1 1];
+        NFilSweep = 6;
+        iSiteTotal(1:NFilSweep) = [1 1 3 3 1 1];
         sweep = 1:1:14;
         sweepParameter = 'ibRadius';
         
@@ -327,8 +339,8 @@ switch (model)
         
         % 
         locationTotal = 10;
-        NFil = 6;
-        iSiteTotal(1:NFil) = [1 1 3 3 1 1];
+        NFilSweep = 6;
+        iSiteTotal(1:NFilSweep) = [1 1 3 3 1 1];
         sweep = 1:1:13;
         sweepParameter = 'ibRadius';
         
@@ -360,8 +372,8 @@ switch (model)
         
         % 
         locationTotal = 10;
-        NFil = 6;
-        iSiteTotal(1:NFil) = [1 1 3 3 1 1];
+        NFilSweep = 6;
+        iSiteTotal(1:NFilSweep) = [1 1 3 3 1 1];
         sweep = 1:1:10;
         sweepParameter = 'ibRadius';
         
@@ -370,6 +382,42 @@ switch (model)
         colorIndices = sweep;
         %colors = flipud(cool(max(sweep)));
         colors = flipud(cool(13)); % use colors from TCR above with bigger range
+        ms = 10;
+        lw = 2;
+        modificationLabel = '(Bound)';
+  
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+     case 41 % Filament Sweep - separation distance 17
+        
+        % model name
+        modelName = 'SimultaneousBinding';
+        
+        % find files
+        filefolder    = '~/Documents/Papers/MultisiteDisorder/Data/3.SimultaneousBinding';
+        filesubfolder = [iSiteSpacing,'/Membrane',membraneState,'/FilVSTime/SepDist17/','ITAM_',itamLoc,'/1.OcclusionProbabilities/CatFiles'];
+        filetitle     = strcat(iSiteSpacing,'Membrane',num2str(membrane));
+        
+        % save transition matrices location
+        transitionMatrixfolder    = '~/Documents/Papers/MultisiteDisorder/Data/3.SimultaneousBinding/';
+        transitionMatrixsubfolder = [iSiteSpacing,'/Membrane',membraneState,'/FilVSTime/SepDist17/','ITAM_',itamLoc,'/2.TransitionMatrices'];
+        
+        % save figures location
+        savesubfolder = ['3.SimultaneousBinding/',iSiteSpacing,'/Membrane',membraneState,'/FilVSTime/SepDist17/','ITAM_',itamLoc,'/Plots'];
+        
+        % 
+        locationTotal = 10;
+        NFilSweep = [1 2 3 5 9 10];
+        %iSiteTotal(1:NFil) = [1 1 3 3 1 1]; % specify in loop for models
+        %40, 41
+        sweep = 4:4:20;
+        sweepParameter = 'FilSweepNITAM';
+        
+        % figure parameters
+        legendlabels = {[sweepParameter,' = ', num2str(sweep(1))],[sweepParameter,' = ', num2str(sweep(2))],[sweepParameter,' = ', num2str(sweep(3))],[sweepParameter,' = ', num2str(sweep(4))],[sweepParameter,' = ', num2str(sweep(5))]};
+        colorIndices = sweep;
+        %colors = flipud(cool(max(sweep)));
+        colors = flipud(cool(length(sweep))); % use colors from TCR above with bigger range
         ms = 10;
         lw = 2;
         modificationLabel = '(Bound)';
@@ -384,148 +432,184 @@ sumRates = zeros(length(sweep),locationTotal,2);
 avgRates = zeros(length(sweep),locationTotal,2);
 
 %% Create transition matrices, calculate average binding rates
+for nfSweep = 1:length(NFilSweep)
 
-for s = 1:length(sweep)
-    % choose file
-    filename = strcat(filetitle,sweepParameter,'.',num2str(sweep(s)),'.cat');
-    disp(filename);
+    % set NFil, ITAM locations for this iteration
+    NFil = NFilSweep(nfSweep);
+    disp('NFil:');
+    disp(NFil);
     
-    % initialize 
-    OccupiedLocations = zeros(2^locationTotal,1);
-    OccupiedLocationsMatrix = zeros(2^locationTotal,locationTotal);
-    OccupiedLocationsDecimal = zeros(2^locationTotal,1);
-    POcc = zeros(2^locationTotal,locationTotal);
-    PBind = zeros(2^locationTotal,locationTotal);
-    PBindKinase = zeros(2^locationTotal,locationTotal);
-    POcc_NumSites = zeros(2^locationTotal,locationTotal+1);
-    PAvail_NumSites = zeros(2^locationTotal,locationTotal+1);
+    switch model
+        case {40,41}
+            % set up number of ITAMs per filament
+            base = floor(locationTotal./NFil);
+            extra = mod(locationTotal,NFil);
+            iSiteTotal = base.*ones(1,NFil);
+            for iExtra = 1:extra
+                iSiteTotal(iExtra) = iSiteTotal(iExtra)+1;
+            end
+        otherwise
+            % keep iSiteTotal from above
+    end
     
-    %% Read from File
-
-    %readData_TransitionMatrix(filefolder,filesubfolder,filename);
+    disp('iSiteTotal:');
+    disp(iSiteTotal);
     
-    M = dlmread(fullfile(filefolder,filesubfolder, filename));
-
-    ntMetropolis = M(:,1);
-    OccupiedLocations = M(:,end);
-
-    OccupiedLocationsMatrix(:,1:locationTotal) = M(:,(end-locationTotal):(end-1));
-
-    % up to total number of iSites - 6 for mouse CD3Zeta
-    siteCounter = 1;
+    % start parameter sweep
+    for s = 1:length(sweep)
     
-    % starting index - 8+2*(locationTotal+1) is output only once, 6+2 takes
-    % us to the correct index in the filament output
-    ind = 8+2*(locationTotal+1)+6+2; 
-    for nf = 1:NFil
-        
-        if(nf>1)
-            ind = ind + (6 + 7*iSiteTotal(nf-1) + 2 + NFil + NFil);
+        % choose file
+        switch model
+            case {40,41}
+                filename = strcat(filetitle,sweepParameter,'.',num2str(sweep(s)),'.NFIL.',num2str(NFil),'.cat');
+            otherwise
+                filename = strcat(filetitle,sweepParameter,'.',num2str(sweep(s)),'.cat');
         end
-        
-        for iy = 1:iSiteTotal(nf)
-            POcc(:,siteCounter) = M(:,ind + 7*(iy-1));
-            siteCounter = siteCounter + 1;
+        disp(filename);
+
+        % initialize 
+        OccupiedLocations = zeros(2^locationTotal,1);
+        OccupiedLocationsMatrix = zeros(2^locationTotal,locationTotal);
+        OccupiedLocationsDecimal = zeros(2^locationTotal,1);
+        POcc = zeros(2^locationTotal,locationTotal);
+        PBind = zeros(2^locationTotal,locationTotal);
+        PBindKinase = zeros(2^locationTotal,locationTotal);
+        POcc_NumSites = zeros(2^locationTotal,locationTotal+1);
+        PAvail_NumSites = zeros(2^locationTotal,locationTotal+1);
+
+        %% Read from File
+
+        %readData_TransitionMatrix(filefolder,filesubfolder,filename);
+
+        M = dlmread(fullfile(filefolder,filesubfolder, filename));
+
+        ntMetropolis = M(:,1);
+        OccupiedLocations = M(:,end);
+
+        OccupiedLocationsMatrix(:,1:locationTotal) = M(:,(end-locationTotal):(end-1));
+
+        % up to total number of iSites - 6 for mouse CD3Zeta
+        siteCounter = 1;
+
+        % starting index - 8+2*(locationTotal+1) is output only once, 6+2 takes
+        % us to the correct index in the filament output
+        ind = 8+2*(locationTotal+1)+6+2; 
+        for nf = 1:NFil
+
+            if(nf>1)
+                ind = ind + (6 + 7*iSiteTotal(nf-1) + 2 + NFil + NFil);
+            end
+
+            for iy = 1:iSiteTotal(nf)
+                POcc(:,siteCounter) = M(:,ind + 7*(iy-1));
+                siteCounter = siteCounter + 1;
+            end
         end
-    end
-    PBind(:,1:locationTotal) = 1-POcc(:,1:locationTotal);
-    
-    
-    POcc_NumSites(:,1:locationTotal+1) = M(:,8+(1:(locationTotal+1)));
-    PAvail_NumSites(:,1:locationTotal+1) = M(:,8+(locationTotal+1)+(1:(locationTotal+1)));
-    
-    %% Convert binary to decimal
-    
-    for j=1:2^locationTotal
-        binaryString = num2str(OccupiedLocations(j));
-        OccupiedLocationsDecimal(j) = bin2dec(binaryString);
-    end
-    
-    %% Create kinase transitionMatrix (forward binding) and Phosphatase transitionMatrix (reverse binding)
-    
-    PBindKinase = PBind.*(~OccupiedLocationsMatrix);
-    PBindPhosphatase = PBind.*(OccupiedLocationsMatrix);
-    for j=1:2^locationTotal
-        PBindKCorrectOrder(OccupiedLocationsDecimal(j)+1,:) = PBindKinase(j,:);
-        PBindPCorrectOrder(OccupiedLocationsDecimal(j)+1,:) = PBindPhosphatase(j,:);
-    end
-    KinaseTransition = fliplr(PBindKCorrectOrder);
-    PhosphataseTransition = fliplr(PBindPCorrectOrder);
-    AllTransition = KinaseTransition+PhosphataseTransition;
-    AllTransition2 = PBindKinase + PBindPhosphatase;
-    
-    PhosphataseTransitionInverted = flipud(PhosphataseTransition);
-    
-    %% Calculate total possible ways to transition from State i to State i+1
-    for i=1:locationTotal
-        totalRates(i) = nchoosek(locationTotal,i-1).*(locationTotal-(i-1));
-    end
-    
-    
-    %% Create 2^locationTotal x 2^locationTotal matrix of rates
-    
-    binaryArray = de2bi(0:1:2^locationTotal-1,'left-msb');
-    
-    rateMatrix = zeros(2^locationTotal,2^locationTotal);
-    kinaseRateMatrix = zeros(2^locationTotal,2^locationTotal);
-    phosphataseRateMatrix = zeros(2^locationTotal,2^locationTotal);
-    
-    for i=1:2^locationTotal
+        PBind(:,1:locationTotal) = 1-POcc(:,1:locationTotal);
+
+
+        POcc_NumSites(:,1:locationTotal+1) = M(:,8+(1:(locationTotal+1)));
+        PAvail_NumSites(:,1:locationTotal+1) = M(:,8+(locationTotal+1)+(1:(locationTotal+1)));
+
+        %% Convert binary to decimal
+
         for j=1:2^locationTotal
-            if(sum(xor(binaryArray(i,:),binaryArray(j,:)))==1)
-                transitionIndex = find(xor(binaryArray(i,:),binaryArray(j,:)));
-                rateMatrix(i,j) = AllTransition2(i,transitionIndex); % insert rate into appropriate location
-                if(j>i)
-                    kinaseRateMatrix(i,j)       = AllTransition2(i,transitionIndex);
-                else
-                    phosphataseRateMatrix(i,j)  = AllTransition2(i,transitionIndex);
+            binaryString = num2str(OccupiedLocations(j));
+            OccupiedLocationsDecimal(j) = bin2dec(binaryString);
+        end
+
+        %% Create kinase transitionMatrix (forward binding) and Phosphatase transitionMatrix (reverse binding)
+
+        PBindKinase = PBind.*(~OccupiedLocationsMatrix);
+        PBindPhosphatase = PBind.*(OccupiedLocationsMatrix);
+        for j=1:2^locationTotal
+            PBindKCorrectOrder(OccupiedLocationsDecimal(j)+1,:) = PBindKinase(j,:);
+            PBindPCorrectOrder(OccupiedLocationsDecimal(j)+1,:) = PBindPhosphatase(j,:);
+        end
+        KinaseTransition = fliplr(PBindKCorrectOrder);
+        PhosphataseTransition = fliplr(PBindPCorrectOrder);
+        AllTransition = KinaseTransition+PhosphataseTransition;
+        AllTransition2 = PBindKinase + PBindPhosphatase;
+
+        PhosphataseTransitionInverted = flipud(PhosphataseTransition);
+
+        %% Calculate total possible ways to transition from State i to State i+1
+        for i=1:locationTotal
+            totalRates(i) = nchoosek(locationTotal,i-1).*(locationTotal-(i-1));
+        end
+
+
+        %% Create 2^locationTotal x 2^locationTotal matrix of rates
+
+        binaryArray = de2bi(0:1:2^locationTotal-1,'left-msb');
+
+        rateMatrix = zeros(2^locationTotal,2^locationTotal);
+        kinaseRateMatrix = zeros(2^locationTotal,2^locationTotal);
+        phosphataseRateMatrix = zeros(2^locationTotal,2^locationTotal);
+
+        for i=1:2^locationTotal
+            for j=1:2^locationTotal
+                if(sum(xor(binaryArray(i,:),binaryArray(j,:)))==1)
+                    transitionIndex = find(xor(binaryArray(i,:),binaryArray(j,:)));
+                    rateMatrix(i,j) = AllTransition2(i,transitionIndex); % insert rate into appropriate location
+                    if(j>i)
+                        kinaseRateMatrix(i,j)       = AllTransition2(i,transitionIndex);
+                    else
+                        phosphataseRateMatrix(i,j)  = AllTransition2(i,transitionIndex);
+                    end
                 end
             end
         end
-    end
-    
-    % debugging
-    if(1)
-        if(sum(sum(rateMatrix-(kinaseRateMatrix+phosphataseRateMatrix)))~=0)
-            disp('Error!!');
-        end
-    end
-    
-    %% Write to File
-    if(writeTransitionMatrix)
-        
-        % Create save name for transition matrix
-        savefilenameK = strcat(modelName,iSiteSpacing,'Membrane',membraneState,'.Kinase','.',num2str(sweep(s)));
-        savefilenameP = strcat(modelName,iSiteSpacing,'Membrane',membraneState,'.Phosphatase','.',num2str(sweep(s)));
-        savefilenamePInv = strcat(modelName,iSiteSpacing,'Membrane',membraneState,'.PhosphataseInv','.',num2str(sweep(s)));
-        
-        % Save full matrix - for Reversible Gillespie
-        dlmwrite(fullfile(transitionMatrixfolder,transitionMatrixsubfolder,'FullMatrix',savefilenameK),kinaseRateMatrix,'\n');
-        dlmwrite(fullfile(transitionMatrixfolder,transitionMatrixsubfolder,'FullMatrix',savefilenameP),phosphataseRateMatrix,'\n');
-        
-        % Save just POcc/PBind for Irreversible Gillespie
-        dlmwrite(fullfile(transitionMatrixfolder,transitionMatrixsubfolder,'Phos',savefilenameK),KinaseTransition,'\n');
-        dlmwrite(fullfile(transitionMatrixfolder,transitionMatrixsubfolder,'Dephos',savefilenameP),PhosphataseTransition,'\n');
-        dlmwrite(fullfile(transitionMatrixfolder,transitionMatrixsubfolder,'Dephos',savefilenamePInv),PhosphataseTransitionInverted,'\n');
-    end
-    
-    %% Calculate average rates of transition from one state to next
 
-    for j=1:2^locationTotal % for each state (i.e. 010010)
-        totalOccupied(1) = size(find(KinaseTransition(j,:)==0),2); % find number of 0 entries (aka phosphorylated sites)
-        totalOccupied(2) = size(find(PhosphataseTransition(j,:)==0),2); % find number of 0 entries (aka unphosphorylated sites)
-        if(totalOccupied(1)<locationTotal) % if not completely occupied
-            sumRates(s,totalOccupied(1)+1,1) = sumRates(s,totalOccupied(1)+1,1)+sum(KinaseTransition(j,:));
+        % debugging
+        if(1)
+            if(sum(sum(rateMatrix-(kinaseRateMatrix+phosphataseRateMatrix)))~=0)
+                disp('Error!!');
+            end
         end
-        if(totalOccupied(2)<locationTotal)
-            sumRates(s,totalOccupied(2)+1,2) = sumRates(s,totalOccupied(2)+1,2)+sum(PhosphataseTransition(j,:));
-        end
-    end
-        
-    % find average rates of transition from one state to another
-    avgRates(s,:,1) = sumRates(s,:,1)./totalRates;
-    avgRates(s,:,2) = sumRates(s,:,2)./totalRates;
 
+        %% Write to File
+        if(writeTransitionMatrix)
+
+            % Create save name for transition matrix
+            switch model
+                case {40,41}
+                    savefilenameK = strcat(modelName,iSiteSpacing,'Membrane',membraneState,'.Kinase','.',sweepParameter,'.',num2str(sweep(s)),'.NFIL.',num2str(NFil));
+                    savefilenameP = strcat(modelName,iSiteSpacing,'Membrane',membraneState,'.Phosphatase','.',sweepParameter,'.',num2str(sweep(s)),'.NFIL.',num2str(NFil));
+                    savefilenamePInv = strcat(modelName,iSiteSpacing,'Membrane',membraneState,'.PhosphataseInv','.',sweepParameter,'.',num2str(sweep(s)),'.NFIL.',num2str(NFil));
+                otherwise
+                    savefilenameK = strcat(modelName,iSiteSpacing,'Membrane',membraneState,'.Kinase','.',num2str(sweep(s)));
+                    savefilenameP = strcat(modelName,iSiteSpacing,'Membrane',membraneState,'.Phosphatase','.',num2str(sweep(s)));
+                    savefilenamePInv = strcat(modelName,iSiteSpacing,'Membrane',membraneState,'.PhosphataseInv','.',num2str(sweep(s)));
+            end
+
+            % Save full matrix - for Reversible Gillespie
+            dlmwrite(fullfile(transitionMatrixfolder,transitionMatrixsubfolder,'FullMatrix',savefilenameK),kinaseRateMatrix,'\n');
+            dlmwrite(fullfile(transitionMatrixfolder,transitionMatrixsubfolder,'FullMatrix',savefilenameP),phosphataseRateMatrix,'\n');
+
+            % Save just POcc/PBind for Irreversible Gillespie
+            dlmwrite(fullfile(transitionMatrixfolder,transitionMatrixsubfolder,'Phos',savefilenameK),KinaseTransition,'\n');
+            dlmwrite(fullfile(transitionMatrixfolder,transitionMatrixsubfolder,'Dephos',savefilenameP),PhosphataseTransition,'\n');
+            dlmwrite(fullfile(transitionMatrixfolder,transitionMatrixsubfolder,'Dephos',savefilenamePInv),PhosphataseTransitionInverted,'\n');
+        end
+
+        %% Calculate average rates of transition from one state to next
+
+        for j=1:2^locationTotal % for each state (i.e. 010010)
+            totalOccupied(1) = size(find(KinaseTransition(j,:)==0),2); % find number of 0 entries (aka phosphorylated sites)
+            totalOccupied(2) = size(find(PhosphataseTransition(j,:)==0),2); % find number of 0 entries (aka unphosphorylated sites)
+            if(totalOccupied(1)<locationTotal) % if not completely occupied
+                sumRates(s,totalOccupied(1)+1,1) = sumRates(s,totalOccupied(1)+1,1)+sum(KinaseTransition(j,:));
+            end
+            if(totalOccupied(2)<locationTotal)
+                sumRates(s,totalOccupied(2)+1,2) = sumRates(s,totalOccupied(2)+1,2)+sum(PhosphataseTransition(j,:));
+            end
+        end
+
+        % find average rates of transition from one state to another
+        avgRates(s,:,1) = sumRates(s,:,1)./totalRates;
+        avgRates(s,:,2) = sumRates(s,:,2)./totalRates;
+    end
 end
 
 %%
@@ -546,336 +630,328 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 %% Plot Cooperativity - Phosphorylation no Labels
-
-figure(1); clf; hold on; box on;
-for s = 1:length(sweep)
-    plotColor = colorIndices(s);
-    plotData = reshape(avgRates(s,:,1),[1 locationTotal]);
-    plot(1:1:locationTotal,plotData,'-s','LineWidth',lw,'Color',colors(plotColor,:),'MarkerFaceColor',colors(plotColor,:));
-end
-% set first position - 2.5in by 2.5in with no labels
-switch (model)
-
-    case 10
-        if(~spacing)
-            ylim([0 1]);
-        else
-            ylim([0 1]);
-        end
-        
-     case 11 % stiff
-        %set(gca,'YScale','log');
-        if(~spacing)
-            if(~membrane)
-                ylim([0.02,0.045]); % CD3ZetaMembrane0
-            else
-                ylim([0.01,0.035]); % CD3ZetaMembrane1
-            end
-        else
-            if(~membrane)
-                ylim([0.02, 0.035]); % EvenSitesMembrane0
-                set(gca,'YTick',[0.02, 0.025,0.03, 0.035]);
-            else
-                ylim([0.01,0.03]); % EvenSitesMembrane1
-                set(gca,'YTick',[0.01,0.015,0.02, 0.025,0.03]);
-            end
-        end
-        
-     case {5,7} % sim bind ibEqual
-        set(gca,'YScale','log');
-        if(~spacing)
-            if(~membrane)
-                ylim([10^(-5),10^0]); % CD3ZetaMembrane0
-            else
-                ylim([10^(-5),10^0]); % CD3ZetaMembrane1
-            end
-        else
-            if(~membrane)
-                ylim([10^(-5),10^0]); % EvenSitesMembrane0
-            else
-                ylim([10^(-5),10^0]); % EvenSitesMembrane1
-            end
-        end     
-      case 8 % sim bind ibEqual TCR
-        set(gca,'YScale','log');
-        if(~spacing)
-            if(~membrane)
-                ylim([10^(-3),10^0]); % CD3ZetaMembrane0
-            else
-                ylim([10^(-3),10^0]); % CD3ZetaMembrane1
-            end
-        else
-            if(~membrane)
-                ylim([10^(-3),10^0]); % EvenSitesMembrane0
-            else
-                ylim([10^(-3),10^0]); % EvenSitesMembrane1
-            end
-        end  
-        
-    case {33,34,35} % sim bind ibEqual TCR
-        set(gca,'YScale','log');
-        if(spacing==2)
-            ylim([10^(-7),10^0]); % TCRMembrane1
-        end  
-end
-set(gca,'YTickLabel',[]);
-set(gca,'XTickLabel',[]);
-set(gcf,'units','inches','position',[[1,1],3.5,3.5]);
-set(gca,'units','inches','position',[[0.5,0.5],2.5,2.5]);
-
-
-if(saveTF)
-    switch model
-        case 10
-            savesubsubfolder = 'Phos/FullStiffenRange';
-        otherwise
-            savesubsubfolder = 'Phos';
-    end
-    
-    figure(1);
-        savefilename = 'AvgBindVSTotalModifiedNoPath';
-        saveas(gcf,fullfile(savefilefolder,savesubfolder,savesubsubfolder,savefilename),'fig');
-        saveas(gcf,fullfile(savefilefolder,savesubfolder,savesubsubfolder,savefilename),'epsc');
-end
-
-%% Plot Cooperativity - Phosphorylation with Labels
-figure(10); clf; hold on; box on;
-for s = 1:length(sweep)
-    plotColor = colorIndices(s);
-    plotData = reshape(avgRates(s,:,1),[1 locationTotal]);
-    plot(1:1:locationTotal,plotData,'-s','LineWidth',lw,'Color',colors(plotColor,:),'MarkerFaceColor',colors(plotColor,:),'MarkerSize',ms);
-end
-% set axis labels and scales
-set(gca,'XTick',1:1:locationTotal);
-set(gca,'XTickLabel',{'0 -> 1', '1 -> 2', '2 -> 3', '3 -> 4','4 -> 5', '5 -> 6', '6 -> 7', '7 -> 8', '8 -> 9', '9 -> 10'});
-xlabel1 = {['Number of Modified Sites'],modificationLabel};
-ylabel1 = {['Average Binding Rate'],['(per free space binding)']};
-title1 = 'Average Binding Rate vs Total Modified Sites';
-switch (model)
-    
-    
-    case 10
-        if(~spacing)
-            ylim([0 1]);
-        else
-            ylim([0 1]);
-        end
-        
-    case 11 % stiff
-        %set(gca,'YScale','log');
-        if(~spacing)
-            if(~membrane)
-                ylim([0.02,0.045]); % CD3ZetaMembrane0
-            else
-                ylim([0.01,0.035]); % CD3ZetaMembrane1
-            end
-        else
-            if(~membrane)
-                ylim([0.02, 0.035]); % EvenSitesMembrane0
-                set(gca,'YTick',[0.02, 0.025,0.03, 0.035]);
-            else
-                ylim([0.01,0.03]); % EvenSitesMembrane1
-                set(gca,'YTick',[0.01,0.015,0.02, 0.025,0.03]);
-
-            end
-        end
-  
-     case {5,7} % sim bind ibEqual
-        set(gca,'YScale','log');
-        if(~spacing)
-            if(~membrane)
-                ylim([10^(-5),10^0]); % CD3ZetaMembrane0
-            else
-                ylim([10^(-5),10^0]); % CD3ZetaMembrane1
-            end
-        else
-            if(~membrane)
-                ylim([10^(-5),10^0]); % EvenSitesMembrane0
-            else
-                ylim([10^(-5),10^0]); % EvenSitesMembrane1
-            end
-        end  
-  
-      case 8 % sim bind ibEqual TCR
-        set(gca,'YScale','log');
-        if(~spacing)
-            if(~membrane)
-                ylim([10^(-3),10^0]); % CD3ZetaMembrane0
-            else
-                ylim([10^(-3),10^0]); % CD3ZetaMembrane1
-            end
-        else
-            if(~membrane)
-                ylim([10^(-3),10^0]); % EvenSitesMembrane0
-            else
-                ylim([10^(-3),10^0]); % EvenSitesMembrane1
-            end
-        end 
-        
-    case {33,34,35} % sim bind ibEqual TCR
-        set(gca,'YScale','log');
-        if(spacing==2)
-            ylim([10^(-7),10^0]); % TCRMembrane1
-        end 
-end
-
-% set second position and show labels
-pos = get(gcf, 'position');
-set(gcf,'units','centimeters','position',[[1,1],30,25]);
-set(gca,'FontName','Arial','FontSize',18);
-xlabel(xlabel1,'FontName','Arial','FontSize',18);
-ylabel(ylabel1,'FontName','Arial','FontSize',18);
-title(title1,'FontName','Arial','FontSize',18);
-
-% set colorbar parameters based on model
-switch (model)
-    case 11
-        set(gcf,'Colormap',cool)
-        colormap cool;
-        h = colorbar;
-        h = colorbar('Ticks',[0 1],'TickLabels',{'',''},'YDir','reverse');
-        set(h,'ylim',[0 1]);
-    case {2,33,34}
-        set(gcf,'Colormap',cool)
-        colormap cool;
-        h = colorbar;
-        h = colorbar('Ticks',[0 1],'TickLabels',{'',''},'YDir','reverse');
-end
-
-% save figure with labels attached
-
-if(saveTF)
-    switch model
-        case 10
-            savesubsubfolder = 'Phos/FullStiffenRange';
-        otherwise
-            savesubsubfolder = 'Phos';
-    end
-    
-    figure(10);
-        savefilename = 'AvgBindVSTotalModifiedNoPathLabels';
-        saveas(gcf,fullfile(savefilefolder,savesubfolder,savesubsubfolder,savefilename),'fig');
-        saveas(gcf,fullfile(savefilefolder,savesubfolder,savesubsubfolder,savefilename),'epsc');
-end
-
-
-%% Plot Cooperativity - Dephosphorylation no Labels
-figure(2); clf; hold on; box on;
-for s = 1:length(sweep)
-    plotData = reshape(avgRates(s,:,2),[1 locationTotal]);
-    plot(1:1:locationTotal,plotData,'-s','LineWidth',lw,'Color',colors(s,:),'MarkerFaceColor',colors(s,:));
-end
-% set first position - 2.5in by 2.5in with no labels
-set(gca,'YTickLabel',[]);
-set(gca,'XTickLabel',[]);
-set(gcf,'units','inches','position',[[1,1],3.5,3.5]);
-set(gca,'units','inches','position',[[0.5,0.5],2.5,2.5]);
 switch model
-    case 10
+    case {40,41}
+    otherwise
         
-    case {3,33,34}
-        set(gca,'YScale','log');
-end
-if(saveTF)
-    switch model
-        case 10
-            savesubsubfolder = 'Dephos/FullStiffenRange';
-        otherwise
-            savesubsubfolder = 'Dephos';
-    end
-    
-    figure(2);
-        savefilename = 'AvgBindVSTotalModifiedNoPath';
-        saveas(gcf,fullfile(savefilefolder,savesubfolder,savesubsubfolder,savefilename),'fig');
-        saveas(gcf,fullfile(savefilefolder,savesubfolder,savesubsubfolder,savefilename),'epsc');
-end
-
-
-%% Plot Cooperativity - Dephosphorylation with Labels
-figure(20); clf; hold on; box on;
-for s = 1:length(sweep)
-    plotData = reshape(avgRates(s,:,2),[1 locationTotal]);
-    plot(1:1:locationTotal,plotData,'-s','LineWidth',lw,'Color',colors(s,:),'MarkerFaceColor',colors(s,:));
-end
-% set axis labels and scale
-set(gca,'XTick',1:1:locationTotal);
-set(gca,'XTickLabel',{'6 -> 5','5 -> 4','4 -> 3','3 -> 2','2 -> 1','1 -> 0'});
-title1 = 'Average Binding Rate vs Total Modified Sites';
-xlabel1 = {['Number of Modified Sites'],modificationLabel};
-ylabel1 = {['Average Binding Rate'],['(per free space binding)']};
-
-% set second position and show labels
-pos = get(gcf, 'position');
-set(gcf,'units','centimeters','position',[[1,1],30,25]);
-set(gca,'FontName','Arial','FontSize',18);
-xlabel(xlabel1,'FontName','Arial','FontSize',18);
-ylabel(ylabel1,'FontName','Arial','FontSize',18);
-title(title1,'FontName','Arial','FontSize',18);
-switch (model)
-    
-    case 10
-        if(~spacing)
-            ylim([0 1]);
-        else
-            ylim([0 1]);
+        figure(1); clf; hold on; box on;
+        for s = 1:length(sweep)
+            plotColor = colorIndices(s);
+            plotData = reshape(avgRates(s,:,1),[1 locationTotal]);
+            plot(1:1:locationTotal,plotData,'-s','LineWidth',lw,'Color',colors(plotColor,:),'MarkerFaceColor',colors(plotColor,:));
         end
-        
-    case 11
-        %set(gca,'YScale','log');
-        if(~spacing)
-            if(~membrane)
-                ylim([0,0.7]); % CD3ZetaMembrane0
-            else
-                ylim([0,0.6]); % CD3ZetaMembrane1
+        % set first position - 2.5in by 2.5in with no labels
+        switch (model)
+
+            case 10
+                if(~spacing)
+                    ylim([0 1]);
+                else
+                    ylim([0 1]);
+                end
+
+             case 11 % stiff
+                %set(gca,'YScale','log');
+                if(~spacing)
+                    if(~membrane)
+                        ylim([0.02,0.045]); % CD3ZetaMembrane0
+                    else
+                        ylim([0.01,0.035]); % CD3ZetaMembrane1
+                    end
+                else
+                    if(~membrane)
+                        ylim([0.02, 0.035]); % EvenSitesMembrane0
+                        set(gca,'YTick',[0.02, 0.025,0.03, 0.035]);
+                    else
+                        ylim([0.01,0.03]); % EvenSitesMembrane1
+                        set(gca,'YTick',[0.01,0.015,0.02, 0.025,0.03]);
+                    end
+                end
+
+             case {5,7} % sim bind ibEqual
+                set(gca,'YScale','log');
+                if(~spacing)
+                    if(~membrane)
+                        ylim([10^(-5),10^0]); % CD3ZetaMembrane0
+                    else
+                        ylim([10^(-5),10^0]); % CD3ZetaMembrane1
+                    end
+                else
+                    if(~membrane)
+                        ylim([10^(-5),10^0]); % EvenSitesMembrane0
+                    else
+                        ylim([10^(-5),10^0]); % EvenSitesMembrane1
+                    end
+                end     
+              case 8 % sim bind ibEqual TCR
+                set(gca,'YScale','log');
+                if(~spacing)
+                    if(~membrane)
+                        ylim([10^(-3),10^0]); % CD3ZetaMembrane0
+                    else
+                        ylim([10^(-3),10^0]); % CD3ZetaMembrane1
+                    end
+                else
+                    if(~membrane)
+                        ylim([10^(-3),10^0]); % EvenSitesMembrane0
+                    else
+                        ylim([10^(-3),10^0]); % EvenSitesMembrane1
+                    end
+                end  
+
+            case {33,34,35} % sim bind ibEqual TCR
+                set(gca,'YScale','log');
+                if(spacing==2)
+                    ylim([10^(-7),10^0]); % TCRMembrane1
+                end  
+        end
+        set(gca,'YTickLabel',[]);
+        set(gca,'XTickLabel',[]);
+        set(gcf,'units','inches','position',[[1,1],3.5,3.5]);
+        set(gca,'units','inches','position',[[0.5,0.5],2.5,2.5]);
+
+
+        if(saveTF)
+            switch model
+                case 10
+                    savesubsubfolder = 'Phos/FullStiffenRange';
+                otherwise
+                    savesubsubfolder = 'Phos';
             end
-        else
-            if(~membrane)
-                ylim([0, 0.6]); % EvenSitesMembrane0
-            else
-                ylim([0,0.5]); % EvenSitesMembrane1
-            end
+
+            figure(1);
+                savefilename = 'AvgBindVSTotalModifiedNoPath';
+                saveas(gcf,fullfile(savefilefolder,savesubfolder,savesubsubfolder,savefilename),'fig');
+                saveas(gcf,fullfile(savefilefolder,savesubfolder,savesubsubfolder,savefilename),'epsc');
         end
 
-    case {3,33,34,35}
-        set(gca,'YScale','log');
-end
+        %% Plot Cooperativity - Phosphorylation with Labels
+        figure(10); clf; hold on; box on;
+        for s = 1:length(sweep)
+            plotColor = colorIndices(s);
+            plotData = reshape(avgRates(s,:,1),[1 locationTotal]);
+            plot(1:1:locationTotal,plotData,'-s','LineWidth',lw,'Color',colors(plotColor,:),'MarkerFaceColor',colors(plotColor,:),'MarkerSize',ms);
+        end
+        % set axis labels and scales
+        set(gca,'XTick',1:1:locationTotal);
+        set(gca,'XTickLabel',{'0 -> 1', '1 -> 2', '2 -> 3', '3 -> 4','4 -> 5', '5 -> 6', '6 -> 7', '7 -> 8', '8 -> 9', '9 -> 10'});
+        xlabel1 = {['Number of Modified Sites'],modificationLabel};
+        ylabel1 = {['Average Binding Rate'],['(per free space binding)']};
+        title1 = 'Average Binding Rate vs Total Modified Sites';
+        switch (model)
 
-% set colorbar parameters
-switch (model)
-    case 11
-        set(gcf,'Colormap',cool)
-        colormap cool;
-        h = colorbar;
-        h = colorbar('Ticks',[0 1],'TickLabels',{'',''},'YDir','reverse');
-        set(h,'ylim',[0 1]);
-end
 
-if(saveTF)
-    switch model
-        case 10
-            savesubsubfolder = 'Dephos/FullStiffenRange';
-        otherwise
-            savesubsubfolder = 'Dephos';
-    end
-    
-    figure(20);
-        savefilename = 'AvgBindVSTotalModifiedNoPathLabels';
-        saveas(gcf,fullfile(savefilefolder,savesubfolder,savesubsubfolder,savefilename),'fig');
-        saveas(gcf,fullfile(savefilefolder,savesubfolder,savesubsubfolder,savefilename),'epsc');
+            case 10
+                if(~spacing)
+                    ylim([0 1]);
+                else
+                    ylim([0 1]);
+                end
+
+            case 11 % stiff
+                %set(gca,'YScale','log');
+                if(~spacing)
+                    if(~membrane)
+                        ylim([0.02,0.045]); % CD3ZetaMembrane0
+                    else
+                        ylim([0.01,0.035]); % CD3ZetaMembrane1
+                    end
+                else
+                    if(~membrane)
+                        ylim([0.02, 0.035]); % EvenSitesMembrane0
+                        set(gca,'YTick',[0.02, 0.025,0.03, 0.035]);
+                    else
+                        ylim([0.01,0.03]); % EvenSitesMembrane1
+                        set(gca,'YTick',[0.01,0.015,0.02, 0.025,0.03]);
+
+                    end
+                end
+
+             case {5,7} % sim bind ibEqual
+                set(gca,'YScale','log');
+                if(~spacing)
+                    if(~membrane)
+                        ylim([10^(-5),10^0]); % CD3ZetaMembrane0
+                    else
+                        ylim([10^(-5),10^0]); % CD3ZetaMembrane1
+                    end
+                else
+                    if(~membrane)
+                        ylim([10^(-5),10^0]); % EvenSitesMembrane0
+                    else
+                        ylim([10^(-5),10^0]); % EvenSitesMembrane1
+                    end
+                end  
+
+              case 8 % sim bind ibEqual TCR
+                set(gca,'YScale','log');
+                if(~spacing)
+                    if(~membrane)
+                        ylim([10^(-3),10^0]); % CD3ZetaMembrane0
+                    else
+                        ylim([10^(-3),10^0]); % CD3ZetaMembrane1
+                    end
+                else
+                    if(~membrane)
+                        ylim([10^(-3),10^0]); % EvenSitesMembrane0
+                    else
+                        ylim([10^(-3),10^0]); % EvenSitesMembrane1
+                    end
+                end 
+
+            case {33,34,35} % sim bind ibEqual TCR
+                set(gca,'YScale','log');
+                if(spacing==2)
+                    ylim([10^(-7),10^0]); % TCRMembrane1
+                end 
+        end
+
+        % set second position and show labels
+        pos = get(gcf, 'position');
+        set(gcf,'units','centimeters','position',[[1,1],30,25]);
+        set(gca,'FontName','Arial','FontSize',18);
+        xlabel(xlabel1,'FontName','Arial','FontSize',18);
+        ylabel(ylabel1,'FontName','Arial','FontSize',18);
+        title(title1,'FontName','Arial','FontSize',18);
+
+        % set colorbar parameters based on model
+        switch (model)
+            case 11
+                set(gcf,'Colormap',cool)
+                colormap cool;
+                h = colorbar;
+                h = colorbar('Ticks',[0 1],'TickLabels',{'',''},'YDir','reverse');
+                set(h,'ylim',[0 1]);
+            case {2,33,34}
+                set(gcf,'Colormap',cool)
+                colormap cool;
+                h = colorbar;
+                h = colorbar('Ticks',[0 1],'TickLabels',{'',''},'YDir','reverse');
+        end
+
+        % save figure with labels attached
+
+        if(saveTF)
+            switch model
+                case 10
+                    savesubsubfolder = 'Phos/FullStiffenRange';
+                otherwise
+                    savesubsubfolder = 'Phos';
+            end
+
+            figure(10);
+                savefilename = 'AvgBindVSTotalModifiedNoPathLabels';
+                saveas(gcf,fullfile(savefilefolder,savesubfolder,savesubsubfolder,savefilename),'fig');
+                saveas(gcf,fullfile(savefilefolder,savesubfolder,savesubsubfolder,savefilename),'epsc');
+        end
+
+
+        %% Plot Cooperativity - Dephosphorylation no Labels
+        figure(2); clf; hold on; box on;
+        for s = 1:length(sweep)
+            plotData = reshape(avgRates(s,:,2),[1 locationTotal]);
+            plot(1:1:locationTotal,plotData,'-s','LineWidth',lw,'Color',colors(s,:),'MarkerFaceColor',colors(s,:));
+        end
+        % set first position - 2.5in by 2.5in with no labels
+        set(gca,'YTickLabel',[]);
+        set(gca,'XTickLabel',[]);
+        set(gcf,'units','inches','position',[[1,1],3.5,3.5]);
+        set(gca,'units','inches','position',[[0.5,0.5],2.5,2.5]);
+        switch model
+            case 10
+
+            case {3,33,34}
+                set(gca,'YScale','log');
+        end
+        if(saveTF)
+            switch model
+                case 10
+                    savesubsubfolder = 'Dephos/FullStiffenRange';
+                otherwise
+                    savesubsubfolder = 'Dephos';
+            end
+
+            figure(2);
+                savefilename = 'AvgBindVSTotalModifiedNoPath';
+                saveas(gcf,fullfile(savefilefolder,savesubfolder,savesubsubfolder,savefilename),'fig');
+                saveas(gcf,fullfile(savefilefolder,savesubfolder,savesubsubfolder,savefilename),'epsc');
+        end
+
+
+        %% Plot Cooperativity - Dephosphorylation with Labels
+        figure(20); clf; hold on; box on;
+        for s = 1:length(sweep)
+            plotData = reshape(avgRates(s,:,2),[1 locationTotal]);
+            plot(1:1:locationTotal,plotData,'-s','LineWidth',lw,'Color',colors(s,:),'MarkerFaceColor',colors(s,:));
+        end
+        % set axis labels and scale
+        set(gca,'XTick',1:1:locationTotal);
+        set(gca,'XTickLabel',{'6 -> 5','5 -> 4','4 -> 3','3 -> 2','2 -> 1','1 -> 0'});
+        title1 = 'Average Binding Rate vs Total Modified Sites';
+        xlabel1 = {['Number of Modified Sites'],modificationLabel};
+        ylabel1 = {['Average Binding Rate'],['(per free space binding)']};
+
+        % set second position and show labels
+        pos = get(gcf, 'position');
+        set(gcf,'units','centimeters','position',[[1,1],30,25]);
+        set(gca,'FontName','Arial','FontSize',18);
+        xlabel(xlabel1,'FontName','Arial','FontSize',18);
+        ylabel(ylabel1,'FontName','Arial','FontSize',18);
+        title(title1,'FontName','Arial','FontSize',18);
+        switch (model)
+
+            case 10
+                if(~spacing)
+                    ylim([0 1]);
+                else
+                    ylim([0 1]);
+                end
+
+            case 11
+                %set(gca,'YScale','log');
+                if(~spacing)
+                    if(~membrane)
+                        ylim([0,0.7]); % CD3ZetaMembrane0
+                    else
+                        ylim([0,0.6]); % CD3ZetaMembrane1
+                    end
+                else
+                    if(~membrane)
+                        ylim([0, 0.6]); % EvenSitesMembrane0
+                    else
+                        ylim([0,0.5]); % EvenSitesMembrane1
+                    end
+                end
+
+            case {3,33,34,35}
+                set(gca,'YScale','log');
+        end
+
+        % set colorbar parameters
+        switch (model)
+            case 11
+                set(gcf,'Colormap',cool)
+                colormap cool;
+                h = colorbar;
+                h = colorbar('Ticks',[0 1],'TickLabels',{'',''},'YDir','reverse');
+                set(h,'ylim',[0 1]);
+        end
+
+        if(saveTF)
+            switch model
+                case 10
+                    savesubsubfolder = 'Dephos/FullStiffenRange';
+                otherwise
+                    savesubsubfolder = 'Dephos';
+            end
+
+            figure(20);
+                savefilename = 'AvgBindVSTotalModifiedNoPathLabels';
+                saveas(gcf,fullfile(savefilefolder,savesubfolder,savesubsubfolder,savefilename),'fig');
+                saveas(gcf,fullfile(savefilefolder,savesubfolder,savesubsubfolder,savefilename),'epsc');
+        end
+
 end
 
 
