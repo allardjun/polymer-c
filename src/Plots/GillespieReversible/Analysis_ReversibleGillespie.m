@@ -3,9 +3,9 @@ clear all; close all;
 
 %% Initialize model parameters
 
-saveTF = 0; % save figures
+saveTF = 1; % save figures
 model = 20; % 10 = Stiffening, 20 = electrostatics
-spacing = 2; % 0 = CD3Zeta spacing, 1 = evenly spaced tyrosines, 2 = CD3Epsilon
+spacing = 0; % 0 = CD3Zeta spacing, 1 = evenly spaced tyrosines, 2 = CD3Epsilon
 membrane = 1; % 0 = no membrane, 1 = membrane
 constant = 1; % 0 = steric-independent dephosphorylation, 1 = steric-influenced dephosphorylation, 2 = constant phosphorylation
 
@@ -74,9 +74,9 @@ switch model
         ms_hill = 2;
         ms_coeff = 7;
         ms_lw = 1.5;
-        sweep = 0:2:20;
+        sweep = -1:2:19; % includes control (-1)
         %sweep = 20
-        sweepVariable = 0.5*(sweep); % EP0
+        sweepVariable = 0.5+0.5*(sweep); % EP0
         colors = parula(length(sweep));
         colormapName = parula;
 end
@@ -332,7 +332,12 @@ switch model
                 ylim([0.6 1.5]);
         end
     case 20
-        ylim([0.9 1.5]);
+        switch spacing
+            case {0,1} 
+                ylim([0.9 1.5]);
+            case 2
+                ylim([0.8 1.4]);
+        end
         xlim([0 10]);
         set(gca,'XTick',0:1:10);
 end
@@ -367,7 +372,12 @@ switch model
                 ylim([0.6 1.5]);
         end
     case 20
-        ylim([0.9 1.5]);
+        switch spacing
+            case {0,1} 
+                ylim([0.9 1.5]);
+            case 2
+                ylim([0.8 1.4]);
+        end
         xlim([0 10]);
         set(gca,'XTick',0:1:10);
 end
@@ -409,7 +419,12 @@ switch model
     case 20
         xlabel1 = {'EP0'};
         ylabel1 = 'Hill coefficient';
-        ylim([0.9 1.5]);
+        switch spacing
+            case {0,1} 
+                ylim([0.9 1.5]);
+            case 2
+                ylim([0.8 1.4]);
+        end
         xlim([0 10]);
         set(gca,'XTick',0:1:10);
         
