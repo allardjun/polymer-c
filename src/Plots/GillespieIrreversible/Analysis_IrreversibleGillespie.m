@@ -8,7 +8,7 @@ overwriteTF = 0;
 
 % temporary for loop
 
-spacing = 2; % 0 = CD3Zeta, 1 = EvenSites, 2 = CD3Epsilon, 3 = TCR
+spacing = 0; % 0 = CD3Zeta, 1 = EvenSites, 2 = CD3Epsilon, 3 = TCR
 membrane = 1; % 0 for membrane off, 1 for membrane on
 phos = 1; % 1 = phosphorylation, 0 = dephosphorylation
 
@@ -44,7 +44,7 @@ end
 
 
 % initialization switch for which model we're inspecting
-model = 21; % 1x = stiffening, 2x = electrostatics, 3x = multiple binding - ibEqual
+model = 20; % 1x = stiffening, 2x = electrostatics, 3x = multiple binding - ibEqual
 
 
 saveRatesPlot = 0;
@@ -138,7 +138,7 @@ switch (model)
 
         %
         locationTotal = 6;
-        sweep = 0:2:20; % includes control
+        sweep = -1:2:19; % includes control
         sweepParameter = 'EP0';
 
         % create location to save figures
@@ -169,7 +169,7 @@ switch (model)
 
         %
         locationTotal = 2;
-        sweep = 0:2:20; % includes control
+        sweep = -1:2:19; % includes control
         sweepParameter = 'EP0';
 
         % create location to save figures
@@ -531,7 +531,8 @@ switch model
         end
     case 21
         if(phos)
-            ylim([0 0.015]);
+            ylim([0 0.016]);
+            yticks([0 0.004 0.008 0.012 0.016]);
         else
             ylim([0 0.04]);
         end
@@ -625,7 +626,7 @@ switch model
         end
     case 21
         if(phos)
-            ylim([0 0.015]);
+            ylim([0 0.016]);
         else
             ylim([0 0.04]);
         end
@@ -844,7 +845,7 @@ colortickind = [length(sweep) 1];
 %clims = [0 1]
 clims = [colors(colortickind(1)) colors(colortickind(2))];
 % cbar = colorbar('Ticks',[colors_fig(colortickind(1)) colors_fig(colortickind(2))],'TickLabels',{'10^{2}','10^{-2}'},'ylim',clims);
-h = colorbar('Ticks',[colors(colortickind(1)) colors(length(sweep)-5) colors(colortickind(2))],'TickLabels',{'',''},'ylim',clims);
+%h = colorbar('Ticks',[colors(colortickind(1)) colors(length(sweep)-5) colors(colortickind(2))],'TickLabels',{'',''},'ylim',clims);
 % set(h,'ylim',colorTicks);
 
 %legend(horzcat(legendlabels,{'Random Probability = 1/720'}),'Location','northwest');
@@ -985,7 +986,7 @@ colortickind = [length(sweep) 1];
 %clims = [0 1]
 clims = [colors(colortickind(1)) colors(colortickind(2))];
 % cbar = colorbar('Ticks',[colors_fig(colortickind(1)) colors_fig(colortickind(2))],'TickLabels',{'10^{2}','10^{-2}'},'ylim',clims);
-h = colorbar('Ticks',[colors(colortickind(1)) colors(length(sweep)-5) colors(colortickind(2))],'TickLabels',{'',''},'ylim',clims);
+%h = colorbar('Ticks',[colors(colortickind(1)) colors(length(sweep)-5) colors(colortickind(2))],'TickLabels',{'',''},'ylim',clims);
 % set(h,'ylim',colorTicks);
 
 %legend(horzcat(legendlabels,{'Random Probability = 1/720'}),'Location','northwest');
