@@ -156,6 +156,8 @@ load(fullfile(savefilefolder,savefilesubfolder,'Data.mat'));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 fontName = 'Arial';
 fs = 18;
+colors = parula(length(sweep));
+lw = 2;
 
 %% Plot transition times
 
@@ -179,7 +181,7 @@ NFilData = repmat(NFilSweep',1,size(transitionRate_Avg,2));
 ITAMLengthData = repmat(sweep,size(transitionRate_Avg,1),1);
 
 
-moviename = 'FilSweep_transitionRate_Avg';
+moviename = '~/Desktop/FilSweep_transitionRate_Avg';
 
 if (movieTF)
    Visual3D = VideoWriter(strcat(moviename,'.avi'));
@@ -203,6 +205,56 @@ for loc = 1:locationTotal
     xlabel(xlabel1,'FontName',fontName,'FontSize',fs);
     ylabel(ylabel1,'FontName',fontName,'FontSize',fs);
     zlabel(zlabel1,'FontName',fontName,'FontSize',fs);
+    
+    if (movieTF)
+        frame = getframe(gcf);
+        writeVideo(Visual3D, frame);
+    end
+end
+
+
+% close movie
+if (movieTF)
+    close(Visual3D);
+end
+
+%% Plot transition rates - binding rate vs NFil
+NFilData = repmat(NFilSweep',1,size(transitionRate_Avg,2));
+ITAMLengthData = repmat(sweep,size(transitionRate_Avg,1),1);
+
+
+moviename = '~/Desktop/FilSweep_2D_transitionRate_Avg';
+
+if (movieTF)
+   Visual3D = VideoWriter(strcat(moviename,'.avi'));
+   Visual3D.FrameRate = 5;
+   open(Visual3D);
+end
+
+
+
+
+for loc = 1:locationTotal
+    figure(3); clf; hold on; 
+    for s = 1:length(sweep)
+        plotData = reshape(transitionRate_Avg(:,:,loc),[size(transitionRate_Avg,1),size(transitionRate_Avg,2)]);
+        pL = plot(NFilSweep,log10(plotData(:,s)),'-o');
+        pL.Color = colors(s,:);
+        pL.LineWidth = lw;
+        pL.DisplayName = ['ITAM Spacing = ',num2str(sweep(s))];
+    end
+        xlim([0 max(NFilSweep)]);
+        ylim([-15 0]);
+        xlabel1 = 'Number Filaments';
+        ylabel1 = 'Average transition time to ith bound';
+        xlabel(xlabel1,'FontName',fontName,'FontSize',fs);
+        ylabel(ylabel1,'FontName',fontName,'FontSize',fs);
+
+        legend('Location','southwest');
+        
+        str = [num2str(loc-1),' -> ',num2str(loc)]';
+        dim = [0.75 0.15 0.15 0.08];
+        annotation('textbox',dim,'String',str','FontSize',fs,'FitBoxToText','on');
     
     if (movieTF)
         frame = getframe(gcf);
