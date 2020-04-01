@@ -473,6 +473,7 @@ for nfSweep = 1:length(NFilSweep)
         OccupiedLocationsDecimal = zeros(2^locationTotal,1);
         POcc = zeros(2^locationTotal,locationTotal);
         PBind = zeros(2^locationTotal,locationTotal);
+        PAvail = zeros(2^locationTotal,locationTotal);
         PBindKinase = zeros(2^locationTotal,locationTotal);
         POcc_NumSites = zeros(2^locationTotal,locationTotal+1);
         PAvail_NumSites = zeros(2^locationTotal,locationTotal+1);
@@ -502,10 +503,12 @@ for nfSweep = 1:length(NFilSweep)
 
             for iy = 1:iSiteTotal(nf)
                 POcc(:,siteCounter) = M(:,ind + 7*(iy-1));
+                PAvail(:,siteCounter) = M(:,ind + 7*(iy-1) + 1);
                 siteCounter = siteCounter + 1;
             end
         end
-        PBind(:,1:locationTotal) = 1-POcc(:,1:locationTotal);
+        %PBind(:,1:locationTotal) = 1-POcc(:,1:locationTotal);
+        PBind(:,1:locationTotal) = PAvail(:,1:locationTotal);
 
 
         POcc_NumSites(:,1:locationTotal+1) = M(:,8+(1:(locationTotal+1)));
