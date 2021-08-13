@@ -15,8 +15,8 @@ itam = 0;
 % initialization switch for which model we're inspecting
 model = 41; % 1x = stiffening, 2x = electrostatics, 3x = multiple binding - ibEqual
 
-saveRatesPlot = 0;
-movieTF = 1;
+saveTF = 0;
+movieTF = 0;
 %% Model Parameters
 
 savefilefolder = '/Volumes/GoogleDrive/My Drive/Papers/MultisiteDisorder/Data_Figures';
@@ -51,8 +51,43 @@ switch (itam)
         itamLoc = 'Mid';
 end
 
+
 switch (model)
-    
+
+    case 40 % Filament Sweep - separation distance 5
+        
+        % model name
+        modelName = 'SimultaneousBinding';
+        
+        % find files
+        filefolder    = '~/Documents/Papers/MultisiteDisorder/Data/3.SimultaneousBinding';
+        filesubfolder = [iSiteSpacing,'/Membrane',membraneState,'/FilVSTime/SepDist5/','ITAM_',itamLoc,'/3.Gillespie/Irreversible/','CatFiles/',phosDirection];
+        filetitle     = ['IrreversibleGillespie',iSiteSpacing,'Membrane',membraneState,phosDirection];
+        
+        % save figures location
+        savefilesubfolder = ['3.SimultaneousBinding/',iSiteSpacing,'/Membrane',membraneState,'/FilVSTime/SepDist5/','ITAM_',itamLoc,'/Plots/',phosDirection];
+        savefilesubsubfolder = [''];
+        
+        %
+        locationTotal = 10;
+        NFilSweep = [1 2 3 5 9 10];
+        %iSiteTotal(1:NFil) = [1 1 3 3 1 1]; % specify in loop for models
+        %40, 41
+        %sweep = 4:4:20;
+        sweep = 8:4:20;
+        sweepParameter = 'FilamentSweep.NITAM';
+        
+        % figure parameters
+        legendlabels = {[sweepParameter,' = ', num2str(sweep(1))],[sweepParameter,' = ', num2str(sweep(2))],[sweepParameter,' = ', num2str(sweep(3))],[sweepParameter,' = ', num2str(sweep(4))]};
+        colorIndices = sweep;
+        %colors = flipud(cool(max(sweep)));
+        colors = flipud(spring(length(sweep))); % use colors from TCR above with bigger range
+        ms = 10;
+        lw = 1.5;
+        modificationLabel = '(Bound)';
+        
+        GillespieRuns = 1000000000;
+        
     case 41 % Filament Sweep - separation distance 17
         
         % model name
@@ -72,11 +107,12 @@ switch (model)
         NFilSweep = [1 2 3 5 9 10];
         %iSiteTotal(1:NFil) = [1 1 3 3 1 1]; % specify in loop for models
         %40, 41
-        sweep = 4:4:20;
+        %sweep = 4:4:20;
+        sweep = 8:4:20;
         sweepParameter = 'FilamentSweep.NITAM';
         
         % figure parameters
-        legendlabels = {[sweepParameter,' = ', num2str(sweep(1))],[sweepParameter,' = ', num2str(sweep(2))],[sweepParameter,' = ', num2str(sweep(3))],[sweepParameter,' = ', num2str(sweep(4))],[sweepParameter,' = ', num2str(sweep(5))]};
+        legendlabels = {[sweepParameter,' = ', num2str(sweep(1))],[sweepParameter,' = ', num2str(sweep(2))],[sweepParameter,' = ', num2str(sweep(3))],[sweepParameter,' = ', num2str(sweep(4))]};
         colorIndices = sweep;
         %colors = flipud(cool(max(sweep)));
         colors = flipud(spring(length(sweep))); % use colors from TCR above with bigger range
@@ -137,7 +173,7 @@ if(~exist(fullfile(savefilefolder,savefilesubfolder,'Data.mat'),'file') || overw
         end
         
         switch model
-            case {32,33,34,41}
+            case {32,33,34,40,41}
                 save_vars = {'transitionTime_Avg','transitionRate_Avg'};
         end
         %% save workspace
@@ -156,7 +192,7 @@ load(fullfile(savefilefolder,savefilesubfolder,'Data.mat'));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 fontName = 'Arial';
 fs = 18;
-colors = parula(length(sweep));
+colors = ((length(sweep):-1:1)'/length(sweep)).*[0 0 0.2] + ((1:1:length(sweep))'/length(sweep)).*[1 0.2 0];
 lw = 2;
 
 %% Plot transition times
@@ -169,7 +205,7 @@ plotData = reshape(transitionTime_Avg(:,:,6),[size(transitionTime_Avg,1),size(tr
 surf(NFilData,ITAMLengthData,log10(plotData));
 xlabel1 = 'Number Filaments';
 ylabel1 = 'ITAM separation distance';
-zlabel1 = 'Average transition time to ith bound';
+zlabel1 = 'Average transition rate to ith bound';
 xlabel(xlabel1,'FontName',fontName,'FontSize',fs);
 ylabel(ylabel1,'FontName',fontName,'FontSize',fs);
 zlabel(zlabel1,'FontName',fontName,'FontSize',fs);
@@ -181,7 +217,7 @@ NFilData = repmat(NFilSweep',1,size(transitionRate_Avg,2));
 ITAMLengthData = repmat(sweep,size(transitionRate_Avg,1),1);
 
 
-moviename = '~/Desktop/FilSweep_transitionRate_Avg';
+moviename = fullfile(savefilefolder,savefilesubfolder,'FilSweep_transitionRate_Avg_SepDist5');
 
 if (movieTF)
    Visual3D = VideoWriter(strcat(moviename,'.avi'));
@@ -201,7 +237,7 @@ for loc = 1:locationTotal
     zlim([-15 0]);
     xlabel1 = 'Number Filaments';
     ylabel1 = 'ITAM separation distance';
-    zlabel1 = 'Average transition time to ith bound';
+    zlabel1 = 'Average transition rate to ith bound';
     xlabel(xlabel1,'FontName',fontName,'FontSize',fs);
     ylabel(ylabel1,'FontName',fontName,'FontSize',fs);
     zlabel(zlabel1,'FontName',fontName,'FontSize',fs);
@@ -222,17 +258,13 @@ end
 NFilData = repmat(NFilSweep',1,size(transitionRate_Avg,2));
 ITAMLengthData = repmat(sweep,size(transitionRate_Avg,1),1);
 
-
-moviename = '~/Desktop/FilSweep_2D_transitionRate_Avg';
+moviename = fullfile(savefilefolder,savefilesubfolder,'FilSweep_2D_transitionRate_Avg_SepDist5');
 
 if (movieTF)
    Visual3D = VideoWriter(strcat(moviename,'.avi'));
    Visual3D.FrameRate = 5;
    open(Visual3D);
 end
-
-
-
 
 for loc = 1:locationTotal
     figure(3); clf; hold on; 
@@ -246,12 +278,15 @@ for loc = 1:locationTotal
         xlim([0 max(NFilSweep)]);
         ylim([-15 0]);
         xlabel1 = 'Number Filaments';
-        ylabel1 = 'Average transition time to ith bound';
+        ylabel1 = 'Average transition rate to ith bound';
         xlabel(xlabel1,'FontName',fontName,'FontSize',fs);
         ylabel(ylabel1,'FontName',fontName,'FontSize',fs);
 
         legend('Location','southwest');
         
+        set(gcf,'units','centimeters','position',[1,4,40,30]);
+        set(gca,'FontName',fontName,'FontSize',fs);
+
         str = [num2str(loc-1),' -> ',num2str(loc)]';
         dim = [0.75 0.15 0.15 0.08];
         annotation('textbox',dim,'String',str','FontSize',fs,'FitBoxToText','on');
@@ -260,7 +295,9 @@ for loc = 1:locationTotal
         frame = getframe(gcf);
         writeVideo(Visual3D, frame);
     end
+
 end
+
 
 
 % close movie
@@ -268,101 +305,63 @@ if (movieTF)
     close(Visual3D);
 end
 
+%% Save 5->6 specifically - No Labels
+NFilData = repmat(NFilSweep',1,size(transitionRate_Avg,2));
+ITAMLengthData = repmat(sweep,size(transitionRate_Avg,1),1);
 
-%%
-if(0)
-    %% Average Transition Rates VS Number of Modified Sites - No Labels
-    
-    figure(12); clf; hold on; box on;
-    for s=1:length(sweep)
-        plot_line = plot(0:1:(locationTotal-1),transitionRate_Avg(s,:)./(locationTotal:-1:1),'-s','LineWidth',lw);
-        if (sf==0)
-            plot_line.Color = colors(sweep(s)+2,:);
-            plot_line.MarkerFaceColor = colors(sweep(s)+2,:);
-            plot_line.MarkerSize = 3;
-        else
-            plot_line.Color = colors(s,:);
-            plot_line.MarkerFaceColor = colors(s,:);
-            plot_line.MarkerSize = 2;
-        end
-    end
-    
-    set(gca,'xlim',[0 locationTotal-1]);
-    set(gca,'XTick',0:1:locationTotal-1);
-    set(gca,'xticklabel',[]);
-    switch model
-        case { 32,33,34}
-            set(gca,'YScale','log');
-            ylim([10^(-10) 10^(0)]);
-    end
-    set(gca,'yticklabel',[]);
-    
-    % print position and labels
-    pos = get(gca, 'position');
-    set(gcf,'units','inches','position',[1,1,3,3]); set(gca,'units','inches','position',[0.5,0.5,1.9,1.9]);
-    
-    if (saveRatesPlot)
-        % % save figure
-        savefiletitle = 'AvgTransRateVSNumberModified';
-        saveas(gcf,fullfile(savefilefolder,savefilesubfolder,savefilesubsubfolder,savefiletitle),'fig');
-        print('-painters',fullfile(savefilefolder,savefilesubfolder,savefilesubsubfolder,savefiletitle),'-depsc');
-    end
-    
-    %% Average Transition Rates VS Number of Modified Sites - Labels
-    
-    figure(120); clf; hold on; box on;
-    for s=1:length(sweep)
-        plot_line = plot(0:1:(locationTotal-1),transitionRate_Avg(s,:)./(locationTotal:-1:1),'-s','LineWidth',lw);
-        if (sf==0)
-            plot_line.Color = colors(sweep(s)+2,:);
-            plot_line.MarkerFaceColor = colors(sweep(s)+2,:);
-            plot_line.MarkerSize = 3;
-        else
-            plot_line.Color = colors(s,:);
-            plot_line.MarkerFaceColor = colors(s,:);
-        end
-    end
-    switch model
-        case {30,31,32,33,34}
-            set(gca,'yscale','log');
-        otherwise
-    end
-    xlabel1 = {['Number of Modified Sites'],modificationLabel};
-    ylabel1 = {['Average Transition Rate / Unmodified Sites']};
-    title1 = 'Average Transition Rate';
-    set(gca,'XTick',0:1:locationTotal-1);
-    set(gca,'XTickLabel',{'0 -> 1', '1 -> 2', '2 -> 3', '3 -> 4','4 -> 5', '5 -> 6', '6 -> 7', '7 -> 8', '8 -> 9', '9 -> 10'});
-    switch model
-        case {32,33,34}
-            xlim([0 locationTotal-1])
-            set(gca,'YScale','log');
-            ylim([10^(-10) 10^(0)]);
-            
-    end
-    %set(gcf,'Colormap',colormapName);
-    colormap(colormapName);
-    
-    switch model
-        case {32,33,34}
-            h = colorbar('Ticks',clims,'TickLabels',{'',''});
-            set(h,'ylim',clims);
-        otherwise
-            h = colorbar('Ticks',[0 1],'TickLabels',{'',''},'YDir','reverse');
-            set(h,'ylim',[0 1]);
-    end
-    
-    
-    pos = get(gcf, 'position');
+% plot data for 5->6 transition
+loc = 6;
+figure(4); clf; hold on; box on;
+for s = 1:length(sweep)
+    plotData = reshape(transitionRate_Avg(:,:,loc),[size(transitionRate_Avg,1),size(transitionRate_Avg,2)]);
+    pL = plot(NFilSweep,log10(plotData(:,s)),'-s');
+    pL.Color = colors(s,:);
+    pL.LineWidth = lw;
+    pL.DisplayName = ['ITAM Spacing = ',num2str(sweep(s))];
+end
+    xlim([1 max(NFilSweep)]);
+    ylim([-10 0]);
+    xticklabels([]);
+    yticklabels([]);
+
+    %legend('Location','southwest');
+
+    set(gcf,'units','centimeters','position',[5,5,5,5]);
+    set(gca,'FontName',fontName,'FontSize',fs);
+
+if( saveTF )
+    saveas(gcf,fullfile(savefilefolder,savefilesubfolder,'AvgBindingRateVSNumFilaments_PathWeighted_5to6'),'fig');
+    saveas(gcf,fullfile(savefilefolder,savefilesubfolder,'AvgBindingRateVSNumFilaments_PathWeighted_5to6'),'epsc');
+end
+
+%% Save 5->6 specifically - Labels
+    % plot data for 5->6 transition
+loc = 6;
+figure(5); clf; hold on; box on;
+for s = 1:length(sweep)
+    plotData = reshape(transitionRate_Avg(:,:,loc),[size(transitionRate_Avg,1),size(transitionRate_Avg,2)]);
+    pL = plot(NFilSweep,log10(plotData(:,s)),'-s');
+    pL.Color = colors(s,:);
+    pL.LineWidth = lw;
+    pL.DisplayName = ['ITAM Spacing = ',num2str(sweep(s))];
+end
+    xlim([1 max(NFilSweep)]);
+    ylim([-10 0]);
+    xlabel1 = 'Number Filaments';
+    ylabel1 = 'Average transition rate to ith bound';
+    xlabel(xlabel1,'FontName',fontName,'FontSize',fs);
+    ylabel(ylabel1,'FontName',fontName,'FontSize',fs);
+
+    legend('Location','southwest');
+
     set(gcf,'units','centimeters','position',[1,4,40,30]);
-    set(gca,'FontName','Arial','FontSize',30);
-    xlabel(xlabel1,'FontName','Arial','FontSize',24);
-    ylabel(ylabel1,'FontName','Arial','FontSize',24);
-    title(title1,'FontName','Arial','FontSize',24);
-    
-    if (saveRatesPlot)
-        % % save figure
-        savefiletitle = 'AvgTransRateVSNumberModifiedLabels';
-        saveas(gcf,fullfile(savefilefolder,savefilesubfolder,savefilesubsubfolder,savefiletitle),'fig');
-        print('-painters',fullfile(savefilefolder,savefilesubfolder,savefilesubsubfolder,savefiletitle),'-depsc');
-    end
+    set(gca,'FontName',fontName,'FontSize',fs);
+
+    str = [num2str(loc-1),' -> ',num2str(loc)]';
+    dim = [0.75 0.15 0.15 0.08];
+    annotation('textbox',dim,'String',str','FontSize',fs,'FitBoxToText','on');
+
+if( saveTF )
+    saveas(gcf,fullfile(savefilefolder,savefilesubfolder,'AvgBindingRateVSNumFilaments_PathWeighted_5to6_Labels'),'fig');
+    saveas(gcf,fullfile(savefilefolder,savefilesubfolder,'AvgBindingRateVSNumFilaments_PathWeighted_5to6_Labels'),'epsc');
 end
