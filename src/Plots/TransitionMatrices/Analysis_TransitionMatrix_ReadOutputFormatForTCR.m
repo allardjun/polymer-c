@@ -10,7 +10,7 @@ close all;
 spacing = 2; % 0 = CD3Zeta, 1 = EvenSites, 2 = TCR, 3 = CD3Epsilon
 membrane = 1; % 0 for membrane off, 1 for membrane on
 itam = 0; % 0 - End, 1 - Mid (only for Filament Sweep - model 40,41)
-model = 41; % 1x = LocalStructuring, 2x = Membrane Association, 3x = Simultaneous Binding
+model = 40; % 1x = LocalStructuring, 2x = Membrane Association, 3x = Simultaneous Binding
 
 % 10 = Local Structuring
 % 20 = Membrane Association
@@ -388,7 +388,42 @@ switch (model)
   
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-     case 41 % Filament Sweep - separation distance 17
+     
+    case 40 % Filament Sweep - separation distance 5
+        
+        % model name
+        modelName = 'SimultaneousBinding';
+        
+        % find files
+        filefolder    = '~/Documents/Papers/MultisiteDisorder/Data/3.SimultaneousBinding';
+        filesubfolder = [iSiteSpacing,'/Membrane',membraneState,'/FilVSTime/SepDist5/','ITAM_',itamLoc,'/1.OcclusionProbabilities/CatFiles'];
+        filetitle     = strcat(iSiteSpacing,'Membrane',num2str(membrane));
+        
+        % save transition matrices location
+        transitionMatrixfolder    = '~/Documents/Papers/MultisiteDisorder/Data/3.SimultaneousBinding/';
+        transitionMatrixsubfolder = [iSiteSpacing,'/Membrane',membraneState,'/FilVSTime/SepDist5/','ITAM_',itamLoc,'/2.TransitionMatrices'];
+        
+        % save figures location
+        savesubfolder = ['3.SimultaneousBinding/',iSiteSpacing,'/Membrane',membraneState,'/FilVSTime/SepDist5/','ITAM_',itamLoc,'/Plots'];
+        
+        % 
+        locationTotal = 10;
+        NFilSweep = [1 2 3 5 9 10];
+        %iSiteTotal(1:NFil) = [1 1 3 3 1 1]; % specify in loop for models
+        %40, 41
+        sweep = 4:4:20;
+        sweepParameter = 'FilSweepNITAM';
+        
+        % figure parameters
+        legendlabels = {[sweepParameter,' = ', num2str(sweep(1))],[sweepParameter,' = ', num2str(sweep(2))],[sweepParameter,' = ', num2str(sweep(3))],[sweepParameter,' = ', num2str(sweep(4))],[sweepParameter,' = ', num2str(sweep(5))]};
+        colorIndices = sweep;
+        %colors = flipud(cool(max(sweep)));
+        colors = flipud(cool(length(sweep))); % use colors from TCR above with bigger range
+        ms = 10;
+        lw = 2;
+        modificationLabel = '(Bound)';
+        
+    case 41 % Filament Sweep - separation distance 17
         
         % model name
         modelName = 'SimultaneousBinding';
