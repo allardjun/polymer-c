@@ -10,10 +10,10 @@ overwriteTF = 0;
 
 spacing = 0; % 0 = CD3Zeta, 1 = EvenSites, 2 = CD3Epsilon, 3 = TCR
 membrane = 1; % 0 for membrane off, 1 for membrane on
-phos = 1; % 1 = phosphorylation, 0 = dephosphorylation
+phos = 0; % 1 = phosphorylation, 0 = dephosphorylation
 
 
-sf = -1 % for changing sweep of local stiffening
+sf = 1 % for changing sweep of local stiffening
 %             for sf = 0
 %                 clearvars -except spacing membrane phos sf
 
@@ -29,7 +29,8 @@ switch sf
 
     case 1
         savefilesubsubfolder = [''];
-        sweep = -1:1:10;
+        %sweep = -1:1:10;
+        sweep = -1;
         saveRatesPlot = 0;
         saveSeqPlot = 1;
 
@@ -44,16 +45,17 @@ end
 
 
 % initialization switch for which model we're inspecting
-model = 20; % 1x = stiffening, 2x = electrostatics, 3x = multiple binding - ibEqual
+model = 10; % 1x = stiffening, 2x = electrostatics, 3x = multiple binding - ibEqual
 
 
 saveRatesPlot = 0;
-saveSeqPlot = 0;
+saveSeqPlot = 1;
 
 
 %% Model Parameters
 
 savefilefolder = '/Volumes/GoogleDrive/My Drive/Papers/MultisiteDisorder/Data_Figures';
+savefilefolder = '~/Desktop';
 %savefilesubsubfolder = ['/FullStiffenRange'];
 %subsubfolder = ['']
 %savefilefolder = '~/Documents/Papers/MultisiteDisorder/Figures';
@@ -99,8 +101,8 @@ switch (model)
         units = '(Kuhn lengths)';
 
         % create location to save figures
-        savefilesubfolder = ['1.LocalStructuring/',iSiteSpacing,'/Membrane',membraneState,'/Plots/',phosDirection];
-
+        %savefilesubfolder = ['1.LocalStructuring/',iSiteSpacing,'/Membrane',membraneState,'/Plots/',phosDirection,'/SingleBars'];
+        savefilesubfolder = 'SingleBars';
         % figure parameters
         if (sf==0)
             lw = 1;
@@ -345,7 +347,8 @@ switch (model)
 
 end
 
-if(~exist(fullfile(savefilefolder,savefilesubfolder,'Data.mat'),'file') || overwriteTF)
+if(1)
+%if(~exist(fullfile(savefilefolder,savefilesubfolder,'Data.mat'),'file') || overwriteTF)
     %% CREATE PERMUTATION LIST
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%% CREATE PERMUTATION LIST %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -449,16 +452,16 @@ if(~exist(fullfile(savefilefolder,savefilesubfolder,'Data.mat'),'file') || overw
 
     switch model
         case {32,33,34}
-            save_vars = {'path','avgTime','probability','stdErrGillespie','permutations','transitionRate_Avg'};
+            save_vars = {'path','avgTime','probability','stdErrGillespie','permutations','transitionRate_Avg','transitionTime_Avg'};
         otherwise
             save_vars = {'path','avgTime','probability','stdErrGillespie','permutations','transitionRate_Avg','eventIndices','secondToLastEventProbability'};
     end
     %% save workspace
-    save(fullfile(savefilefolder,savefilesubfolder,'Data.mat'),save_vars{:});
+    %save(fullfile(savefilefolder,savefilesubfolder,'Data.mat'),save_vars{:});
 end
 
 %% load workspace
-load(fullfile(savefilefolder,savefilesubfolder,'Data.mat'));
+%load(fullfile(savefilefolder,savefilesubfolder,'Data.mat'));
 
 %% AVERAGE TRANSITION RATE PLOTS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -706,7 +709,7 @@ b=bar(sequentialProbability(:,2:end));
 individualBarWidth = b(1).BarWidth/length(sweep);
 for iBar = 1:length(b)
     XBar = (b(iBar).XData - 0.5*b(iBar).BarWidth + 0.5*individualBarWidth)+(iBar-1)*individualBarWidth;
-    errorbar(XBar,sequentialProbability(:,iBar+1),sequentialStdErrGillespie(:,iBar+1),'.k');
+    errorbar(XBar,sequentialProbability(:,iBar+1),sequentialStdErrGillespie(:,iBar+1),'.k','CapSize',15,'LineWidth',1.5);
 end
 
 w = (length(sequentialProbability)-1);
@@ -730,8 +733,10 @@ switch (model)
             if(max(sweep)>15)
                 ylim([0 max(max(probability(:,2:end)))]);
             else
-                ylim([0 0.015]);
-                yticks([0 0.005 0.01 0.015]);
+                %ylim([0 0.015]);
+                %yticks([0 0.005 0.01 0.015]);
+                ylim([0 0.01]);
+                yticks([0 0.005 0.01]);
             end
         else
             if(max(sweep)>15)
@@ -778,7 +783,7 @@ b=bar(sequentialProbability(:,2:end));
 individualBarWidth = b(1).BarWidth/length(sweep);
 for iBar = 1:length(b)
     XBar = (b(iBar).XData - 0.5*b(iBar).BarWidth + 0.5*individualBarWidth)+(iBar-1)*individualBarWidth;
-    errorbar(XBar,sequentialProbability(:,iBar+1),sequentialStdErrGillespie(:,iBar+1),'.k');
+    errorbar(XBar,sequentialProbability(:,iBar+1),sequentialStdErrGillespie(:,iBar+1),'.k','CapSize',15,'LineWidth',2);
 end
 
 w = (length(sequentialProbability)-1);
@@ -805,8 +810,10 @@ switch (model)
             if(max(sweep)>15)
                 ylim([0 max(max(probability(:,2:end)))]);
             else
-                ylim([0 0.015]);
-                yticks([0 0.005 0.01 0.015]);
+               % ylim([0 0.015]);
+                %yticks([0 0.005 0.01 0.015]);
+                ylim([0 0.01]);
+                yticks([0 0.005 0.01]);
             end
         else
             if(max(sweep)>15)
