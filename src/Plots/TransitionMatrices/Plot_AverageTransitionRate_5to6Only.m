@@ -10,15 +10,17 @@ close all;
 spacing = 2; % 0 = CD3Zeta, 1 = EvenSites, 2 = TCR, 3 = CD3Epsilon
 membrane = 1; % 0 for membrane off, 1 for membrane on
 itam = 0; % 0 - End, 1 - Mid (only for Filament Sweep - model 40,41)
-model = 40; % 1x = LocalStructuring, 2x = Membrane Association, 3x = Simultaneous Binding
+model = 41; % 1x = LocalStructuring, 2x = Membrane Association, 3x = Simultaneous Binding
 
 % 10 = Local Structuring
 % 20 = Membrane Association
 % 30 = Simultaneous Binding SH2
 % 40 = Filament Sweep
 
-% Save Figures
-saveTF = 0;
+% Save, plot Figures
+saveTF = 0; % for average binding rate
+saveHistTF = 1;
+plotHistTF = 1;
 
 %%
 
@@ -90,8 +92,10 @@ switch (model)
         colorIndices = sweep;
         %colors = flipud(cool(max(sweep)));
         colors = flipud(cool(length(sweep))); % use colors from TCR above with bigger range
-        ms = 10;
-        lw = 2;
+        ms = 14;
+        lw = 2.5;
+        fontName = 'Arial';
+        fs = 18;
         modificationLabel = '(Bound)';
     
     case 41 % Filament Sweep - separation distance 17
@@ -125,8 +129,10 @@ switch (model)
         colorIndices = sweep;
         %colors = flipud(cool(max(sweep)));
         colors = flipud(cool(length(sweep))); % use colors from TCR above with bigger range
-        ms = 10;
-        lw = 2;
+        ms = 14;
+        lw = 2.5;
+        fontName = 'Arial';
+        fs = 18;
         modificationLabel = '(Bound)';
         
         
@@ -141,6 +147,7 @@ avgRates = zeros(length(NFilSweep),length(sweep));
 
 %% Create transition matrices, calculate average binding rates
 for nfSweep = 1:length(NFilSweep)
+    %for nfSweep = 4
     
     % set NFil, ITAM locations for this iteration
     NFil = NFilSweep(nfSweep);
@@ -240,6 +247,57 @@ for nfSweep = 1:length(NFilSweep)
             end
         end
         
+        %% Find indices of iSites on filaments where none are bound on filament and on at least one neighboring filament
+        
+        % initialize
+        filaments_NoneBound = zeros(size(OccupiedLocationsMatrix,1),NFil);
+        filaments_OneNeighborUnbound = zeros(size(OccupiedLocationsMatrix,1),NFil);
+        iSites_NoneBoundNeighbors = zeros(size(OccupiedLocationsMatrix));
+        iSiteEnd_NoneBoundNeighbors = [0 iSiteEnd];
+        for k=1:size(OccupiedLocationsMatrix,1)
+            for j = 1:length(iSiteEnd)
+                if( sum(OccupiedLocationsMatrix(k,(iSiteEnd_NoneBoundNeighbors(j)+1):iSiteEnd_NoneBoundNeighbors(j+1))) == 0 )
+                    filaments_NoneBound(k,j) = 1;
+                    %iSites_NoneBoundNeighbors(k,(iSiteEnd_NoneBoundNeighbors(j)+1):iSiteEnd_NoneBoundNeighbors(j+1)) = 1;
+                end
+            end
+        end
+        disp(filaments_NoneBound);
+        
+        for k=1:size(OccupiedLocationsMatrix)
+            for j = 1:NFil
+                if(filaments_NoneBound(k,j)==1)
+                    if(j==1)
+                        % if the three neighboring filaments (left, center,
+                        % right) are unbound, then center is labeled 'No
+                        % Neighbors Bound'
+                        if (filaments_NoneBound(k,2) == 1 || filaments_NoneBound(k,end) == 1)
+
+                            filaments_OneNeighborUnbound(k,j) = 1;
+                        end
+                    elseif(j==NFil)
+                        if (filaments_NoneBound(k,1) == 1 || filaments_NoneBound(k,end-1) == 1)
+
+                            filaments_OneNeighborUnbound(k,j) = 1;
+                        end
+                    else
+                        if (filaments_NoneBound(k,j-1) == 1 || filaments_NoneBound(k,j+1) == 1)
+
+                            filaments_OneNeighborUnbound(k,j) = 1;
+                        end
+                    end
+                end
+            end
+        end
+        disp(filaments_OneNeighborUnbound);
+        
+        for k=1:size(OccupiedLocationsMatrix,1)
+            for j = 1:length(iSiteEnd)
+                if( filaments_OneNeighborUnbound(k,j) == 1)
+                    iSites_NoneBoundNeighbors(k,(iSiteEnd_NoneBoundNeighbors(j)+1):iSiteEnd_NoneBoundNeighbors(j+1)) = 1;
+                end
+            end
+        end
         
         
         %% 
@@ -249,25 +307,26 @@ for nfSweep = 1:length(NFilSweep)
         %% Find average rates of transition from one state to another
         avgRates(nfSweep,s) = rates_sum(nfSweep,s)./size(find(1-OccupiedLocationsMatrix),1);
         
+        if(plotHistTF)
         %% Plot histogram of rates
         
-        figure(2); hold on;
-        subplot(length(sweep),length(NFilSweep),length(NFilSweep)*(s-1)+nfSweep);
-        histogram(log10(PBind(find(PBind))),12);
+        figure(2); hold on; box on;
+        subplot(length(sweep),length(NFilSweep),length(NFilSweep)*(s-1)+nfSweep); box on;
+        histogram(log10(PBind(find(PBind))),12,'FaceAlpha',0.5);
         title1 = ['NFil = ',num2str(NFilSweep(nfSweep)),',  NITAM = ',num2str(sweep(s))];
         xlabel1 = 'Binding Rate (log10)';
         xlabel(xlabel1,'FontName','Arial','FontSize',18);
         title(title1,'FontName','Arial','FontSize',18);
         xlim([-10 0]);
-        
+        ylim([0 500]);
         set(gcf,'units','centimeters','Position',[3.5 2.5 75 45]);
         
         %% Plot histogram of rates - end vs not end
         
         figure(3); hold on;
-        subplot(length(sweep),length(NFilSweep),length(NFilSweep)*(s-1)+nfSweep); hold on;
-        histogram(log10(PBind(find(PBind(:,iSiteEnd)))),12);
-        histogram(log10(PBind(find(PBind(:,setdiff(1:locationTotal,iSiteEnd))))),12);
+        subplot(length(sweep),length(NFilSweep),length(NFilSweep)*(s-1)+nfSweep); hold on;box on;
+        histogram(log10(PBind(find(PBind(:,iSiteEnd)))),12,'FaceAlpha',0.5);
+        histogram(log10(PBind(find(PBind(:,setdiff(1:locationTotal,iSiteEnd))))),12,'FaceAlpha',0.5);
         title1 = ['NFil = ',num2str(NFilSweep(nfSweep)),',  NITAM = ',num2str(sweep(s))];
         xlabel1 = 'Binding Rate (log10)';
         xlabel(xlabel1,'FontName','Arial','FontSize',18);
@@ -282,21 +341,39 @@ for nfSweep = 1:length(NFilSweep)
         %% Plot histogram of rates - none bound on same filament vs not
         
         figure(4); hold on;
-        subplot(length(sweep),length(NFilSweep),length(NFilSweep)*(s-1)+nfSweep); hold on;
-        histogram(log10(PBind(find(iSites_NoneBoundOnFilament))),12);
-        histogram(log10(PBind(find(~iSites_NoneBoundOnFilament.*PBind))),12);
+        subplot(length(sweep),length(NFilSweep),length(NFilSweep)*(s-1)+nfSweep); hold on;box on;
+        histogram(log10(PBind(find(iSites_NoneBoundOnFilament))),12,'FaceAlpha',0.5);
+        histogram(log10(PBind(find(~iSites_NoneBoundOnFilament.*PBind))),12,'FaceAlpha',0.5);
         title1 = ['NFil = ',num2str(NFilSweep(nfSweep)),',  NITAM = ',num2str(sweep(s))];
         xlabel1 = 'Binding Rate (log10)';
         xlabel(xlabel1,'FontName','Arial','FontSize',18);
         title(title1,'FontName','Arial','FontSize',18);
         xlim([-10 0]);
+        ylim([0 400]);
         if(s == length(sweep) && nfSweep == length(NFilSweep))
             leg = legend('unbound filaments','bound filaments','Location','northwest');
         end
         
         set(gcf,'units','centimeters','Position',[3.5 2.5 75 45]);
         
+        %% Plot histogram of rates - none bound on same filament and one neighboring filament
         
+        figure(5); hold on;
+        subplot(length(sweep),length(NFilSweep),length(NFilSweep)*(s-1)+nfSweep); hold on;box on;
+        histogram(log10(PBind(find(iSites_NoneBoundNeighbors))),12,'FaceAlpha',0.5);
+        histogram(log10(PBind(find(~iSites_NoneBoundNeighbors.*PBind))),12,'FaceAlpha',0.5);
+        title1 = ['NFil = ',num2str(NFilSweep(nfSweep)),',  NITAM = ',num2str(sweep(s))];
+        xlabel1 = 'Binding Rate (log10)';
+        xlabel(xlabel1,'FontName','Arial','FontSize',18);
+        title(title1,'FontName','Arial','FontSize',18);
+        xlim([-10 0]);
+        if(s == length(sweep) && nfSweep == length(NFilSweep))
+            leg = legend('unbound filament and neighbor','bound filaments','Location','northwest');
+        end
+        ylim([0 400]);
+        set(gcf,'units','centimeters','Position',[3.5 2.5 75 45]);
+        
+        end
         
     end
     
@@ -305,34 +382,64 @@ end
 
 %% Save histogram plot
 
-if(saveTF)
+if(saveHistTF)
     figure(2);
     saveas(gcf,fullfile(savefilefolder,savesubfolder,'BindingRates_5to6_Histogram.fig'),'fig');
-    saveas(gcf,fullfile(savefilefolder,savesubfolder,'BindingRates_5to6_Histogram.eps'),'epsc');
+    saveas(gcf,fullfile(savefilefolder,savesubfolder,'BindingRates_5to6_Histogram.png'),'png');
+    print('-painters',fullfile(savefilefolder,savesubfolder,'BindingRates_5to6_Histogram.eps'),'-depsc');
+    
+    figure(2);
+    for sp = 1:length(NFilSweep)*length(sweep)
+        subplot(length(sweep),length(NFilSweep),sp);
+        ylim([0 400]);
+    end
+    saveas(gcf,fullfile(savefilefolder,savesubfolder,'BindingRates_5to6_Histogram_LowerYLim.fig'),'fig');
+    saveas(gcf,fullfile(savefilefolder,savesubfolder,'BindingRates_5to6_Histogram_LowerYLim.png'),'png');
+    print('-painters',fullfile(savefilefolder,savesubfolder,'BindingRates_5to6_Histogram_LowerYLim.eps'),'-depsc');
+
 
     figure(3);
     saveas(gcf,fullfile(savefilefolder,savesubfolder,'BindingRates_5to6_Histogram_EndVSMidITAMs.fig'),'fig');
-    saveas(gcf,fullfile(savefilefolder,savesubfolder,'BindingRates_5to6_Histogram_EndVSMidITAMs.eps'),'epsc');
+    saveas(gcf,fullfile(savefilefolder,savesubfolder,'BindingRates_5to6_Histogram_EndVSMidITAMs.png'),'png');
+    print('-painters',fullfile(savefilefolder,savesubfolder,'BindingRates_5to6_Histogram_EndVSMidITAMs.eps'),'-depsc');
 
     figure(4);
     saveas(gcf,fullfile(savefilefolder,savesubfolder,'BindingRates_5to6_Histogram_UnboundFilsVSBoundFils.fig'),'fig');
-    saveas(gcf,fullfile(savefilefolder,savesubfolder,'BindingRates_5to6_Histogram_UnboundFilsVSBoundFils.eps'),'epsc');
+    saveas(gcf,fullfile(savefilefolder,savesubfolder,'BindingRates_5to6_Histogram_UnboundFilsVSBoundFils.png'),'png');
+    print('-painters',fullfile(savefilefolder,savesubfolder,'BindingRates_5to6_Histogram_UnboundFilsVSBoundFils.eps'),'-depsc');
+
+    figure(5);
+    saveas(gcf,fullfile(savefilefolder,savesubfolder,'BindingRates_5to6_Histogram_UnboundFilsVSBoundFils_Neighbors.fig'),'fig');
+    saveas(gcf,fullfile(savefilefolder,savesubfolder,'BindingRates_5to6_Histogram_UnboundFilsVSBoundFils_Neighbors.png'),'png');
+    print('-painters',fullfile(savefilefolder,savesubfolder,'BindingRates_5to6_Histogram_UnboundFilsVSBoundFils_Neighbors.eps'),'-depsc');
+
 end
 
 %%
-colors = ((length(sweep):-1:1)'/length(sweep)).*[0.1 0 0] + ((1:1:length(sweep))'/length(sweep)).*[0 0.7 1];
-fontName = 'Arial';
-fs = 18;
+%colors = ((length(sweep):-1:1)'/length(sweep)).*[0.1 0 0] + ((1:1:length(sweep))'/length(sweep)).*[0 0.7 1];
+colors = ((length(sweep):-1:1)'/length(sweep)).*[0 0 0.2] + ((1:1:length(sweep))'/length(sweep)).*[1 0.2 0];
 
-%% Plot Cooperativity - Phosphorylation no Labels
+%% Plot Binding Rate - labels
 figure(1000); clf; hold on; box on;
 for s = 1:length(sweep)
     pL = plot(NFilSweep,avgRates(:,s),'-s','LineWidth',lw,'Color',colors(s,:),'MarkerFaceColor',colors(s,:));
     pL.DisplayName = ['N ITAM = ',num2str(sweep(s))];
 end
-xlim([min(NFilSweep) max(NFilSweep)]);
 set(gca,'YScale','log');
 
+switch model
+    case 40
+        xlim([min(NFilSweep) max(NFilSweep)]);
+        xticks(min(NFilSweep):1:max(NFilSweep));
+        
+        ylim([10^(-10) 10^(-2)]);
+        
+    case 41
+        xlim([min(NFilSweep) max(NFilSweep)]);
+        xticks(min(NFilSweep):1:max(NFilSweep));
+        
+        ylim([10^(-5) 10^(-2)]);
+end
 
 set(gcf,'units','centimeters','Position',[5 5 10 10]);
 xlabel1 = 'Number of Filaments';
@@ -342,13 +449,29 @@ ylabel(ylabel1,'FontName',fontName,'FontSize',fs);
 
 leg = legend;
 
+% save with labels
 if(saveTF)
     saveas(gcf,fullfile(savefilefolder,savesubfolder,'AvgBindingRates_5to6_Labels.fig'),'fig');
     saveas(gcf,fullfile(savefilefolder,savesubfolder,'AvgBindingRates_5to6_Labels.eps'),'epsc');
 end
 
 % save with no labels
-set(gcf,'units','centimeters','Position',[5 5 5 5]);
+set(gcf,'units','centimeters','Position',[5 5 9 9]);
+
+switch model
+    case 40
+        xlim([min(NFilSweep) max(NFilSweep)]);
+        xticks(min(NFilSweep):1:max(NFilSweep));
+        
+        ylim([10^(-10) 10^(-2)]);
+        
+    case 41
+        xlim([min(NFilSweep) max(NFilSweep)]);
+        xticks(min(NFilSweep):1:max(NFilSweep));
+        
+        ylim([10^(-5) 10^(-2)]);
+end
+
 xlabel1 = '';
 ylabel1 = '';
 xlabel(xlabel1,'FontName',fontName,'FontSize',fs);
