@@ -8,19 +8,19 @@ close all;
 
 % which model and movie parameters
 membraneVisible = 1; % 0 = don't show membrane, 1 = show membrane
-model = 2; % switch for file location and parameters
+model = 5; % switch for file location and parameters
 movie = 0; % 0 = don't save movie, 1 = save movie
-kinaseVisible = 0; % 0 = don't show kinases on iSites, 1 = show kinases
+kinaseVisible = 1; % 0 = don't show kinases on iSites, 1 = show kinases
 scale = 1; %0 = kuhn length, 1 = nanometers, % auto scale is off - needs debugging.  currently using set(gca) method
-saveFinalFrame = 1;
+saveFinalFrame = 0;
 
 % how many iterations, from which part of the file
-start = 1;
-stop = 15;
-stepsize = 5;
+start = 2501;
+stop = 5000;
+stepsize = 20;
 iterations = start:stepsize:stop;
 
-filefolder = '~/Documents/Papers/MultisiteDisorder/Data/4.Visual/TCRInit/';
+filefolder = '~/Documents/Papers/MultisiteDisorder/Data/4.Visual/TCRBound/';
 %filefolder = 'VisualizeData';
 
 savefolder = '/Volumes/GoogleDrive/My Drive/Papers/MultisiteDisorder/Data_Figures/3.SimultaneousBinding/TCR/MembraneOn';
@@ -42,8 +42,8 @@ end
 
 %% Initialize TCR
 
-NFil = 6; - epsilon
-% Filament 1
+NFil = 6; 
+% Filament 1 - epsilon
 Filaments(1).N = 55;
 Filaments(1).iSites = [41]+1;
 Filaments(1).bSites = [];
@@ -118,8 +118,8 @@ switch(model)
         end
         
       case 5
-        %filename = 'TCRBoundBaseSep5Long.txt';
-        filename = 'TCRBoundBaseSep5LongDChi0001.txt';
+        filename = 'TCRBoundBaseSep5Long.txt';
+        %filename = 'TCRBoundBaseSep5LongDChi0001.txt';
         if (membraneVisible)
             axes = [-30, 30];
         else
@@ -129,9 +129,9 @@ switch(model)
         Filaments(3).bSites = [96]+1;
 end
 
-moviename = [filename,'withKinase'];
+moviename = [filename,'withKinaseUnoccluded'];
 
-lw = 2;
+lw = 3;
 marker_lw = 2;
 ms = 8;
 %colors = [0.8 0 0; 0 0 0.7; 0.8 0 0.8; 0 0.7 0]
