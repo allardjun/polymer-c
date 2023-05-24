@@ -12,7 +12,7 @@
 #define PI              3.14159265359
 #define INF             1e14
 #define DCHIINIT        0.1
-#define KSCRITICAL      0.002
+#define KSCRITICAL      0.004
 #define MEMBRANE        0
 #define MULTIPLE        0
 #define STIFFEN         0
