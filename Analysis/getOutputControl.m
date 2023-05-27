@@ -32,7 +32,7 @@ while ischar(tline)
     %disp(lineData)
 
     if (numel(lineData) == 2 && ~isempty(lineData{2})) % simple single value per run
-        value = {str2num(lineData{2})};
+        value = str2num(lineData{2});
     elseif(numel(lineData) == 3 && ~isempty(lineData{3}) && is_unread_line==1) % interpret the 2nd entry as indexing the filament
         coordinate1 = str2num(lineData{2})+1; % go from C's zero-indexing to Matlab's 1-indexing
         
@@ -54,7 +54,7 @@ while ischar(tline)
         end
 
         % make shrunken matrix for values
-        value = {matrix_during_filling(1,1:maxCoordinate1)};
+        value = matrix_during_filling(1,1:maxCoordinate1);
 
     elseif (numel(lineData) == 4 && ~isempty(lineData{4}) && is_unread_line==1) % interpret the 3rd entry as indexing the site
         coordinate1 = str2num(lineData{2})+1; % go from C's zero-indexing to Matlab's 1-indexing
@@ -78,26 +78,28 @@ while ischar(tline)
             end
         end
         % make shrunken matrix for values
-        value = {matrix_during_filling(1:maxCoordinate1, 1:maxCoordinate2)};
+        value = matrix_during_filling(1:maxCoordinate1, 1:maxCoordinate2);
     end
 
-    if ~exist("output_dict", "var")
-        output_dict = dictionary(key,value);
-    else
-        output_dict(key) = value;
+    if ~contains(key,"-")
+        if ~exist("output_struct", "var")
+            %output_dict = dictionary(key,value);
+            output_struct = struct(key,value)
+        else
+            %output_dict(key) = value;
+            output_struct.(key)=value;
+        end
+    
+        %disp(key);
+        %disp(value);
+    %     pause;
     end
-
-    disp(key);
-    disp(value);
-%     pause;
 
     if (is_unread_line && ischar(tline)) tline = fgetl(fileID); end
 
 end
 fclose(fileID);
 
-%disp(output_dict);
-
 
 % goal is to be able to call something like:
-%display(output_dict('Prvec0[nf][iy]'){1,17})
+output_struct.reeiSiteBar(1,3)

@@ -1,0 +1,26 @@
+ntmax 56001
+ksStatistic 0.00123
+POcclude 1 1 0.1
+POcclude 1 2 0.3
+POcclude 1 3 0.3
+POcclude 1 4 0.4
+POcclude 1 5 0.5
+POcclude 1 6 0.6
+
+
+
+
+
+
+
+
+
+#            POcclude[nf][iy]         = (double)POcclude_sum[nf][iy]/(double)(nt-NTCHECK);
+#            Prvec0[nf][iy]           = (double)Prvec0_sum[nf][iy]/(4/3*PI*pow((double)N[nf]/(double)NBINS,3))/(double)(nt-NTCHECK);
+#            PMembraneOcclude[nf][iy] = (double)PMembraneOcclude_sum[nf][iy]/(double)(nt-NTCHECK);
+#            PMembraneSegmentOcclude[nf][iy] = (double)PMembraneSegmentOcclude_sum[nf][iy]/(double)(nt-NTCHECK);
+
+
+
+
+
