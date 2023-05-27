@@ -1,0 +1,133 @@
+
+
+input_file_path = '../src/PolymerCode/outputTest2.txt';
+
+% sort lines in the file using bash
+command = sprintf('sorted_lines=$(sort "%s"); echo "$sorted_lines" > "%s.sorted" ', input_file_path,input_file_path);
+system(command);
+
+MAXDIM = 1000; % maximum assumed dimension of any particular key, used for memory allocation. The code should still work for larger sizes, but suffer slower performance.
+
+fileID = fopen(strcat(input_file_path,'.sorted'), 'r');
+if fileID == -1
+    error(['Cannot open file: ' filename]);
+end
+
+clear output_dict
+
+% temporary storage for a particular key while it's being filled
+matrix_during_filling = zeros(MAXDIM,MAXDIM);
+
+tline = strtrim(fgetl(fileID));
+%tline = regexprep(tline,char(160),'');
+
+while ischar(tline)
+    is_unread_line = 1; 
+    lineData = strsplit(tline); % delimit the line by spaces
+    key = lineData{1};
+
+    disp(lineData)
+
+    if (numel(lineData) == 2) % simple single value per run
+        value = {str2num(lineData{2})};
+        %display(key)
+        %display(value)
+    elseif(numel(lineData) == 3 && ~isempty(lineData{3})) % interpret the 2nd entry as indexing the filament
+        coordinate1 = str2num(lineData{2})+1; % go from C's zero-indexing to Matlab's 1-indexing
+        
+        matrix_during_filling(coordinate1) = str2num(lineData{3});
+        
+        % get the number of occurrences of this key
+%         command = sprintf('grep -w --fixed-strings  -o -i "%s" "%s" | wc -l', key, strcat(input_file_path,'.sorted'));
+%         disp(command)
+%         [status, cmd_out] = system(command);
+%         occurrences = str2num(cmd_out);
+%        disp(occurrences);
+ 
+        maxCoordinate1=coordinate1;
+        %for this_key_element=2:occurrences
+        while is_unread_line == 1
+            tline = fgetl(fileID);
+
+            lineData = strsplit(tline); % delimit the line by spaces
+
+            disp(lineData)
+
+            if strcmp(lineData{1},key)
+
+                coordinate1 = str2num(lineData{2})+1; % go from C's zero-indexing to Matlab's 1-indexing
+    
+                if coordinate1>maxCoordinate1 maxCoordinate1=coordinate1; end
+            
+                matrix_during_filling(1,coordinate1) = str2num(lineData{3});
+            else
+               is_unread_line = 0;
+            end
+        end
+
+        % make shrunken matrix for values
+        value = {matrix_during_filling(1,1:maxCoordinate1)};
+        disp(value)
+
+    elseif (numel(lineData) == 4 && ~isempty(lineData{4})) % interpret the 3rd entry as indexing the site
+        coordinate1 = str2num(lineData{2})+1; % go from C's zero-indexing to Matlab's 1-indexing
+        coordinate2 = str2num(lineData{3})+1; 
+        
+        matrix_during_filling(coordinate1,coordinate2) = str2num(lineData{4});
+        
+        % get the number of occurrences of this key
+%         command = sprintf('grep -w --fixed-strings  -o -i "%s" "%s" | wc -l', key, strcat(input_file_path,'.sorted'));
+%         disp(command)
+%         [status, cmd_out] = system(command);
+%         occurrences = str2num(cmd_out);
+%         disp(occurrences);
+
+
+        maxCoordinate1=coordinate1;
+        maxCoordinate2=coordinate2;
+        %for this_key_element=2:occurrences
+        while is_unread_line == 1
+            tline = fgetl(fileID);
+            lineData = strsplit(tline); % delimit the line by spaces
+
+            disp("just before checking if it's a repeated key (4 col)");
+            disp(lineData);
+
+            if strcmp(lineData{1},key)
+
+                disp("repeated key");
+                disp(lineData);
+
+                coordinate1 = str2num(lineData{2})+1; % go from C's zero-indexing to Matlab's 1-indexing
+                coordinate2 = str2num(lineData{3})+1;
+
+                if coordinate1>maxCoordinate1 maxCoordinate1=coordinate1; end
+                if coordinate2>maxCoordinate2 maxCoordinate2=coordinate2; end
+
+                matrix_during_filling(coordinate1,coordinate2) = str2num(lineData{4});
+            else
+                is_unread_line = 0;
+            end
+        end
+
+        % make shrunken matrix for values
+        value = {matrix_during_filling(1:maxCoordinate1, 1:maxCoordinate2)};
+    end
+    output_dict(key) = value;
+
+%     disp(key);
+%     disp(value);
+%     disp(numel(lineData));
+
+    pause;
+
+    if (is_unread_line) tline = fgetl(fileID); end
+
+end
+fclose(fileID);
+
+disp(output_dict);
+
+
+% goal is to be able to call something like:
+%display(output_dict('Prvec0'){1,17})

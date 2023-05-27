@@ -229,11 +229,11 @@ void finalizeSummary(int reallyFinal)
             }
 
 
-            fprintf(fList, "1-POccludeBase[nf] %ld %e", nf, 1-POccludeBase[nf]);        
+            fprintf(fList, "1-POccludeBase[nf] %ld %e\n", nf, 1-POccludeBase[nf]);        
 
             for(nf2=0;nf2<NFil;nf2++)
             {
-                fprintf(fList, "reeFilBar[nf][nf2] %ld %ld %f\n ", nf, nf2, reeFilBar[nf][nf2]);        
+                fprintf(fList, "reeFilBar[nf][nf2] %ld %ld %f\n", nf, nf2, reeFilBar[nf][nf2]);        
             }
 
             for(nf2=0;nf2<NFil;nf2++)
