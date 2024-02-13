@@ -275,7 +275,7 @@ void finalizeSummary(int reallyFinal)
 
         //fprintf(fList, "%ld %ld %f %f %f %f %f %f",
         fprintf(fList, "nt %ld\n", nt);         
-        fprintf(fList, "NFil %ld \n", NFil);       
+        fprintf(fList, "NFil %ld\n", NFil);       
         fprintf(fList, "irLigand %f\n", irLigand);    
         fprintf(fList, "brLigand %f\n", brLigand);   
         fprintf(fList, "Force %f\n", Force);

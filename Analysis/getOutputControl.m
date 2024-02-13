@@ -75,7 +75,9 @@ end
     while ischar(tline)
         is_unread_line = 1; 
         lineData = strsplit(tline); % delimit the line by spaces
+        lineData=lineData(~cellfun('isempty',lineData)); % remove empty cells
         key = lineData{1};
+        
     
         if (numel(lineData) == 2 && ~isempty(lineData{2})) % simple single value per run
             value = str2num(lineData{2});

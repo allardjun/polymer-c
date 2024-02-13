@@ -1,5 +1,5 @@
 function makeLookupMat(folder,orgType,output_file)
-%MAKELOOKUPMAT Summary of this function goes here
+%MAKELOOKUPMAT Generate lookuptable struct as a .mat file
 % allardlab.com
     %   MAKELOOKUPMAT(folder,orgType,output_file) creates and saves a .mat 
     %   file (output_file) with a lookuptable object generated from output
