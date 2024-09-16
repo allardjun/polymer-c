@@ -14,12 +14,13 @@ function makeLookupMat(folder,orgType,output_file)
     %                           + other files
     %                       2 - folder contains multiple folders of type 1
     %                           structure
+    %                       3 - list of folders of type 1
     %         output_file : (string) full path to output .mat file
     %   
     %   See also GETOUTPUTCONTROL
     arguments
         folder string
-        orgType double {mustBeMember(orgType,[0,1,2])}
+        orgType double {mustBeMember(orgType,[0,1,2,3])}
         output_file string
     end
     
@@ -29,9 +30,17 @@ function makeLookupMat(folder,orgType,output_file)
         for i=1:length(files)
             addentry(files(i).name,folder);
         end
-    elseif orgType == 1 || orgType==2
+    elseif orgType == 1 || orgType==2 || orgType==3
         if orgType==2
             files=dir(fullfile(folder,'*','run.*'));
+        elseif orgType==3
+            for j=1:length(folder)
+                if j==1
+                    files=dir(fullfile(folder(j),'run.*'));
+                else
+                    files=[files;dir(fullfile(folder(j),'run.*'))];
+                end
+            end
         else
             files=dir(fullfile(folder,'run.*'));
         end
