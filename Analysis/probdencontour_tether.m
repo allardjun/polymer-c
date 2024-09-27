@@ -1,4 +1,24 @@
 function [fig,C,h]=probdencontour_tether(n1,fh1length,FH2size,saveTF,savefigfolder)
+%PROBDENCONTOUR_TETHER creates concentric circle plots of calculated
+%probability density of PRMs at locations around the FH2 attachment point
+%
+% fig =PROBDENCONTOUR_TETHER(n1,fh1length,FH2size,saveTF,savefigfolder)
+% 
+% Inputs:
+%       n1           : (double) PRM location
+%       fh1length    : (double) FH1 length
+%       FH2size      : (double) FH2 size (distance between tethers)
+%       saveTF       : whether or not to save the output figures (default is
+%                      false)
+%       savefigfolder: location to save output figures (default is empty
+%                       string)
+% 
+%   Creates a figure with 3 plots, concentric circles for double, dimer,
+%   and ratio Kpoly values.
+% 
+%   Resulting figure has probability densities in units of uM.
+% 
+% See also PROBDENCONTOUR.
 arguments
     n1 double
     fh1length double
@@ -6,9 +26,7 @@ arguments
     saveTF=0
     savefigfolder="" 
 end
-
     fig=figure;
-
 
     f=@(n1,fh1length,FH2size,k,x,y) pr(n1,fh1length,FH2size,k,x,y);
 
@@ -60,7 +78,6 @@ end
     xlabel('x')
     ylabel('y')
 
-
     nexttile(2)
     hold on
     levels=arrayfun(@(k) val(k,0),linspace(FH2size+20,0));
@@ -87,10 +104,8 @@ end
     xlabel('x')
     ylabel('y')
 
-
     ax1=nexttile(3);
     hold on
-    
     
     fc=fcontour(val_ratio,[-5 FH2size+5 -ceil((FH2size+10)/2) ceil((FH2size+10)/2)],"Fill","on","MeshDensity",300);
     c=colorbar;

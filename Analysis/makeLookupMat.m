@@ -1,10 +1,9 @@
 function makeLookupMat(folder,orgType,output_file)
-%MAKELOOKUPMAT Generate lookuptable struct as a .mat file
+%MAKELOOKUPMAT Generate lookuptable struct and save as .mat file
 % allardlab.com
     %   MAKELOOKUPMAT(folder,orgType,output_file) creates and saves a .mat 
     %   file (output_file) with a lookuptable object generated from output
     %   files in folder
-    %
     %
     %   Inputs:
     %         folder      : (string) full path to input folder
@@ -17,7 +16,7 @@ function makeLookupMat(folder,orgType,output_file)
     %                       3 - list of folders of type 1
     %         output_file : (string) full path to output .mat file
     %   
-    %   See also GETOUTPUTCONTROL
+    %   See also GETOUTPUTCONTROL.
     arguments
         folder string
         orgType double {mustBeMember(orgType,[0,1,2,3])}

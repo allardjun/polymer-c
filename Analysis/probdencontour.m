@@ -1,4 +1,20 @@
 function [fig,C,h]=probdencontour(n1,saveTF,savefigfolder)
+%PROBDENCONTOUR_TETHER creates concentric circle plots of calculated
+%probability density of PRMs at locations around the FH2 attachment point
+%for untethered (double) filaments
+%
+% fig =PROBDENCONTOUR(n1,saveTF,savefigfolder)
+% 
+% Inputs:
+%       n1           : (double) PRM location
+%       saveTF       : whether or not to save the output figures (default is
+%                      false)
+%       savefigfolder: location to save output figures (default is empty
+%                       string)
+% 
+% Resulting figure has probability densities in units of uM.
+% 
+% See also PROBDENCONTOUR_TETHER.
 arguments
     n1 double
     saveTF=0

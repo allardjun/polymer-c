@@ -1,8 +1,52 @@
 function fig=prvecheatmap(lt,FH2size,gridtype,saveTF,savefigfolder)
+%PRVECHEATMAP creates heatmaps of percent difference between simulated and
+%calculated probability density values across multiple delivery locations
+%and for both tethered (NTD) and untethered filaments.
+%
+% fig =PRVECHEATMAP(lt,FH2size,gridtype,saveTF,savefigfolder)
+% 
+% Inputs:
+%       lt           : (Lookuptable) lookuptable object to pull prvec values
+%                       from, must have the prvec terms listed below
+%       FH2size      : (double) FH2 size to use in calculation (should be FH2
+%                       size used in simulations recorded in lt)
+%       gridtype     : layout for tiled layout 
+%                       1- 1x15 grid (default)
+%                       2- 3x5 grid
+%       saveTF       : whether or not to save the output figures (default is
+%                       false)
+%       savefigfolder: location to save output figures (default is empty
+%                       string)
+% 
+%   Output is a 2x1 figure array with a figure for double and a figure for
+%   dimer, each figure containing a tiled layout with a heatmap for the
+%   following 15 delivery sites:
+%       "Prvec0"
+%       "Prvec0_halfup"
+%       "Prvec0_halfup_op"
+%       "Prvec0_op"
+%       "Prvec0_up"
+%       "Prvec0_up_op"
+%       "Prvec_cen"
+%       "Prvec_cen_halfup"
+%       "Prvec_cen_up"  
+%       "Prvec_offcen"
+%       "Prvec_offcen_halfup"
+%       "Prvec_offcen_halfup_op"    
+%       "Prvec_offcen_op"   
+%       "Prvec_offcen_up"
+%       "Prvec_offcen_up_op"
+% 
+%   Uses the function Pr.m (located in ForminKineticModel) to calculate
+%   values.
+%
+%   Percent difference values are simulated-calculated/simulated.
+% 
+% See also MAKELOOKUPMAT, LOOKUPTABLE, PR.
 arguments
     lt Lookuptable
     FH2size double
-    gridtype =1 %1 = 1x15, 2= 3x15
+    gridtype =1 %1 = 1x15, 2= 3x5
     saveTF=0
     savefigfolder="" 
 end

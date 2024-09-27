@@ -37,6 +37,7 @@ function output_struct = getOutputControl(input_fname,saveTF,NameValueArgs)
     %                                       (deafult="/tmp/")
     %   note: it is assumed that nt is the first entry
     %   Output is the struct object
+    %   
     %   See also MAKELOOKUPMAT
 arguments
     input_fname string
