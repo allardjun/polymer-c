@@ -19,7 +19,7 @@ for NumSeg in $(seq $NStart $NStop); do
   NFil=2       #2
   #NumSeg=${i} #single=300; double=200; dimer=122
   if [ ${NFil} -eq 2 ]; then
-    baseSepDist=16.667000
+    baseSepDist=35.5
   else
     baseSepDist=0
   fi

@@ -1,0 +1,419 @@
+nt 3400001
+NFil 1 
+irLigand 2.250000
+brLigand 1.000000
+Force 0.000000
+kdimer 0.000000
+dimerDist0 1.000000
+baseSepDistance 16.667000
+POcclude_NumSites[i] 0 0.000000
+POcclude_NumSites[i] 1 0.000000
+POcclude_NumSites[i] 2 0.000000
+POcclude_NumSites[i] 3 0.000000
+POcclude_NumSites[i] 4 0.000000
+POcclude_NumSites[i] 5 0.000000
+POcclude_NumSites[i] 6 0.000000
+POcclude_NumSites[i] 7 0.000004
+POcclude_NumSites[i] 8 0.000017
+POcclude_NumSites[i] 9 0.000089
+POcclude_NumSites[i] 10 0.000618
+POcclude_NumSites[i] 11 0.002743
+POcclude_NumSites[i] 12 0.010009
+POcclude_NumSites[i] 13 0.029548
+POcclude_NumSites[i] 14 0.070500
+POcclude_NumSites[i] 15 0.137642
+POcclude_NumSites[i] 16 0.208939
+POcclude_NumSites[i] 17 0.237947
+POcclude_NumSites[i] 18 0.189157
+POcclude_NumSites[i] 19 0.092036
+POcclude_NumSites[i] 20 0.020751
+PAvailable_NumSites[i] 0 0.020751
+PAvailable_NumSites[i] 1 0.092036
+PAvailable_NumSites[i] 2 0.189157
+PAvailable_NumSites[i] 3 0.237947
+PAvailable_NumSites[i] 4 0.208939
+PAvailable_NumSites[i] 5 0.137642
+PAvailable_NumSites[i] 6 0.070500
+PAvailable_NumSites[i] 7 0.029548
+PAvailable_NumSites[i] 8 0.010009
+PAvailable_NumSites[i] 9 0.002743
+PAvailable_NumSites[i] 10 0.000618
+PAvailable_NumSites[i] 11 0.000089
+PAvailable_NumSites[i] 12 0.000017
+PAvailable_NumSites[i] 13 0.000004
+PAvailable_NumSites[i] 14 0.000000
+PAvailable_NumSites[i] 15 0.000000
+PAvailable_NumSites[i] 16 0.000000
+PAvailable_NumSites[i] 17 0.000000
+PAvailable_NumSites[i] 18 0.000000
+PAvailable_NumSites[i] 19 0.000000
+PAvailable_NumSites[i] 20 0.000000
+N[nf] 0 20
+ksStatistic[nf] 0 0.001856
+reeBar[nf] 0 4.146024
+ree2Bar[nf] 0 20.125029
+rMBar[nf] 0 -0.018425
+rM2Bar[nf] 0 6.650801
+iSite[nf][iy] 0 0 0
+POcclude[nf][iy] 0 0 7.013110e-01
+1-POcclude[nf][iy] 0 0 2.986890e-01
+PMembraneOcclude[nf][iy] 0 0 0.000000e+00
+Prvec0[nf][iy] 0 0 0.000000e+00
+Prvec0_up[nf][iy] 0 0 0.000000e+00
+Prvec0_op[nf][iy] 0 0 0.000000e+00
+Prvec_cen[nf][iy] 0 0 0.000000e+00
+Prvec_offcen[nf][iy] 0 0 0.000000e+00
+Prvec_offcen_op[nf][iy] 0 0 0.000000e+00
+Prvec0_up_op[nf][iy] 0 0 0.000000e+00
+Prvec_cen_up[nf][iy] 0 0 0.000000e+00
+Prvec_offcen_up[nf][iy] 0 0 0.000000e+00
+Prvec_offcen_up_op[nf][iy] 0 0 0.000000e+00
+rMiSiteBar[nf][iy] 0 0 -0.008021
+rM2iSiteBar[nf][iy] 0 0 0.246228
+iSite[nf][iy] 0 1 1
+POcclude[nf][iy] 0 1 8.087772e-01
+1-POcclude[nf][iy] 0 1 1.912228e-01
+PMembraneOcclude[nf][iy] 0 1 0.000000e+00
+Prvec0[nf][iy] 0 1 2.792795e-01
+Prvec0_up[nf][iy] 0 1 0.000000e+00
+Prvec0_op[nf][iy] 0 1 0.000000e+00
+Prvec_cen[nf][iy] 0 1 0.000000e+00
+Prvec_offcen[nf][iy] 0 1 2.794412e-01
+Prvec_offcen_op[nf][iy] 0 1 0.000000e+00
+Prvec0_up_op[nf][iy] 0 1 0.000000e+00
+Prvec_cen_up[nf][iy] 0 1 0.000000e+00
+Prvec_offcen_up[nf][iy] 0 1 0.000000e+00
+Prvec_offcen_up_op[nf][iy] 0 1 0.000000e+00
+rMiSiteBar[nf][iy] 0 1 -0.010982
+rM2iSiteBar[nf][iy] 0 1 0.586478
+iSite[nf][iy] 0 2 2
+POcclude[nf][iy] 0 2 8.285876e-01
+1-POcclude[nf][iy] 0 2 1.714124e-01
+PMembraneOcclude[nf][iy] 0 2 0.000000e+00
+Prvec0[nf][iy] 0 2 3.709055e-02
+Prvec0_up[nf][iy] 0 2 0.000000e+00
+Prvec0_op[nf][iy] 0 2 0.000000e+00
+Prvec_cen[nf][iy] 0 2 0.000000e+00
+Prvec_offcen[nf][iy] 0 2 3.709055e-02
+Prvec_offcen_op[nf][iy] 0 2 0.000000e+00
+Prvec0_up_op[nf][iy] 0 2 0.000000e+00
+Prvec_cen_up[nf][iy] 0 2 0.000000e+00
+Prvec_offcen_up[nf][iy] 0 2 0.000000e+00
+Prvec_offcen_up_op[nf][iy] 0 2 0.000000e+00
+rMiSiteBar[nf][iy] 0 2 -0.014035
+rM2iSiteBar[nf][iy] 0 2 0.936675
+iSite[nf][iy] 0 3 3
+POcclude[nf][iy] 0 3 8.423616e-01
+1-POcclude[nf][iy] 0 3 1.576384e-01
+PMembraneOcclude[nf][iy] 0 3 0.000000e+00
+Prvec0[nf][iy] 0 3 5.314281e-02
+Prvec0_up[nf][iy] 0 3 0.000000e+00
+Prvec0_op[nf][iy] 0 3 0.000000e+00
+Prvec_cen[nf][iy] 0 3 0.000000e+00
+Prvec_offcen[nf][iy] 0 3 5.336663e-02
+Prvec_offcen_op[nf][iy] 0 3 0.000000e+00
+Prvec0_up_op[nf][iy] 0 3 0.000000e+00
+Prvec_cen_up[nf][iy] 0 3 0.000000e+00
+Prvec_offcen_up[nf][iy] 0 3 0.000000e+00
+Prvec_offcen_up_op[nf][iy] 0 3 0.000000e+00
+rMiSiteBar[nf][iy] 0 3 -0.016053
+rM2iSiteBar[nf][iy] 0 3 1.261358
+iSite[nf][iy] 0 4 4
+POcclude[nf][iy] 0 4 8.494669e-01
+1-POcclude[nf][iy] 0 4 1.505331e-01
+PMembraneOcclude[nf][iy] 0 4 0.000000e+00
+Prvec0[nf][iy] 0 4 3.097303e-02
+Prvec0_up[nf][iy] 0 4 0.000000e+00
+Prvec0_op[nf][iy] 0 4 0.000000e+00
+Prvec_cen[nf][iy] 0 4 0.000000e+00
+Prvec_offcen[nf][iy] 0 4 3.089843e-02
+Prvec_offcen_op[nf][iy] 0 4 0.000000e+00
+Prvec0_up_op[nf][iy] 0 4 0.000000e+00
+Prvec_cen_up[nf][iy] 0 4 0.000000e+00
+Prvec_offcen_up[nf][iy] 0 4 0.000000e+00
+Prvec_offcen_up_op[nf][iy] 0 4 0.000000e+00
+rMiSiteBar[nf][iy] 0 4 -0.015538
+rM2iSiteBar[nf][iy] 0 4 1.588372
+iSite[nf][iy] 0 5 5
+POcclude[nf][iy] 0 5 8.542097e-01
+1-POcclude[nf][iy] 0 5 1.457903e-01
+PMembraneOcclude[nf][iy] 0 5 0.000000e+00
+Prvec0[nf][iy] 0 5 2.321423e-02
+Prvec0_up[nf][iy] 0 5 0.000000e+00
+Prvec0_op[nf][iy] 0 5 0.000000e+00
+Prvec_cen[nf][iy] 0 5 0.000000e+00
+Prvec_offcen[nf][iy] 0 5 2.321423e-02
+Prvec_offcen_op[nf][iy] 0 5 0.000000e+00
+Prvec0_up_op[nf][iy] 0 5 0.000000e+00
+Prvec_cen_up[nf][iy] 0 5 0.000000e+00
+Prvec_offcen_up[nf][iy] 0 5 0.000000e+00
+Prvec_offcen_up_op[nf][iy] 0 5 0.000000e+00
+rMiSiteBar[nf][iy] 0 5 -0.015947
+rM2iSiteBar[nf][iy] 0 5 1.927653
+iSite[nf][iy] 0 6 6
+POcclude[nf][iy] 0 6 8.604860e-01
+1-POcclude[nf][iy] 0 6 1.395140e-01
+PMembraneOcclude[nf][iy] 0 6 0.000000e+00
+Prvec0[nf][iy] 0 6 1.960838e-02
+Prvec0_up[nf][iy] 0 6 0.000000e+00
+Prvec0_op[nf][iy] 0 6 0.000000e+00
+Prvec_cen[nf][iy] 0 6 0.000000e+00
+Prvec_offcen[nf][iy] 0 6 1.960838e-02
+Prvec_offcen_op[nf][iy] 0 6 0.000000e+00
+Prvec0_up_op[nf][iy] 0 6 0.000000e+00
+Prvec_cen_up[nf][iy] 0 6 0.000000e+00
+Prvec_offcen_up[nf][iy] 0 6 0.000000e+00
+Prvec_offcen_up_op[nf][iy] 0 6 0.000000e+00
+rMiSiteBar[nf][iy] 0 6 -0.014840
+rM2iSiteBar[nf][iy] 0 6 2.264405
+iSite[nf][iy] 0 7 7
+POcclude[nf][iy] 0 7 8.597594e-01
+1-POcclude[nf][iy] 0 7 1.402406e-01
+PMembraneOcclude[nf][iy] 0 7 0.000000e+00
+Prvec0[nf][iy] 0 7 1.646258e-02
+Prvec0_up[nf][iy] 0 7 0.000000e+00
+Prvec0_op[nf][iy] 0 7 0.000000e+00
+Prvec_cen[nf][iy] 0 7 0.000000e+00
+Prvec_offcen[nf][iy] 0 7 1.646258e-02
+Prvec_offcen_op[nf][iy] 0 7 0.000000e+00
+Prvec0_up_op[nf][iy] 0 7 0.000000e+00
+Prvec_cen_up[nf][iy] 0 7 0.000000e+00
+Prvec_offcen_up[nf][iy] 0 7 0.000000e+00
+Prvec_offcen_up_op[nf][iy] 0 7 0.000000e+00
+rMiSiteBar[nf][iy] 0 7 -0.016855
+rM2iSiteBar[nf][iy] 0 7 2.627763
+iSite[nf][iy] 0 8 8
+POcclude[nf][iy] 0 8 8.566938e-01
+1-POcclude[nf][iy] 0 8 1.433062e-01
+PMembraneOcclude[nf][iy] 0 8 0.000000e+00
+Prvec0[nf][iy] 0 8 1.385145e-02
+Prvec0_up[nf][iy] 0 8 0.000000e+00
+Prvec0_op[nf][iy] 0 8 0.000000e+00
+Prvec_cen[nf][iy] 0 8 0.000000e+00
+Prvec_offcen[nf][iy] 0 8 1.376441e-02
+Prvec_offcen_op[nf][iy] 0 8 0.000000e+00
+Prvec0_up_op[nf][iy] 0 8 0.000000e+00
+Prvec_cen_up[nf][iy] 0 8 0.000000e+00
+Prvec_offcen_up[nf][iy] 0 8 0.000000e+00
+Prvec_offcen_up_op[nf][iy] 0 8 0.000000e+00
+rMiSiteBar[nf][iy] 0 8 -0.016475
+rM2iSiteBar[nf][iy] 0 8 2.958483
+iSite[nf][iy] 0 9 9
+POcclude[nf][iy] 0 9 8.641229e-01
+1-POcclude[nf][iy] 0 9 1.358771e-01
+PMembraneOcclude[nf][iy] 0 9 0.000000e+00
+Prvec0[nf][iy] 0 9 1.373954e-02
+Prvec0_up[nf][iy] 0 9 0.000000e+00
+Prvec0_op[nf][iy] 0 9 0.000000e+00
+Prvec_cen[nf][iy] 0 9 0.000000e+00
+Prvec_offcen[nf][iy] 0 9 1.377685e-02
+Prvec_offcen_op[nf][iy] 0 9 0.000000e+00
+Prvec0_up_op[nf][iy] 0 9 0.000000e+00
+Prvec_cen_up[nf][iy] 0 9 0.000000e+00
+Prvec_offcen_up[nf][iy] 0 9 0.000000e+00
+Prvec_offcen_up_op[nf][iy] 0 9 0.000000e+00
+rMiSiteBar[nf][iy] 0 9 -0.011620
+rM2iSiteBar[nf][iy] 0 9 3.276828
+iSite[nf][iy] 0 10 10
+POcclude[nf][iy] 0 10 8.591191e-01
+1-POcclude[nf][iy] 0 10 1.408809e-01
+PMembraneOcclude[nf][iy] 0 10 0.000000e+00
+Prvec0[nf][iy] 0 10 1.125275e-02
+Prvec0_up[nf][iy] 0 10 0.000000e+00
+Prvec0_op[nf][iy] 0 10 0.000000e+00
+Prvec_cen[nf][iy] 0 10 0.000000e+00
+Prvec_offcen[nf][iy] 0 10 1.124031e-02
+Prvec_offcen_op[nf][iy] 0 10 0.000000e+00
+Prvec0_up_op[nf][iy] 0 10 0.000000e+00
+Prvec_cen_up[nf][iy] 0 10 0.000000e+00
+Prvec_offcen_up[nf][iy] 0 10 0.000000e+00
+Prvec_offcen_up_op[nf][iy] 0 10 0.000000e+00
+rMiSiteBar[nf][iy] 0 10 -0.012363
+rM2iSiteBar[nf][iy] 0 10 3.622135
+iSite[nf][iy] 0 11 11
+POcclude[nf][iy] 0 11 8.603613e-01
+1-POcclude[nf][iy] 0 11 1.396387e-01
+PMembraneOcclude[nf][iy] 0 11 0.000000e+00
+Prvec0[nf][iy] 0 11 9.959615e-03
+Prvec0_up[nf][iy] 0 11 0.000000e+00
+Prvec0_op[nf][iy] 0 11 0.000000e+00
+Prvec_cen[nf][iy] 0 11 0.000000e+00
+Prvec_offcen[nf][iy] 0 11 9.984483e-03
+Prvec_offcen_op[nf][iy] 0 11 0.000000e+00
+Prvec0_up_op[nf][iy] 0 11 0.000000e+00
+Prvec_cen_up[nf][iy] 0 11 0.000000e+00
+Prvec_offcen_up[nf][iy] 0 11 0.000000e+00
+Prvec_offcen_up_op[nf][iy] 0 11 0.000000e+00
+rMiSiteBar[nf][iy] 0 11 -0.013919
+rM2iSiteBar[nf][iy] 0 11 3.942077
+iSite[nf][iy] 0 12 12
+POcclude[nf][iy] 0 12 8.593385e-01
+1-POcclude[nf][iy] 0 12 1.406615e-01
+PMembraneOcclude[nf][iy] 0 12 0.000000e+00
+Prvec0[nf][iy] 0 12 9.487124e-03
+Prvec0_up[nf][iy] 0 12 0.000000e+00
+Prvec0_op[nf][iy] 0 12 0.000000e+00
+Prvec_cen[nf][iy] 0 12 0.000000e+00
+Prvec_offcen[nf][iy] 0 12 9.462256e-03
+Prvec_offcen_op[nf][iy] 0 12 0.000000e+00
+Prvec0_up_op[nf][iy] 0 12 0.000000e+00
+Prvec_cen_up[nf][iy] 0 12 0.000000e+00
+Prvec_offcen_up[nf][iy] 0 12 0.000000e+00
+Prvec_offcen_up_op[nf][iy] 0 12 0.000000e+00
+rMiSiteBar[nf][iy] 0 12 -0.014057
+rM2iSiteBar[nf][iy] 0 12 4.273311
+iSite[nf][iy] 0 13 13
+POcclude[nf][iy] 0 13 8.579266e-01
+1-POcclude[nf][iy] 0 13 1.420734e-01
+PMembraneOcclude[nf][iy] 0 13 0.000000e+00
+Prvec0[nf][iy] 0 13 7.634461e-03
+Prvec0_up[nf][iy] 0 13 0.000000e+00
+Prvec0_op[nf][iy] 0 13 0.000000e+00
+Prvec_cen[nf][iy] 0 13 0.000000e+00
+Prvec_offcen[nf][iy] 0 13 7.659329e-03
+Prvec_offcen_op[nf][iy] 0 13 0.000000e+00
+Prvec0_up_op[nf][iy] 0 13 0.000000e+00
+Prvec_cen_up[nf][iy] 0 13 0.000000e+00
+Prvec_offcen_up[nf][iy] 0 13 0.000000e+00
+Prvec_offcen_up_op[nf][iy] 0 13 0.000000e+00
+rMiSiteBar[nf][iy] 0 13 -0.014493
+rM2iSiteBar[nf][iy] 0 13 4.623095
+iSite[nf][iy] 0 14 14
+POcclude[nf][iy] 0 14 8.548691e-01
+1-POcclude[nf][iy] 0 14 1.451309e-01
+PMembraneOcclude[nf][iy] 0 14 0.000000e+00
+Prvec0[nf][iy] 0 14 7.995047e-03
+Prvec0_up[nf][iy] 0 14 0.000000e+00
+Prvec0_op[nf][iy] 0 14 0.000000e+00
+Prvec_cen[nf][iy] 0 14 0.000000e+00
+Prvec_offcen[nf][iy] 0 14 8.019915e-03
+Prvec_offcen_op[nf][iy] 0 14 0.000000e+00
+Prvec0_up_op[nf][iy] 0 14 0.000000e+00
+Prvec_cen_up[nf][iy] 0 14 0.000000e+00
+Prvec_offcen_up[nf][iy] 0 14 0.000000e+00
+Prvec_offcen_up_op[nf][iy] 0 14 0.000000e+00
+rMiSiteBar[nf][iy] 0 14 -0.016322
+rM2iSiteBar[nf][iy] 0 14 4.968637
+iSite[nf][iy] 0 15 15
+POcclude[nf][iy] 0 15 8.440975e-01
+1-POcclude[nf][iy] 0 15 1.559025e-01
+PMembraneOcclude[nf][iy] 0 15 0.000000e+00
+Prvec0[nf][iy] 0 15 6.204554e-03
+Prvec0_up[nf][iy] 0 15 0.000000e+00
+Prvec0_op[nf][iy] 0 15 0.000000e+00
+Prvec_cen[nf][iy] 0 15 0.000000e+00
+Prvec_offcen[nf][iy] 0 15 6.204554e-03
+Prvec_offcen_op[nf][iy] 0 15 0.000000e+00
+Prvec0_up_op[nf][iy] 0 15 0.000000e+00
+Prvec_cen_up[nf][iy] 0 15 0.000000e+00
+Prvec_offcen_up[nf][iy] 0 15 0.000000e+00
+Prvec_offcen_up_op[nf][iy] 0 15 0.000000e+00
+rMiSiteBar[nf][iy] 0 15 -0.011749
+rM2iSiteBar[nf][iy] 0 15 5.310467
+iSite[nf][iy] 0 16 16
+POcclude[nf][iy] 0 16 8.320657e-01
+1-POcclude[nf][iy] 0 16 1.679343e-01
+PMembraneOcclude[nf][iy] 0 16 0.000000e+00
+Prvec0[nf][iy] 0 16 6.415932e-03
+Prvec0_up[nf][iy] 0 16 0.000000e+00
+Prvec0_op[nf][iy] 0 16 0.000000e+00
+Prvec_cen[nf][iy] 0 16 0.000000e+00
+Prvec_offcen[nf][iy] 0 16 6.415932e-03
+Prvec_offcen_op[nf][iy] 0 16 0.000000e+00
+Prvec0_up_op[nf][iy] 0 16 0.000000e+00
+Prvec_cen_up[nf][iy] 0 16 0.000000e+00
+Prvec_offcen_up[nf][iy] 0 16 0.000000e+00
+Prvec_offcen_up_op[nf][iy] 0 16 0.000000e+00
+rMiSiteBar[nf][iy] 0 16 -0.013315
+rM2iSiteBar[nf][iy] 0 16 5.646967
+iSite[nf][iy] 0 17 17
+POcclude[nf][iy] 0 17 8.196101e-01
+1-POcclude[nf][iy] 0 17 1.803899e-01
+PMembraneOcclude[nf][iy] 0 17 0.000000e+00
+Prvec0[nf][iy] 0 17 5.346610e-03
+Prvec0_up[nf][iy] 0 17 0.000000e+00
+Prvec0_op[nf][iy] 0 17 0.000000e+00
+Prvec_cen[nf][iy] 0 17 0.000000e+00
+Prvec_offcen[nf][iy] 0 17 5.383912e-03
+Prvec_offcen_op[nf][iy] 0 17 0.000000e+00
+Prvec0_up_op[nf][iy] 0 17 0.000000e+00
+Prvec_cen_up[nf][iy] 0 17 0.000000e+00
+Prvec_offcen_up[nf][iy] 0 17 0.000000e+00
+Prvec_offcen_up_op[nf][iy] 0 17 0.000000e+00
+rMiSiteBar[nf][iy] 0 17 -0.016043
+rM2iSiteBar[nf][iy] 0 17 5.974692
+iSite[nf][iy] 0 18 18
+POcclude[nf][iy] 0 18 7.914507e-01
+1-POcclude[nf][iy] 0 18 2.085493e-01
+PMembraneOcclude[nf][iy] 0 18 0.000000e+00
+Prvec0[nf][iy] 0 18 4.973590e-03
+Prvec0_up[nf][iy] 0 18 0.000000e+00
+Prvec0_op[nf][iy] 0 18 0.000000e+00
+Prvec_cen[nf][iy] 0 18 0.000000e+00
+Prvec_offcen[nf][iy] 0 18 4.973590e-03
+Prvec_offcen_op[nf][iy] 0 18 0.000000e+00
+Prvec0_up_op[nf][iy] 0 18 0.000000e+00
+Prvec_cen_up[nf][iy] 0 18 0.000000e+00
+Prvec_offcen_up[nf][iy] 0 18 0.000000e+00
+Prvec_offcen_up_op[nf][iy] 0 18 0.000000e+00
+rMiSiteBar[nf][iy] 0 18 -0.016849
+rM2iSiteBar[nf][iy] 0 18 6.318684
+iSite[nf][iy] 0 19 19
+POcclude[nf][iy] 0 19 6.452073e-01
+1-POcclude[nf][iy] 0 19 3.547927e-01
+PMembraneOcclude[nf][iy] 0 19 0.000000e+00
+Prvec0[nf][iy] 0 19 5.234704e-03
+Prvec0_up[nf][iy] 0 19 0.000000e+00
+Prvec0_op[nf][iy] 0 19 0.000000e+00
+Prvec_cen[nf][iy] 0 19 3.730193e-05
+Prvec_offcen[nf][iy] 0 19 5.222270e-03
+Prvec_offcen_op[nf][iy] 0 19 0.000000e+00
+Prvec0_up_op[nf][iy] 0 19 0.000000e+00
+Prvec_cen_up[nf][iy] 0 19 0.000000e+00
+Prvec_offcen_up[nf][iy] 0 19 0.000000e+00
+Prvec_offcen_up_op[nf][iy] 0 19 0.000000e+00
+rMiSiteBar[nf][iy] 0 19 -0.018425
+rM2iSiteBar[nf][iy] 0 19 6.650801
+1-POccludeBase[nf] 0 2.915258e-01
+reeFilBar[nf][nf2] 0 0 0.000000
+ree2FilBar[nf][nf2] 0 0 0.000000
+reeiSiteBar[nf][iy] 0 0 1.000000
+ree2iSiteBar[nf][iy] 0 0 1.000000
+reeiSiteBar[nf][iy] 0 1 1.346430
+ree2iSiteBar[nf][iy] 0 1 1.980968
+reeiSiteBar[nf][iy] 0 2 1.642607
+ree2iSiteBar[nf][iy] 0 2 3.019710
+reeiSiteBar[nf][iy] 0 3 1.879016
+ree2iSiteBar[nf][iy] 0 3 4.006091
+reeiSiteBar[nf][iy] 0 4 2.091284
+ree2iSiteBar[nf][iy] 0 4 4.995159
+reeiSiteBar[nf][iy] 0 5 2.282039
+ree2iSiteBar[nf][iy] 0 5 5.984134
+reeiSiteBar[nf][iy] 0 6 2.461567
+ree2iSiteBar[nf][iy] 0 6 6.985348
+reeiSiteBar[nf][iy] 0 7 2.638039
+ree2iSiteBar[nf][iy] 0 7 8.042334
+reeiSiteBar[nf][iy] 0 8 2.795162
+ree2iSiteBar[nf][iy] 0 8 9.050534
+reeiSiteBar[nf][iy] 0 9 2.937992
+ree2iSiteBar[nf][iy] 0 9 10.027813
+reeiSiteBar[nf][iy] 0 10 3.081572
+ree2iSiteBar[nf][iy] 0 10 11.044684
+reeiSiteBar[nf][iy] 0 11 3.213026
+ree2iSiteBar[nf][iy] 0 11 12.022124
+reeiSiteBar[nf][iy] 0 12 3.341518
+ree2iSiteBar[nf][iy] 0 12 13.020198
+reeiSiteBar[nf][iy] 0 13 3.470325
+ree2iSiteBar[nf][iy] 0 13 14.058639
+reeiSiteBar[nf][iy] 0 14 3.591542
+ree2iSiteBar[nf][iy] 0 14 15.076954
+reeiSiteBar[nf][iy] 0 15 3.713843
+ree2iSiteBar[nf][iy] 0 15 16.111867
+reeiSiteBar[nf][iy] 0 16 3.824702
+ree2iSiteBar[nf][iy] 0 16 17.089260
+reeiSiteBar[nf][iy] 0 17 3.932159
+ree2iSiteBar[nf][iy] 0 17 18.073058
+reeiSiteBar[nf][iy] 0 18 4.044531
+ree2iSiteBar[nf][iy] 0 18 19.126130
+reeiSiteBar[nf][iy] 0 19 4.146024
+ree2iSiteBar[nf][iy] 0 19 20.125029

@@ -9,7 +9,7 @@ kBound			1000
 baserLigand		4
 Force			0
 kdimer			0
-dimerDist0		1
+dimerDist0		14
 verboseTF		0
 iSiteInputMethod	4
 StiffenRange		0

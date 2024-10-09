@@ -1,14 +1,27 @@
-clear
-clc
-close all
-%%
-% Compares two lookup tables generated from polymer-c and creates heatmaps of the differences
+% COMPARE_LOOKUP_TABLES Compares two lookup tables generated from polymer-c
+% and creates heatmaps/plots of the differences (does not work with current
+% lookuptable format)
+% 
+% Need to set variables in the script for the lookup tables, their labels,
+% and where to save the output plots.
+% 
+%   Creates 4 plots:
+%       1 - heatmap (rows x columns) of absolute differences between values (saved as .fig)
+%       2 - heatmap (rows x columns) of percent differences between values (saved as .fig)
+%       3 - scatterplot of absolute differences between values vs. entry
+%           index (saved to .pdf in combination with 4)
+%       4 - scatterplot of log absolute differences between values vs. entry
+%           index (saved to .pdf in combination with 3)
 % 
 % The first lookup table (Lookup table 1) will be treated as the accepted
 % values for the calculation of percent difference/error
 %
 % Note that the first collumn of the data is not shown in the subtraction
 % matrix
+
+clear
+clc
+close all
 %% Set variables
 % Lookup table 1 file name
 table1 = 'dimer_122.txt'; % 'single1_300.txt' 'double_200.txt' 'dimer_122.txt' 
@@ -160,13 +173,7 @@ text(find(perc_error_vector == perc_error_max), log(perc_error_max), txt, 'Verti
 
 saveas(gcf, append('temp.pdf'))
 append_pdfs(pdf_name, append('temp.pdf'))
-%% 
-% 
+
 close all
 delete 'temp.pdf'
-% 
-% 
-% 
-% 
-% 
-% 
+

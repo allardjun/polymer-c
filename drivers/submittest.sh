@@ -5,26 +5,30 @@ d=$(date +%Y.%d.%m)
 #d='2023.14.01'
 
 # polymer number of segments to sweep over
-NStart=10
-NStop=250
-Step=10
+NStart=256 # 87, 88, 94, 123, 255
+NStop=600
+Step=1
 
 # output directory
-output_dir=/pub/kbogue1/GitHub/Data/polymer-c_data/mod_baseSep/baseSep_10/
+output_dir=/pub/kbogue1/GitHub/Data/polymer-c_data/prvec_runs/
 
 # dimerization state
-what='double' #'single' 'dimer'
+what='dimer' #'single' 'double' 'dimer'
 
 #Edit these parameters:
 for NumSeg in $(seq $NStart $Step $NStop); do
-  NFil=2       #2
-  #NumSeg=${i} #single=300; double=200; dimer=122
-  if [ ${NFil} -eq 2 ]; then
-    baseSepDist=10.0
+  if [ ${what} = 'single' ]; then
+    NFil=1
   else
-    baseSepDist=0
+    NFil=2
   fi
-  dimerForce=0 #0
+  #NumSeg=${i} #single=300; double=200; dimer=122
+  baseSepDist=35.5
+  if [ ${what} = 'dimer' ]; then
+    dimerForce=10
+  else
+    dimerForce=0
+  fi
   iSite='-1'
   force=0
   #
