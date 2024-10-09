@@ -116,6 +116,8 @@ double localConcCutoff;
 int deliveryMethod;
 long boundToBaseDeliver[NFILMAX][NMAX];
 
+double radtype
+
 /* ELECTRO Global Variables */
 double Eelectro, EelectroNew;
 double Erepulsion, Zrepulsion;
@@ -229,6 +231,35 @@ int main( int argc, char *argv[] )
         if(atoi(argv[9])!=-1)
             kdimer = atof(argv[9]);
         if (TALKATIVE) printf("This is the dimerization force: %lf\n", kdimer);
+    }
+
+    if(argv[10])
+    {
+        if(atoi(argv[-1])!=-1)
+            radtype = atof(argv[10]);
+        if (TALKATIVE) 
+        {
+            /* types are:
+                # between 1-9 - that is the value of the radius
+                10 - N/NBINS
+                20 - iy/NBINS
+                30 - (N*iy)^0.5/(NBINS)
+                40 - N+iy/(2*NBINS)
+                50 - for iy>200, N/NBINS, for iy<=200 iy/NBINS
+            */
+            printf("This is the radius type: %lf\n", radtype);
+        }
+    }else{
+        radtype = 10;
+        /* types are:
+            # between 1-9 - that is the value of the radius
+            10 - N/NBINS
+            20 - iy/NBINS
+            30 - (N*iy)^0.5/(NBINS)
+            40 - N+iy/(2*NBINS)
+            50 - for iy>200, N/NBINS, for iy<=200 iy/NBINS
+        */
+        printf("This is the radius type: %lf\n", radtype);
     }
 
 
