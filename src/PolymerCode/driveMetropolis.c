@@ -116,7 +116,7 @@ double localConcCutoff;
 int deliveryMethod;
 long boundToBaseDeliver[NFILMAX][NMAX];
 
-double radtype
+int radtype;
 
 /* ELECTRO Global Variables */
 double Eelectro, EelectroNew;
@@ -235,11 +235,11 @@ int main( int argc, char *argv[] )
 
     if(argv[10])
     {
-        if(atoi(argv[-1])!=-1)
+        if(atoi(argv[10])!=-1)
             radtype = atof(argv[10]);
         if (TALKATIVE) 
         {
-            /* types are:
+            /* types are: (where iy is actually iy+1)
                 # between 1-9 - that is the value of the radius
                 10 - N/NBINS
                 20 - iy/NBINS
@@ -251,7 +251,7 @@ int main( int argc, char *argv[] )
         }
     }else{
         radtype = 10;
-        /* types are:
+        /* types are: (where iy is actually iy+1)
             # between 1-9 - that is the value of the radius
             10 - N/NBINS
             20 - iy/NBINS

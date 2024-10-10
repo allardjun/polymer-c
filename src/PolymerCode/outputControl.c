@@ -765,29 +765,26 @@ void dataRecording()
         for(nf=0;nf<NFil;nf++)
         {
             for(iy=0;iy<iSiteTotal[nf];iy++)
-            {20 - iy/NBINS
-                30 - N*iy/(NBINS)
-                40 - N+iy/(2*NBINS)
-                50 - for iy>200, N/NBINS, for iy<=200 iy/NBINS
+            {
                 if(radtype == 10)
                 {
                     Prvec0_rad[nf][iy] = Prvec0_op_rad[nf][iy] = Prvec_cen_rad[nf][iy] = Prvec_offcen_rad[nf][iy] = Prvec_offcen_op_rad[nf][iy] = Prvec0_up_rad[nf][iy] = Prvec0_up_op_rad[nf][iy] = Prvec_cen_up_rad[nf][iy] = Prvec_offcen_up_rad[nf][iy] = Prvec_offcen_up_op_rad[nf][iy] = Prvec0_halfup_rad[nf][iy] = Prvec0_halfup_op_rad[nf][iy] = Prvec_cen_halfup_rad[nf][iy] = Prvec_offcen_halfup_rad[nf][iy] = Prvec_offcen_halfup_op_rad[nf][iy] = (double)N[nf]/(double)NBINS;
                 }else if (radtype == 20)
                 {
-                    Prvec0_rad[nf][iy] = Prvec0_op_rad[nf][iy] = Prvec_cen_rad[nf][iy] = Prvec_offcen_rad[nf][iy] = Prvec_offcen_op_rad[nf][iy] = Prvec0_up_rad[nf][iy] = Prvec0_up_op_rad[nf][iy] = Prvec_cen_up_rad[nf][iy] = Prvec_offcen_up_rad[nf][iy] = Prvec_offcen_up_op_rad[nf][iy] = Prvec0_halfup_rad[nf][iy] = Prvec0_halfup_op_rad[nf][iy] = Prvec_cen_halfup_rad[nf][iy] = Prvec_offcen_halfup_rad[nf][iy] = Prvec_offcen_halfup_op_rad[nf][iy] = (double)iy/(double)NBINS;
+                    Prvec0_rad[nf][iy] = Prvec0_op_rad[nf][iy] = Prvec_cen_rad[nf][iy] = Prvec_offcen_rad[nf][iy] = Prvec_offcen_op_rad[nf][iy] = Prvec0_up_rad[nf][iy] = Prvec0_up_op_rad[nf][iy] = Prvec_cen_up_rad[nf][iy] = Prvec_offcen_up_rad[nf][iy] = Prvec_offcen_up_op_rad[nf][iy] = Prvec0_halfup_rad[nf][iy] = Prvec0_halfup_op_rad[nf][iy] = Prvec_cen_halfup_rad[nf][iy] = Prvec_offcen_halfup_rad[nf][iy] = Prvec_offcen_halfup_op_rad[nf][iy] = ((double)iy+1)/(double)NBINS;
                 }else if (radtype == 30)
                 {
-                    Prvec0_rad[nf][iy] = Prvec0_op_rad[nf][iy] = Prvec_cen_rad[nf][iy] = Prvec_offcen_rad[nf][iy] = Prvec_offcen_op_rad[nf][iy] = Prvec0_up_rad[nf][iy] = Prvec0_up_op_rad[nf][iy] = Prvec_cen_up_rad[nf][iy] = Prvec_offcen_up_rad[nf][iy] = Prvec_offcen_up_op_rad[nf][iy] = Prvec0_halfup_rad[nf][iy] = Prvec0_halfup_op_rad[nf][iy] = Prvec_cen_halfup_rad[nf][iy] = Prvec_offcen_halfup_rad[nf][iy] = Prvec_offcen_halfup_op_rad[nf][iy] = pow(((double)N[nf]*(double)iy),0.5)/(double)NBINS;
+                    Prvec0_rad[nf][iy] = Prvec0_op_rad[nf][iy] = Prvec_cen_rad[nf][iy] = Prvec_offcen_rad[nf][iy] = Prvec_offcen_op_rad[nf][iy] = Prvec0_up_rad[nf][iy] = Prvec0_up_op_rad[nf][iy] = Prvec_cen_up_rad[nf][iy] = Prvec_offcen_up_rad[nf][iy] = Prvec_offcen_up_op_rad[nf][iy] = Prvec0_halfup_rad[nf][iy] = Prvec0_halfup_op_rad[nf][iy] = Prvec_cen_halfup_rad[nf][iy] = Prvec_offcen_halfup_rad[nf][iy] = Prvec_offcen_halfup_op_rad[nf][iy] = pow(((double)N[nf]*((double)iy+1)),0.5)/(double)NBINS;
                 }else if (radtype == 40)
                 {
-                    Prvec0_rad[nf][iy] = Prvec0_op_rad[nf][iy] = Prvec_cen_rad[nf][iy] = Prvec_offcen_rad[nf][iy] = Prvec_offcen_op_rad[nf][iy] = Prvec0_up_rad[nf][iy] = Prvec0_up_op_rad[nf][iy] = Prvec_cen_up_rad[nf][iy] = Prvec_offcen_up_rad[nf][iy] = Prvec_offcen_up_op_rad[nf][iy] = Prvec0_halfup_rad[nf][iy] = Prvec0_halfup_op_rad[nf][iy] = Prvec_cen_halfup_rad[nf][iy] = Prvec_offcen_halfup_rad[nf][iy] = Prvec_offcen_halfup_op_rad[nf][iy] = (((double)N[nf]+(double)iy))/(2*(double)NBINS);
+                    Prvec0_rad[nf][iy] = Prvec0_op_rad[nf][iy] = Prvec_cen_rad[nf][iy] = Prvec_offcen_rad[nf][iy] = Prvec_offcen_op_rad[nf][iy] = Prvec0_up_rad[nf][iy] = Prvec0_up_op_rad[nf][iy] = Prvec_cen_up_rad[nf][iy] = Prvec_offcen_up_rad[nf][iy] = Prvec_offcen_up_op_rad[nf][iy] = Prvec0_halfup_rad[nf][iy] = Prvec0_halfup_op_rad[nf][iy] = Prvec_cen_halfup_rad[nf][iy] = Prvec_offcen_halfup_rad[nf][iy] = Prvec_offcen_halfup_op_rad[nf][iy] = (((double)N[nf]+((double)iy+1)))/(2*(double)NBINS);
                 }else if (radtype == 50)
                 {
                     if(iy>200)
                     {
                         Prvec0_rad[nf][iy] = Prvec0_op_rad[nf][iy] = Prvec_cen_rad[nf][iy] = Prvec_offcen_rad[nf][iy] = Prvec_offcen_op_rad[nf][iy] = Prvec0_up_rad[nf][iy] = Prvec0_up_op_rad[nf][iy] = Prvec_cen_up_rad[nf][iy] = Prvec_offcen_up_rad[nf][iy] = Prvec_offcen_up_op_rad[nf][iy] = Prvec0_halfup_rad[nf][iy] = Prvec0_halfup_op_rad[nf][iy] = Prvec_cen_halfup_rad[nf][iy] = Prvec_offcen_halfup_rad[nf][iy] = Prvec_offcen_halfup_op_rad[nf][iy] = (double)N[nf]/(double)NBINS;
                     }else{
-                        Prvec0_rad[nf][iy] = Prvec0_op_rad[nf][iy] = Prvec_cen_rad[nf][iy] = Prvec_offcen_rad[nf][iy] = Prvec_offcen_op_rad[nf][iy] = Prvec0_up_rad[nf][iy] = Prvec0_up_op_rad[nf][iy] = Prvec_cen_up_rad[nf][iy] = Prvec_offcen_up_rad[nf][iy] = Prvec_offcen_up_op_rad[nf][iy] = Prvec0_halfup_rad[nf][iy] = Prvec0_halfup_op_rad[nf][iy] = Prvec_cen_halfup_rad[nf][iy] = Prvec_offcen_halfup_rad[nf][iy] = Prvec_offcen_halfup_op_rad[nf][iy] = (double)iy/(double)NBINS;
+                        Prvec0_rad[nf][iy] = Prvec0_op_rad[nf][iy] = Prvec_cen_rad[nf][iy] = Prvec_offcen_rad[nf][iy] = Prvec_offcen_op_rad[nf][iy] = Prvec0_up_rad[nf][iy] = Prvec0_up_op_rad[nf][iy] = Prvec_cen_up_rad[nf][iy] = Prvec_offcen_up_rad[nf][iy] = Prvec_offcen_up_op_rad[nf][iy] = Prvec0_halfup_rad[nf][iy] = Prvec0_halfup_op_rad[nf][iy] = Prvec_cen_halfup_rad[nf][iy] = Prvec_offcen_halfup_rad[nf][iy] = Prvec_offcen_halfup_op_rad[nf][iy] = ((double)iy+1)/(double)NBINS;
                     }
                 }else{
                     Prvec0_rad[nf][iy] = Prvec0_op_rad[nf][iy] = Prvec_cen_rad[nf][iy] = Prvec_offcen_rad[nf][iy] = Prvec_offcen_op_rad[nf][iy] = Prvec0_up_rad[nf][iy] = Prvec0_up_op_rad[nf][iy] = Prvec_cen_up_rad[nf][iy] = Prvec_offcen_up_rad[nf][iy] = Prvec_offcen_up_op_rad[nf][iy] = Prvec0_halfup_rad[nf][iy] = Prvec0_halfup_op_rad[nf][iy] = Prvec_cen_halfup_rad[nf][iy] = Prvec_offcen_halfup_rad[nf][iy] = Prvec_offcen_halfup_op_rad[nf][iy] = (double)radtype;
