@@ -88,6 +88,39 @@ double Prvec_cen_halfup_rad[NFILMAX][NMAX]; // 2.5nm (8.333 aa) above the center
 double Prvec_offcen_halfup_rad[NFILMAX][NMAX]; // 2.5nm (8.333 aa) above and 2.5nm (8.333 aa) away from the center, towards the attachment site of same filament
 double Prvec_offcen_halfup_op_rad[NFILMAX][NMAX]; // 2.5nm (8.333 aa) above and 2.5nm (8.333 aa) away from the center, towards the attachment site of opposite filament
 
+double Prvec_rad_vec[10]={0.1,0.25,0.5,0.75,1,2,4,5,7,10}; // radius values to use in following vectors
+
+long Prvec0_sum_vec[NFILMAX][NMAX][10]; // attachment site of same filament
+long Prvec0_op_sum_vec[NFILMAX][NMAX][10]; // attachment site of opposite filament
+long Prvec_cen_sum_vec[NFILMAX][NMAX][10]; // center of of bases
+long Prvec_offcen_sum_vec[NFILMAX][NMAX][10]; // 2.5nm (8.333 aa) away from the center, towards the attachment site of same filament
+long Prvec_offcen_op_sum_vec[NFILMAX][NMAX][10]; // 2.5nm (8.333 aa) away from the center, towards the attachment site of opposite filament
+long Prvec0_up_sum_vec[NFILMAX][NMAX][10]; // 5nm (16.666 aa) above the attachment site of same filament
+long Prvec0_up_op_sum_vec[NFILMAX][NMAX][10]; // 5nm (16.666 aa) above the attachment site of opposite filament
+long Prvec_cen_up_sum_vec[NFILMAX][NMAX][10]; // 5nm (16.666 aa) above the center of of bases
+long Prvec_offcen_up_sum_vec[NFILMAX][NMAX][10]; // 5nm (16.666 aa) above and 2.5nm (8.333 aa) away from the center, towards the attachment site of same filament
+long Prvec_offcen_up_op_sum_vec[NFILMAX][NMAX][10]; // 5nm (16.666 aa) above and 2.5nm (8.333 aa) away from the center, towards the attachment site of opposite filament
+long Prvec0_halfup_sum_vec[NFILMAX][NMAX][10]; // 2.5nm (8.333 aa) above the attachment site of same filament
+long Prvec0_halfup_op_sum_vec[NFILMAX][NMAX][10]; // 2.5nm (8.333 aa) above the attachment site of opposite filament
+long Prvec_cen_halfup_sum_vec[NFILMAX][NMAX][10]; // 2.5nm (8.333 aa) above the center of of bases
+long Prvec_offcen_halfup_sum_vec[NFILMAX][NMAX][10]; // 2.5nm (8.333 aa) above and 2.5nm (8.333 aa) away from the center, towards the attachment site of same filament
+long Prvec_offcen_halfup_op_sum_vec[NFILMAX][NMAX][10]; // 2.5nm (8.333 aa) above and 2.5nm (8.333 aa) away from the center, towards the attachment site of opposite filament
+
+double Prvec0_vec[NFILMAX][NMAX][10]; // attachment site of same filament
+double Prvec0_op_vec[NFILMAX][NMAX][10]; // attachment site of opposite filament
+double Prvec_cen_vec[NFILMAX][NMAX][10]; // center of of bases
+double Prvec_offcen_vec[NFILMAX][NMAX][10]; // 2.5nm (8.333 aa) away from the center, towards the attachment site of same filament
+double Prvec_offcen_op_vec[NFILMAX][NMAX][10]; // 2.5nm (8.333 aa) away from the center, towards the attachment site of opposite filament
+double Prvec0_up_vec[NFILMAX][NMAX][10]; // 5nm (16.666 aa) above the attachment site of same filament
+double Prvec0_up_op_vec[NFILMAX][NMAX][10]; // 5nm (16.666 aa) above the attachment site of opposite filament
+double Prvec_cen_up_vec[NFILMAX][NMAX][10]; // 5nm (16.666 aa) above the center of of bases
+double Prvec_offcen_up_vec[NFILMAX][NMAX][10]; // 5nm (16.666 aa) above and 2.5nm (8.333 aa) away from the center, towards the attachment site of same filament
+double Prvec_offcen_up_op_vec[NFILMAX][NMAX][10]; // 5nm (16.666 aa) above and 2.5nm (8.333 aa) away from the center, towards the attachment site of opposite filament
+double Prvec0_halfup_vec[NFILMAX][NMAX][10]; // 2.5nm (8.333 aa) above the attachment site of same filament
+double Prvec0_halfup_op_vec[NFILMAX][NMAX][10]; // 2.5nm (8.333 aa) above the attachment site of opposite filament
+double Prvec_cen_halfup_vec[NFILMAX][NMAX][10]; // 2.5nm (8.333 aa) above the center of of bases
+double Prvec_offcen_halfup_vec[NFILMAX][NMAX][10]; // 2.5nm (8.333 aa) above and 2.5nm (8.333 aa) away from the center, towards the attachment site of same filament
+double Prvec_offcen_halfup_op_vec[NFILMAX][NMAX][10]; // 2.5nm (8.333 aa) above and 2.5nm (8.333 aa) away from the center, towards the attachment site of opposite filament
 
 double distiSiteToLigand[NFILMAX][NMAX][NMAX], selfBind[NFILMAX][NMAX][NMAX], selfBindFraction[NFILMAX][NMAX][NMAX], localConcentration[NFILMAX][NMAX][NMAX];
 
@@ -137,6 +170,31 @@ void initializeSummary()
             Prvec_cen_halfup_sum[nf][iy]           = 0;
             Prvec_offcen_halfup_sum[nf][iy]           = 0;
             Prvec_offcen_halfup_op_sum[nf][iy]           = 0;
+
+            for(j=0;j<10;j++)
+            {
+                POcclude_sum_vec[nf][iy][j]                = 0;
+                Prvec0_sum_vec[nf][iy][j]                  = 0;
+                PMembraneOcclude_sum_vec[nf][iy][j]        = 0;
+
+                Prvec0_up_sum_vec[nf][iy][j]           = 0;
+                Prvec0_halfup_sum_vec[nf][iy][j]           = 0;
+                Prvec0_op_sum_vec[nf][iy][j]           = 0;
+                
+                Prvec_cen_sum_vec[nf][iy][j]           = 0;
+                Prvec_offcen_sum_vec[nf][iy][j]           = 0;
+                Prvec_offcen_op_sum_vec[nf][iy][j]           = 0;
+
+                Prvec0_up_op_sum_vec[nf][iy][j]           = 0;
+                Prvec_cen_up_sum_vec[nf][iy][j]           = 0;
+                Prvec_offcen_up_sum_vec[nf][iy][j]           = 0;
+                Prvec_offcen_up_op_sum_vec[nf][iy][j]           = 0;
+
+                Prvec0_halfup_op_sum_vec[nf][iy][j]           = 0;
+                Prvec_cen_halfup_sum_vec[nf][iy][j]           = 0;
+                Prvec_offcen_halfup_sum_vec[nf][iy][j]           = 0;
+                Prvec_offcen_halfup_op_sum_vec[nf][iy][j]           = 0;
+            }
                 
         }
         POccludeBase_sum[nf] = 0;
@@ -225,6 +283,27 @@ void finalizeSummary(int reallyFinal)
                     Prvec_offcen_halfup[nf][iy]           = (double)Prvec_offcen_halfup_sum[nf][iy]/(4/3*PI*pow((double)Prvec_offcen_halfup_rad[nf][iy],3))/(double)(nt-NTCHECK);
                     Prvec_offcen_halfup_op[nf][iy]           = (double)Prvec_offcen_halfup_op_sum[nf][iy]/(4/3*PI*pow((double)Prvec_offcen_halfup_op_rad[nf][iy],3))/(double)(nt-NTCHECK);
                 }
+            for (j=0;j<10;j++)
+            {
+                Prvec0_vec[nf][iy][j]           = (double)Prvec0_sum_vec[nf][iy]/(4/3*PI*pow((double)Prvec_rad_vec[j],3))/(double)(nt-NTCHECK);
+                Prvec0_up_vec[nf][iy][j]        = (double)Prvec0_up_sum_vec[nf][iy]/(4/3*PI*pow((double)Prvec_rad_vec[j],3))/(double)(nt-NTCHECK);
+                Prvec0_halfup_vec[nf][iy][j]        = (double)Prvec0_halfup_sum_vec[nf][iy]/(4/3*PI*pow((double)Prvec_rad_vec[j],3))/(double)(nt-NTCHECK);
+
+                    if(NFil<=2){
+                        Prvec0_op_vec[nf][iy][j]           = (double)Prvec0_op_sum_vec[nf][iy][j]/(4/3*PI*pow((double)Prvec_rad_vec[j],3))/(double)(nt-NTCHECK);
+                        Prvec_cen_vec[nf][iy][j]           = (double)Prvec_cen_sum_vec[nf][iy][j]/(4/3*PI*pow((double)Prvec_rad_vec[j],3))/(double)(nt-NTCHECK);
+                        Prvec_offcen_vec[nf][iy][j]           = (double)Prvec_offcen_sum_vec[nf][iy][j]/(4/3*PI*pow((double)Prvec_rad_vec[j],3))/(double)(nt-NTCHECK);
+                        Prvec_offcen_op_vec[nf][iy][j]           = (double)Prvec_offcen_op_sum_vec[nf][iy][j]/(4/3*PI*pow((double)Prvec_rad_vec[j],3))/(double)(nt-NTCHECK);
+                        Prvec0_up_op_vec[nf][iy][j]           = (double)Prvec0_up_op_sum_vec[nf][iy][j]/(4/3*PI*pow((double)Prvec_rad_vec[j],3))/(double)(nt-NTCHECK);
+                        Prvec_cen_up_vec[nf][iy][j]           = (double)Prvec_cen_up_sum_vec[nf][iy][j]/(4/3*PI*pow((double)Prvec_rad_vec[j],3))/(double)(nt-NTCHECK);
+                        Prvec_offcen_up_vec[nf][iy][j]           = (double)Prvec_offcen_up_sum_vec[nf][iy][j]/(4/3*PI*pow((double)Prvec_rad_vec[j],3))/(double)(nt-NTCHECK);
+                        Prvec_offcen_up_op_vec[nf][iy][j]           = (double)Prvec_offcen_up_op_sum_vec[nf][iy][j]/(4/3*PI*pow((double)Prvec_rad_vec[j],3))/(double)(nt-NTCHECK);
+
+                        Prvec0_halfup_op_vec[nf][iy][j]           = (double)Prvec0_halfup_op_sum_vec[nf][iy][j]/(4/3*PI*pow((double)Prvec_rad_vec[j],3))/(double)(nt-NTCHECK);
+                        Prvec_cen_halfup_vec[nf][iy][j]           = (double)Prvec_cen_halfup_sum_vec[nf][iy][j]/(4/3*PI*pow((double)Prvec_rad_vec[j],3))/(double)(nt-NTCHECK);
+                        Prvec_offcen_halfup_vec[nf][iy][j]           = (double)Prvec_offcen_halfup_sum_vec[nf][iy][j]/(4/3*PI*pow((double)Prvec_rad_vec[j],3))/(double)(nt-NTCHECK);
+                        Prvec_offcen_halfup_op_vec[nf][iy][j]           = (double)Prvec_offcen_halfup_op_sum_vec[nf][iy][j]/(4/3*PI*pow((double)Prvec_rad_vec[j],3))/(double)(nt-NTCHECK);
+            }
         }
 
         POccludeBase[nf] = (double)POccludeBase_sum[nf]/(double)(nt-NTCHECK);
@@ -334,7 +413,11 @@ void finalizeSummary(int reallyFinal)
 
                 fprintf(fList, "Prvec0_rad[nf][iy] %ld %ld %e\n",nf,iy, Prvec0_rad[nf][iy]);   
                 fprintf(fList, "Prvec0_up_rad[nf][iy] %ld %ld %e\n",nf,iy, Prvec0_up_rad[nf][iy]);        
-                fprintf(fList, "Prvec0_halfup_rad[nf][iy] %ld %ld %e\n",nf,iy, Prvec0_halfup_rad[nf][iy]);   
+                fprintf(fList, "Prvec0_halfup_rad[nf][iy] %ld %ld %e\n",nf,iy, Prvec0_halfup_rad[nf][iy]);
+
+                fprintf(fList, "Prvec0_sum[nf][iy] %ld %ld %e\n",nf,iy, Prvec0_sum[nf][iy]);   
+                fprintf(fList, "Prvec0_up_sum[nf][iy] %ld %ld %e\n",nf,iy, Prvec0_up_sum[nf][iy]);        
+                fprintf(fList, "Prvec0_halfup_sum[nf][iy] %ld %ld %e\n",nf,iy, Prvec0_halfup_sum[nf][iy]);      
        
                 if(NFil<=2){
                     fprintf(fList, "Prvec0_op[nf][iy] %ld %ld %e\n",nf,iy, Prvec0_op[nf][iy]);
@@ -366,6 +449,64 @@ void finalizeSummary(int reallyFinal)
                     fprintf(fList, "Prvec_cen_halfup_rad[nf][iy] %ld %ld %e\n",nf,iy, Prvec_cen_halfup_rad[nf][iy]);
                     fprintf(fList, "Prvec_offcen_halfup_rad[nf][iy] %ld %ld %e\n",nf,iy, Prvec_offcen_halfup_rad[nf][iy]);
                     fprintf(fList, "Prvec_offcen_halfup_op_rad[nf][iy] %ld %ld %e\n",nf,iy, Prvec_offcen_halfup_op_rad[nf][iy]);
+
+                    fprintf(fList, "Prvec0_op_sum[nf][iy] %ld %ld %e\n",nf,iy, Prvec0_op_sum[nf][iy]);
+                    fprintf(fList, "Prvec_cen_sum[nf][iy] %ld %ld %e\n",nf,iy, Prvec_cen_sum[nf][iy]);
+                    fprintf(fList, "Prvec_offcen_sum[nf][iy] %ld %ld %e\n",nf,iy, Prvec_offcen_sum[nf][iy]);
+                    fprintf(fList, "Prvec_offcen_op_sum[nf][iy] %ld %ld %e\n",nf,iy, Prvec_offcen_op_sum[nf][iy]);
+
+                    fprintf(fList, "Prvec0_up_op_sum[nf][iy] %ld %ld %e\n",nf,iy, Prvec0_up_op_sum[nf][iy]);
+                    fprintf(fList, "Prvec_cen_up_sum[nf][iy] %ld %ld %e\n",nf,iy, Prvec_cen_up_sum[nf][iy]);
+                    fprintf(fList, "Prvec_offcen_up_sum[nf][iy] %ld %ld %e\n",nf,iy, Prvec_offcen_up_sum[nf][iy]);
+                    fprintf(fList, "Prvec_offcen_up_op_sum[nf][iy] %ld %ld %e\n",nf,iy, Prvec_offcen_up_op_sum[nf][iy]);
+
+                    fprintf(fList, "Prvec0_halfup_op_sum[nf][iy] %ld %ld %e\n",nf,iy, Prvec0_halfup_op_sum[nf][iy]);
+                    fprintf(fList, "Prvec_cen_halfup_sum[nf][iy] %ld %ld %e\n",nf,iy, Prvec_cen_halfup_sum[nf][iy]);
+                    fprintf(fList, "Prvec_offcen_halfup_sum[nf][iy] %ld %ld %e\n",nf,iy, Prvec_offcen_halfup_sum[nf][iy]);
+                    fprintf(fList, "Prvec_offcen_halfup_op_sum[nf][iy] %ld %ld %e\n",nf,iy, Prvec_offcen_halfup_op_sum[nf][iy]);
+                }
+
+                for (j=0;j<10;j++)
+                {
+                    fprintf(fList, "Prvec0_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec0_vec[nf][iy][j]);   
+                    fprintf(fList, "Prvec0_up_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec0_up_vec[nf][iy][j]);        
+                    fprintf(fList, "Prvec0_halfup_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec0_halfup_vec[nf][iy][j]);
+
+                    fprintf(fList, "Prvec0_sum_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec0_sum_vec[nf][iy][j]);   
+                    fprintf(fList, "Prvec0_up_sum_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec0_up_sum_vec[nf][iy][j]);        
+                    fprintf(fList, "Prvec0_halfup_sum_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec0_halfup_sum_vec[nf][iy][j]);      
+        
+                    if(NFil<=2){
+                        fprintf(fList, "Prvec0_op_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec0_op_vec[nf][iy][j]);
+                        fprintf(fList, "Prvec_cen_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec_cen_vec[nf][iy][j]);
+                        fprintf(fList, "Prvec_offcen_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec_offcen_vec[nf][iy][j]);
+                        fprintf(fList, "Prvec_offcen_op_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec_offcen_op_vec[nf][iy][j]);
+
+                        fprintf(fList, "Prvec0_up_op_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec0_up_op_vec[nf][iy][j]);
+                        fprintf(fList, "Prvec_cen_up_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec_cen_up_vec[nf][iy][j]);
+                        fprintf(fList, "Prvec_offcen_up_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec_offcen_up_vec[nf][iy][j]);
+                        fprintf(fList, "Prvec_offcen_up_op_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec_offcen_up_op_vec[nf][iy][j]);
+
+                        fprintf(fList, "Prvec0_halfup_op_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec0_halfup_op_vec[nf][iy][j]);
+                        fprintf(fList, "Prvec_cen_halfup_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec_cen_halfup_vec[nf][iy][j]);
+                        fprintf(fList, "Prvec_offcen_halfup_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec_offcen_halfup_vec[nf][iy][j]);
+                        fprintf(fList, "Prvec_offcen_halfup_op_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec_offcen_halfup_op_vec[nf][iy][j]);
+
+                        fprintf(fList, "Prvec0_op_sum_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec0_op_sum_vec[nf][iy][j]);
+                        fprintf(fList, "Prvec_cen_sum_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec_cen_sum_vec[nf][iy][j]);
+                        fprintf(fList, "Prvec_offcen_sum_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec_offcen_sum_vec[nf][iy][j]);
+                        fprintf(fList, "Prvec_offcen_op_sum_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec_offcen_op_sum_vec[nf][iy][j]);
+
+                        fprintf(fList, "Prvec0_up_op_sum_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec0_up_op_sum_vec[nf][iy][j]);
+                        fprintf(fList, "Prvec_cen_up_sum_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec_cen_up_sum_vec[nf][iy][j]);
+                        fprintf(fList, "Prvec_offcen_up_sum_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec_offcen_up_sum_vec[nf][iy][j]);
+                        fprintf(fList, "Prvec_offcen_up_op_sum_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec_offcen_up_op_sum_vec[nf][iy][j]);
+
+                        fprintf(fList, "Prvec0_halfup_op_sum_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec0_halfup_op_sum_vec[nf][iy])[j];
+                        fprintf(fList, "Prvec_cen_halfup_sum_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec_cen_halfup_sum_vec[nf][iy][j]);
+                        fprintf(fList, "Prvec_offcen_halfup_sum_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec_offcen_halfup_sum_vec[nf][iy][j]);
+                        fprintf(fList, "Prvec_offcen_halfup_op_sum_%ld[nf][iy] %ld %ld %e\n",Prvec_rad_vec[j],nf,iy, Prvec_offcen_halfup_op_sum_vec[nf][iy][j]);
+                    }
                 }
 
                 fprintf(fList, "rMiSiteBar[nf][iy] %ld %ld %lf\n",nf,iy,rMiSiteBar[nf][iy]);              
@@ -811,6 +952,30 @@ void dataRecording()
                     Prvec_cen_halfup_sum[nf][iy]           += (long)(reeiSite_cen_halfup[nf][iy] < (double)Prvec_cen_halfup_rad[nf][iy]);
                     Prvec_offcen_halfup_sum[nf][iy]           += (long)(reeiSite_offcen_halfup[nf][iy] < (double)Prvec_offcen_halfup_rad[nf][iy]);
                     Prvec_offcen_halfup_op_sum[nf][iy]           += (long)(reeiSite_offcen_halfup_op[nf][iy] < (double)Prvec_offcen_halfup_op_rad[nf][iy]);
+                }
+
+                for (j=0;j<10;j++)
+                {
+                    Prvec0_sum_vec[nf][iy][j]           += (long)(reeiSite[nf][iy] < (double)Prvec_rad_vec[j]);
+                    Prvec0_up_sum_vec[nf][iy][j]           += (long)(reeiSite_up[nf][iy] < (double)Prvec_rad_vec[j]);
+                    Prvec0_halfup_sum_vec[nf][iy][j]           += (long)(reeiSite_halfup[nf][iy] < (double)Prvec_rad_vec[j]);
+
+                    if(NFil<=2){
+                        Prvec0_op_sum_vec[nf][iy][j]           += (long)(reeiSite_op[nf][iy] < (double)Prvec_rad_vec[j]);
+                        Prvec_cen_sum_vec[nf][iy][j]           += (long)(reeiSite_cen[nf][iy] < (double)Prvec_rad_vec[j]);
+                        Prvec_offcen_sum_vec[nf][iy][j]           += (long)(reeiSite_offcen[nf][iy] < (double)Prvec_rad_vec[j]);
+                        Prvec_offcen_op_sum_vec[nf][iy][j]           += (long)(reeiSite_offcen_op[nf][iy] < (double)Prvec_rad_vec[j]);
+
+                        Prvec0_up_op_sum_vec[nf][iy][j]           += (long)(reeiSite_up_op[nf][iy] < (double)Prvec_rad_vec[j]);
+                        Prvec_cen_up_sum_vec[nf][iy][j]           += (long)(reeiSite_cen_up[nf][iy] < (double)Prvec_rad_vec[j]);
+                        Prvec_offcen_up_sum_vec[nf][iy][j]           += (long)(reeiSite_offcen_up[nf][iy] < (double)Prvec_rad_vec[j]);
+                        Prvec_offcen_up_op_sum_vec[nf][iy][j]           += (long)(reeiSite_offcen_up_op[nf][iy] < (double)Prvec_rad_vec[j]);
+
+                        Prvec0_halfup_op_sum_vec[nf][iy][j]           += (long)(reeiSite_halfup_op[nf][iy] < (double)Prvec_rad_vec[j]);
+                        Prvec_cen_halfup_sum_vec[nf][iy][j]           += (long)(reeiSite_cen_halfup[nf][iy] < (double)Prvec_rad_vec[j]);
+                        Prvec_offcen_halfup_sum_vec[nf][iy][j]           += (long)(reeiSite_offcen_halfup[nf][iy] < (double)Prvec_rad_vec[j]);
+                        Prvec_offcen_halfup_op_sum_vec[nf][iy][j]           += (long)(reeiSite_offcen_halfup_op[nf][iy] < (double)Prvec_rad_vec[j]);
+                    }
                 }
 
                 PMembraneOcclude_sum[nf][iy] += (long)(membraneOcclusion[nf][iy]>0);

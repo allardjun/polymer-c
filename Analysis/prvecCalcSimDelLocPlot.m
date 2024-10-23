@@ -52,7 +52,7 @@ function fig=prvecCalcSimDelLocPlot(lt,FH2size,FH1size,type)
 
     PRMlocs.dimer=[20,50,60,75,80,100];
 
-    PRMlocs_sweep=[20,30,40,50,100];
+    PRMlocs_sweep=[10,20,30,40,50,100,150,200];
 
     fh1sizes=[50,75,100,125,150,175,200,250,300,350];
 
@@ -195,7 +195,7 @@ function fig=prvecCalcSimDelLocPlot(lt,FH2size,FH1size,type)
                 end
                 tab.Pra((i-1)*l+1:i*l)=log10(f_a{1,i});
                 tab.Prb((i-1)*l+1:i*l)=log10(f_b{1,i});
-                tab.Pr((i-1)*l+1:i*l)=log10(mean([f_a{1,i},f_b{1,i}]));
+                tab.Pr((i-1)*l+1:i*l)=log10(mean([f_a{1,i},f_b{1,i}],2));
                 tab.prmloc((i-1)*l+1:i*l)=f_prm{1,i};
                 tab.r(((i-1)*l+1:i*l))=r(i);
             end

@@ -77,7 +77,7 @@ end
     y_coords=[0,8.333,8.333,0,16.666,16.666,0,8.333,16.666,0,8.333,8.333,0,16.666,16.666];
     r=(x_coords.^2+y_coords.^2).^(1/2);
     
-    for k=2:5
+    for k=1:5
         fig(k)=nplot(type,k,'prmloc',0);
         %fig(k)=nplot(type,k,'nNT',0);
     end
