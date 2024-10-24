@@ -10,7 +10,7 @@ for baseval in $(seq 35 35); do
   #d='2023.14.01'
 
   # polymer number of segments to sweep over
-  NStart=41
+  NStart=1
   NStop=400
 
   # output directory
@@ -21,7 +21,7 @@ for baseval in $(seq 35 35); do
 
   mkdir $output_dir/${what}.${d}
   # type of radius run
-  for radtype in 1 2 20 30 40 50; do
+  for radtype in 20; do
     cd /pub/kbogue1/GitHub/polymer-c/drivers
 
     #Edit these parameters:
