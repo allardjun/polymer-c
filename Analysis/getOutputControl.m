@@ -136,6 +136,7 @@ end
             value = matrix_during_filling(1:maxCoordinate1, 1:maxCoordinate2);
         end
     
+        key = strrep(key,'.','_');
         if ~contains(key,"-")
             if ~exist("output_struct", "var")
                 output_struct = struct(key,value);
