@@ -10,8 +10,8 @@ for baseval in $(seq 35 35); do
   #d='2023.14.01'
 
   # polymer number of segments to sweep over
-  NStart=1
-  NStop=400
+  NStart=200
+  NStop=200
 
   # output directory
   output_dir=/pub/kbogue1/GitHub/Data/polymer-c_data/testing_radius_code

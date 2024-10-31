@@ -1225,7 +1225,7 @@ void stationarity()
             convergedTF=0;
         }
         
-        if convergedTF
+        if (convergedTF)
         {
             for(iy=30;iy<iSiteTotal[nf];iy++)
             {
