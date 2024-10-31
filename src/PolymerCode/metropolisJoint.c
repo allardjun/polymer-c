@@ -1227,7 +1227,7 @@ void stationarity()
         
         if convergedTF
         {
-            for(iy=0;iy<iSiteTotal[nf];iy++)
+            for(iy=30;iy<iSiteTotal[nf];iy++)
             {
                 if (Prvec0_sum[nf][iy]==0 || Prvec0_op_sum[nf][iy]==0 || Prvec_cen_sum[nf][iy]==0 || Prvec_offcen_sum[nf][iy]==0 || Prvec_offcen_op_sum[nf][iy]==0 || Prvec0_up_sum[nf][iy]==0 || Prvec0_up_op_sum[nf][iy]==0 || Prvec_cen_up_sum[nf][iy]==0 || Prvec_offcen_up_sum[nf][iy]==0 || Prvec_offcen_up_op_sum[nf][iy]==0 || Prvec0_halfup_sum[nf][iy]==0 || Prvec0_halfup_op_sum[nf][iy]==0 || Prvec_cen_halfup_sum[nf][iy]==0 || Prvec_offcen_halfup_sum[nf][iy]==0 || Prvec_offcen_halfup_op_sum[nf][iy]==0)
                 {
