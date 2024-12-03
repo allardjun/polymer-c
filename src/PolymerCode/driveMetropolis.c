@@ -3,7 +3,7 @@
 #define TWISTER genrand_real3()
 #define NFILMAX         3
 #define NMAX            1201
-#define NTMAX           2e9
+#define NTMAX           1e10
 #define NTADAPT         20000
 #define NTCHECK         200000
 #define DCHIMIN         1e-4
@@ -14,7 +14,7 @@
 #define DCHIINIT        0.1
 #define KSCRITICAL      0.002
 #define MEMBRANE        0
-#define MULTIPLE        0
+#define MULTIPLE        1
 #define STIFFEN         0
 #define ELECTRO         0
 #define HARDWALL        0
