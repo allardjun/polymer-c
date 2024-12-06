@@ -827,7 +827,7 @@ void dataRecording()
     {
         double yshift= 16.6667;
         double halfyshift= 8.33335;
-        double ib=0;
+        ib=0;
         for(iy=0;iy<iSiteTotal[nf];iy++)
         {
             iSiteCurrent = iSite[nf][iy];
@@ -938,6 +938,22 @@ void dataRecording()
                 ib++;
 
                 if(NFil<=2){
+                    double rBase_op;
+                    double rBase_cen = (rBase[0][0] + (0.5 * baseSepDistance));
+                    double rBase_offcen;
+                    double rBase_offcen_op;
+                    if(nf==0)
+                    {
+                        rBase_op = rBase[0][0] + baseSepDistance;
+                        rBase_offcen = rBase_cen - (8.33333333333333);
+                        rBase_offcen_op = rBase_cen + (8.33333333333333);
+                    }
+                    else if(nf==1)
+                    {
+                        rBase_op = rBase[0][0] + 0; 
+                        rBase_offcen = rBase_cen + (8.33333333333333);
+                        rBase_offcen_op = rBase_cen - (8.33333333333333);
+                    }
                     reeiSite_op_bound[nf][iy][0] = sqrt((bLigandCenter[nf][ib][0]-rBase_op)*(bLigandCenter[nf][ib][0]-rBase_op) +
                                         (bLigandCenter[nf][ib][1]-rBase[nf][1])*(bLigandCenter[nf][ib][1]-rBase[nf][1]) +
                                         (bLigandCenter[nf][ib][2]-rBase[nf][2])*(bLigandCenter[nf][ib][2]-rBase[nf][2]));
@@ -1205,6 +1221,7 @@ void dataRecording()
 
         for(nf=0;nf<NFil;nf++)
         {
+            ib=0;
             for(iy=0;iy<iSiteTotal[nf];iy++)
             {
                 if(radtype == 10)
@@ -1238,13 +1255,34 @@ void dataRecording()
                 Prvec0_up_sum[nf][iy]           += (long)(reeiSite_up[nf][iy] < (double)Prvec0_up_rad[nf][iy]);
                 Prvec0_halfup_sum[nf][iy]           += (long)(reeiSite_halfup[nf][iy] < (double)Prvec0_halfup_rad[nf][iy]);
 
-                Prvec0_sum_bound[nf][iy][0]           += (long)(reeiSite_bound[nf][iy][0] < (double)Prvec0_rad[nf][iy]);
-                Prvec0_up_sum_bound[nf][iy][0]           += (long)(reeiSite_up_bound[nf][iy][0] < (double)Prvec0_up_rad[nf][iy]);
-                Prvec0_halfup_sum_bound[nf][iy][0]           += (long)(reeiSite_halfup_bound[nf][iy][0] < (double)Prvec0_halfup_rad[nf][iy]);
+                if(iy==bSite[nf][ib])
+                {
+                    Prvec0_sum_bound[nf][iy][0]           += (long)(reeiSite_bound[nf][iy][0] < (double)Prvec0_rad[nf][iy]);
+                    Prvec0_up_sum_bound[nf][iy][0]           += (long)(reeiSite_up_bound[nf][iy][0] < (double)Prvec0_up_rad[nf][iy]);
+                    Prvec0_halfup_sum_bound[nf][iy][0]           += (long)(reeiSite_halfup_bound[nf][iy][0] < (double)Prvec0_halfup_rad[nf][iy]);
 
-                Prvec0_sum_bound[nf][iy][1]           += (long)(reeiSite_bound[nf][iy][1] < (double)Prvec0_rad[nf][iy]);
-                Prvec0_up_sum_bound[nf][iy][1]           += (long)(reeiSite_up_bound[nf][iy][1] < (double)Prvec0_up_rad[nf][iy]);
-                Prvec0_halfup_sum_bound[nf][iy][1]           += (long)(reeiSite_halfup_bound[nf][iy][1] < (double)Prvec0_halfup_rad[nf][iy]);
+                    Prvec0_sum_bound[nf][iy][1]           += (long)(reeiSite_bound[nf][iy][1] < (double)Prvec0_rad[nf][iy]);
+                    Prvec0_up_sum_bound[nf][iy][1]           += (long)(reeiSite_up_bound[nf][iy][1] < (double)Prvec0_up_rad[nf][iy]);
+                    Prvec0_halfup_sum_bound[nf][iy][1]           += (long)(reeiSite_halfup_bound[nf][iy][1] < (double)Prvec0_halfup_rad[nf][iy]);
+
+                    if(NFil<=2){
+                        Prvec0_op_sum_bound[nf][iy][0]           += (long)(reeiSite_op_bound[nf][iy][0] < (double)Prvec0_op_rad[nf][iy]);
+                        Prvec_cen_sum_bound[nf][iy][0]           += (long)(reeiSite_cen_bound[nf][iy][0] < (double)Prvec_cen_rad[nf][iy]);
+                        Prvec_offcen_sum_bound[nf][iy][0]           += (long)(reeiSite_offcen_bound[nf][iy][0] < (double)Prvec_offcen_rad[nf][iy]);
+                        Prvec_offcen_op_sum_bound[nf][iy][0]           += (long)(reeiSite_offcen_op_bound[nf][iy][0] < (double)Prvec_offcen_op_rad[nf][iy]);
+
+                        Prvec0_up_op_sum_bound[nf][iy][0]           += (long)(reeiSite_up_op_bound[nf][iy][0] < (double)Prvec0_up_op_rad[nf][iy]);
+                        Prvec_cen_up_sum_bound[nf][iy][0]           += (long)(reeiSite_cen_up_bound[nf][iy][0] < (double)Prvec_cen_up_rad[nf][iy]);
+                        Prvec_offcen_up_sum_bound[nf][iy][0]           += (long)(reeiSite_offcen_up_bound[nf][iy][0] < (double)Prvec_offcen_up_rad[nf][iy]);
+                        Prvec_offcen_up_op_sum_bound[nf][iy][0]           += (long)(reeiSite_offcen_up_op_bound[nf][iy][0] < (double)Prvec_offcen_up_op_rad[nf][iy]);
+
+                        Prvec0_halfup_op_sum_bound[nf][iy][0]           += (long)(reeiSite_halfup_op_bound[nf][iy][0] < (double)Prvec0_halfup_op_rad[nf][iy]);
+                        Prvec_cen_halfup_sum_bound[nf][iy][0]           += (long)(reeiSite_cen_halfup_bound[nf][iy][0] < (double)Prvec_cen_halfup_rad[nf][iy]);
+                        Prvec_offcen_halfup_sum_bound[nf][iy][0]           += (long)(reeiSite_offcen_halfup_bound[nf][iy][0] < (double)Prvec_offcen_halfup_rad[nf][iy]);
+                        Prvec_offcen_halfup_op_sum_bound[nf][iy][0]           += (long)(reeiSite_offcen_halfup_op_bound[nf][iy][0] < (double)Prvec_offcen_halfup_op_rad[nf][iy]);
+                    }
+                    ib++;
+                }
 
                 if(NFil<=2){
                     Prvec0_op_sum[nf][iy]           += (long)(reeiSite_op[nf][iy] < (double)Prvec0_op_rad[nf][iy]);
@@ -1260,24 +1298,7 @@ void dataRecording()
                     Prvec0_halfup_op_sum[nf][iy]           += (long)(reeiSite_halfup_op[nf][iy] < (double)Prvec0_halfup_op_rad[nf][iy]);
                     Prvec_cen_halfup_sum[nf][iy]           += (long)(reeiSite_cen_halfup[nf][iy] < (double)Prvec_cen_halfup_rad[nf][iy]);
                     Prvec_offcen_halfup_sum[nf][iy]           += (long)(reeiSite_offcen_halfup[nf][iy] < (double)Prvec_offcen_halfup_rad[nf][iy]);
-                    Prvec_offcen_halfup_op_sum[nf][iy]           += (long)(reeiSite_offcen_halfup_op[nf][iy] < (double)Prvec_offcen_halfup_op_rad[nf][iy]);
-
-
-                    Prvec0_op_sum_bound[nf][iy][0]           += (long)(reeiSite_op_bound[nf][iy][0] < (double)Prvec0_op_rad[nf][iy]);
-                    Prvec_cen_sum_bound[nf][iy][0]           += (long)(reeiSite_cen_bound[nf][iy][0] < (double)Prvec_cen_rad[nf][iy]);
-                    Prvec_offcen_sum_bound[nf][iy][0]           += (long)(reeiSite_offcen_bound[nf][iy][0] < (double)Prvec_offcen_rad[nf][iy]);
-                    Prvec_offcen_op_sum_bound[nf][iy][0]           += (long)(reeiSite_offcen_op_bound[nf][iy][0] < (double)Prvec_offcen_op_rad[nf][iy]);
-
-                    Prvec0_up_op_sum_bound[nf][iy][0]           += (long)(reeiSite_up_op_bound[nf][iy][0] < (double)Prvec0_up_op_rad[nf][iy]);
-                    Prvec_cen_up_sum_bound[nf][iy][0]           += (long)(reeiSite_cen_up_bound[nf][iy][0] < (double)Prvec_cen_up_rad[nf][iy]);
-                    Prvec_offcen_up_sum_bound[nf][iy][0]           += (long)(reeiSite_offcen_up_bound[nf][iy][0] < (double)Prvec_offcen_up_rad[nf][iy]);
-                    Prvec_offcen_up_op_sum_bound[nf][iy][0]           += (long)(reeiSite_offcen_up_op_bound[nf][iy][0] < (double)Prvec_offcen_up_op_rad[nf][iy]);
-
-                    Prvec0_halfup_op_sum_bound[nf][iy][0]           += (long)(reeiSite_halfup_op_bound[nf][iy][0] < (double)Prvec0_halfup_op_rad[nf][iy]);
-                    Prvec_cen_halfup_sum_bound[nf][iy][0]           += (long)(reeiSite_cen_halfup_bound[nf][iy][0] < (double)Prvec_cen_halfup_rad[nf][iy]);
-                    Prvec_offcen_halfup_sum_bound[nf][iy][0]           += (long)(reeiSite_offcen_halfup_bound[nf][iy][0] < (double)Prvec_offcen_halfup_rad[nf][iy]);
-                    Prvec_offcen_halfup_op_sum_bound[nf][iy][0]           += (long)(reeiSite_offcen_halfup_op_bound[nf][iy][0] < (double)Prvec_offcen_halfup_op_rad[nf][iy]);
-                }
+                    Prvec_offcen_halfup_op_sum[nf][iy]           += (long)(reeiSite_offcen_halfup_op[nf][iy] < (double)Prvec_offcen_halfup_op_rad[nf][iy]);}
 
                 for (j=0;j<Prvec_rad_vec_size;j++)
                 {
