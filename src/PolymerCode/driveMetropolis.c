@@ -272,12 +272,6 @@ int main( int argc, char *argv[] )
     // iSites, bSites
     getSites();
 
-    if(ELECTRO)
-    {
-        // basic sites
-        getBasicSites();
-    }
-
     /***********************************************************************************/
     /******************************* FINISH INITIALIZING *******************************/
 

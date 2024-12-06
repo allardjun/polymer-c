@@ -15,12 +15,6 @@ void metropolisJoint()
         initializeStiffSites();
     }
 
-    /************* ELECTRO SEGMENTS *******************/
-
-    if (ELECTRO) //phosphorylate sites only if ELECTRO is 1 in driveM
-    {
-        initializePhosphorylatedSites();
-    }
     
     /********* INITIALIZE CONFIGURATION *******************/
 
@@ -398,26 +392,6 @@ void metropolisJoint()
             
             constraintSatisfiedTF=1;
             
-            //check if hard membrane occludes polymer (when not using ELECTRO)
-            if (MEMBRANE && !ELECTRO)
-            {
-                //printf("Testing Membrane");
-
-                for(nf=0;nf<NFil;nf++)
-                {
-                    for(i=0;i<N[nf];i++)
-                    {
-                        if (rPropose[nf][i][2] < 0)
-                        {
-                            constraintSatisfiedTF=0;
-                            i=N[nf]+1; // shortcut out of the loop
-                            nf = NFil; // shortcut out of outer loop
-                            //printf("Membrane constraint failed.");
-                        }
-                    }
-                } // done checking constraint
-                
-            } //finished first constraint
             
             // check if BASEBOUND (immobile sphere at base) occludes polymer
             if (BASEBOUND && constraintSatisfiedTF)
@@ -450,15 +424,7 @@ void metropolisJoint()
                     for (ib=0;ib<bSiteTotal[nf];ib++) //for each bound ligand on filament
                     {
                         
-                       if (MEMBRANE)
-                       {
-                            if(bLigandCenterPropose[nf][ib][2]<brLigand) // if any bound ligands intersect with membrane
-                            {
-                                constraintSatisfiedTF = 0; //constraint not satisfied
-                                ib = bSiteTotal[nf]; //shortcut out of middle loop
-                                nf = NFil; //shortcut out of outer loop
-                            }
-                       }
+                       
                         
                        if(constraintSatisfiedTF) //if passed membrane constraint, test if joints intersect bound ligands
                        {
@@ -480,9 +446,7 @@ void metropolisJoint()
                                 }
                            }
                            // test against base joints
-                           if(!MEMBRANE)
-                           {
-                               for(nf2=0;nf2<NFil;nf2++)
+                           for(nf2=0;nf2<NFil;nf2++)
                                {
                                    if ( ((bLigandCenterPropose[nf][ib][0]-rBase[nf2][0])*(bLigandCenterPropose[nf][ib][0]-rBase[nf2][0]) +
                                          (bLigandCenterPropose[nf][ib][1]-rBase[nf2][1])*(bLigandCenterPropose[nf][ib][1]-rBase[nf2][1]) +
@@ -495,7 +459,7 @@ void metropolisJoint()
                                        nf = NFil;// shortcut out of outer most loop
                                    }
                                }
-                           }
+                           
                         }
                         
                         // only have 1 base ligand for all filaments
@@ -560,7 +524,6 @@ void metropolisJoint()
         // We now have a proposal configuration that passes the constraints.
         // Step 3 is to see if it passes our acceptance test (Metropolis test).
         
-        if (!ELECTRO)
         {
             // Compute energy
             ENew = 0;
@@ -601,14 +564,7 @@ void metropolisJoint()
                     {
                         /**********************/
                         // energy between bound ligands and membrane
-                        if (MEMBRANE)
-                        {
-                            if(bLigandCenterPropose[nf][ib][2]<brLigand) // if any bound ligands intersect with membrane
-                            {
-                                // add energy based on intersection distance
-                                ENew += 0.5*kBound*(bLigandCenterPropose[nf][ib][2]-brLigand)*(bLigandCenterPropose[nf][ib][2]-brLigand);
-                            }
-                        }
+                        
                         /**********************/
                         // energy between bound ligands and joints in filaments
                         for(nf2=0;nf2<NFil;nf2++) // check each bound ligand of filament nf against all joints of filament nf2
@@ -630,9 +586,7 @@ void metropolisJoint()
                         }
                         /**********************/
                         // energy between bound ligands and base joints
-                        if(!MEMBRANE)
-                        {
-                            for(nf2=0;nf2<NFil;nf2++)
+                        for(nf2=0;nf2<NFil;nf2++)
                             {
                                 if ( ((bLigandCenterPropose[nf][ib][0]-rBase[nf2][0])*(bLigandCenterPropose[nf][ib][0]-rBase[nf2][0]) +
                                       (bLigandCenterPropose[nf][ib][1]-rBase[nf2][1])*(bLigandCenterPropose[nf][ib][1]-rBase[nf2][1]) +
@@ -647,7 +601,7 @@ void metropolisJoint()
 
                                 }
                             }
-                        }
+                        
                         /**********************/
                         // energy between bound ligands and base ligand
                         // only have 1 base ligand for all filaments
@@ -748,132 +702,6 @@ void metropolisJoint()
                 
             }
         }
-        else // IF(ELECTRO)
-        {
- 
-            //sum over energies of all joints, except phosphorylated ones
-            EelectroNew = 0;
-
-                // create electrostatic potential
-                // 1. Basic residues feel parabolic potential
-                // 2. Tyrosines feel same potential as rest of amino acids (hardwall or softwall)
-                // 3. Phosphorylated tyrosines feel negative potential (repulsion from membrane)
-            for(nf=0;nf<NFil;nf++)
-            {
-                for (i=0;i<N[nf];i++)
-                {
-                    // if basic and not phosphorylated
-                    if((BasicSitesYN[nf][i]==1)&&(PhosphorylatedSites[nf][i]!=1))
-                    {
-                        if(rPropose[nf][i][2]<(sqrt(parabolaDepth/parabolaWidth)))
-                        {
-                        // Compute energy
-                            EelectroNew += parabolaWidth*(rPropose[nf][i][2])*(rPropose[nf][i][2])-parabolaDepth;
-                        }
-                        
-                    }
-                    else
-                    {
-                        // if phosphorylated
-                        if( PhosphorylatedSites[nf][i]==1 )
-                        {
-                            if (HARDWALL) //hard wall for phosphorylated tyrosines too
-                            {
-                                if (rPropose[nf][i][2]>0)
-                                {
-                                    // repulsive force with E*e^(-z/zbar)
-                                    EelectroNew += Erepulsion*(exp(-rPropose[nf][i][2]/Zrepulsion));
-                                }
-                                else
-                                {
-                                    // hardwall at 0 for phosphorylated tyrosines - probably unnecessary
-                                    EelectroNew += INF;
-                                }
-                            }
-                            else //no hardwall for phosphorylated tyrosines - use exponential
-                            {
-                                // repulsive force with E*e^(-z/zbar)
-                                EelectroNew += Erepulsion*(exp(-rPropose[nf][i][2]/Zrepulsion));
-                            }
-
-                        }
-                        else //if anything else (tyrosine, other amino acid)
-                        {
-                            if (HARDWALL) // hard wall
-                            {
-                                if(rPropose[nf][i][2]<=0)
-                                {
-                                    // Compute energy
-                                    EelectroNew += INF;
-                                }
-                                
-                            }
-                            else //soft wall
-                            {
-                                if(rPropose[nf][i][2]<=0)
-                                {
-                                    // Compute energy
-                                    EelectroNew += wallParabolaK*(rPropose[nf][i][2])*(rPropose[nf][i][2]);
-                                }
-                            }
-                          }
-                        }
-                    }
-                }
-
-            if (  TWISTER < exp(Eelectro-EelectroNew) ) //always accepts if ENew<E, accepts with normal (?) probability if ENew>E
-            {
-
-                Eelectro = EelectroNew;
-
-                // Make configuration into the proposal configuration
-                for(i=iPropose;i<N[nfPropose];i++)
-                {
-                    phi[nfPropose][i]   = phiPropose[nfPropose][i];
-                    theta[nfPropose][i] = thetaPropose[nfPropose][i];
-                    psi[nfPropose][i]   = psiPropose[nfPropose][i];
-                    
-                    r[nfPropose][i][0] = rPropose[nfPropose][i][0];
-                    r[nfPropose][i][1] = rPropose[nfPropose][i][1];
-                    r[nfPropose][i][2] = rPropose[nfPropose][i][2];
-                    
-                    t[nfPropose][i][0] = tPropose[nfPropose][i][0];
-                    t[nfPropose][i][1] = tPropose[nfPropose][i][1];
-                    t[nfPropose][i][2] = tPropose[nfPropose][i][2];
-                    
-                    e1[nfPropose][i][0] = e1Propose[nfPropose][i][0];
-                    e1[nfPropose][i][1] = e1Propose[nfPropose][i][1];
-                    e1[nfPropose][i][2] = e1Propose[nfPropose][i][2];
-                    
-                    e2[nfPropose][i][0] = e2Propose[nfPropose][i][0];
-                    e2[nfPropose][i][1] = e2Propose[nfPropose][i][1];
-                    e2[nfPropose][i][2] = e2Propose[nfPropose][i][2];
-                    
-                }
-                
-                if(MULTIPLE)
-                {
-                    //accept bound ligand configurations
-                    for(nf=0;nf<NFil;nf++)
-                    {
-                        for(ib=0;ib<bSiteTotal[nf];ib++)
-                        {
-                            bLigandCenter[nf][ib][0] = bLigandCenterPropose[nf][ib][0];
-                            bLigandCenter[nf][ib][1] = bLigandCenterPropose[nf][ib][1];
-                            bLigandCenter[nf][ib][2] = bLigandCenterPropose[nf][ib][2];
-                            
-                        }
-                    }
-                }
-                if(iPropose==0)
-                accepts[0] ++;
-                else
-                accepts[1] ++;
-                
-             }
-
-            } // end configuration loop
-        
         /**************************************************************************/
         /**************** 4. Data collection and output to file *******************/
         /**************************************************************************/
@@ -949,19 +777,7 @@ void metropolisJoint()
                     //test if iSite occluded by membrane
                     if (stericOcclusion[nf][iy]==0) //if not occluded yet, do further tests
                     {
-                        if (MEMBRANE)
-                        {
-                            // check if sphere violates membrane
-                            if (iLigandCenter[nf][iy][2]<irLigand)
-                            {
-                                stericOcclusion[nf][iy]++; //sterically occluded
-                                membraneOcclusion[nf][iy]++; //specifically occluded by the membrane
-                                membraneAndSegmentOcclusion[nf][iy]++; //occluded by membrane or polymer segments (NOT other bound molecules)
-                            }
-                        }
-                        else
-                        {
-                            // check if sphere violates base (end point of polymer - origin or specified base location)
+                        // check if sphere violates base (end point of polymer - origin or specified base location)
                             for(nf2=0;nf2<NFil;nf2++)
                             {
                                 if ( (iLigandCenter[nf][iy][0]-rBase[nf2][0])*(iLigandCenter[nf][iy][0]-rBase[nf2][0]) +
@@ -974,7 +790,7 @@ void metropolisJoint()
                                 }
                             }
                             //didn't include base ligand - don't want the base to violate the base
-                        } // finished membrane tests
+                        
                     }
                     
                     if (stericOcclusion[nf][iy]==0) //if not occluded yet, do further tests
@@ -1060,7 +876,6 @@ void metropolisJoint()
             /***********Check Occlusion of Base************/
             /**********************************************/
             
-            if (!MEMBRANE) //only check occlusion if there is no membrane (membrane implies always occluded at base)
             {
                 // initialization of baseLigandCenter up in initializations of Data Collection section
                 
