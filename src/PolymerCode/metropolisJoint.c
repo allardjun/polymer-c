@@ -411,101 +411,6 @@ void metropolisJoint()
                     }
                 }
             } // finished second constraint
-
-            if(0)
-            {
-            //only test if looking at multiple binding and if membrane constraint passed
-            if (MULTIPLE && constraintSatisfiedTF)
-            {
-                
-                //printf("Testing bound ligands.");
-                for(nf=0;nf<NFil;nf++) //for each filament
-                {
-                    for (ib=0;ib<bSiteTotal[nf];ib++) //for each bound ligand on filament
-                    {
-                        
-                       
-                        
-                       if(constraintSatisfiedTF) //if passed membrane constraint, test if joints intersect bound ligands
-                       {
-                           for(nf2=0;nf2<NFil;nf2++) // check each bound ligand of filament nf against all joints of filament nf2
-                           {
-                                for(i=0;i<N[nf2];i++)// for each joint
-                                {
-                                    if ( ((bLigandCenterPropose[nf][ib][0]-rPropose[nf2][i][0])*(bLigandCenterPropose[nf][ib][0]-rPropose[nf2][i][0]) +
-                                        (bLigandCenterPropose[nf][ib][1]-rPropose[nf2][i][1])*(bLigandCenterPropose[nf][ib][1]-rPropose[nf2][i][1]) +
-                                        (bLigandCenterPropose[nf][ib][2]-rPropose[nf2][i][2])*(bLigandCenterPropose[nf][ib][2]-rPropose[nf2][i][2]) <= brLigand*brLigand )
-                                        && !( nf == nf2 && i == bSite[nf][ib]) ) //if proposed joint is inside ligand sphere AND joint is not where tested ligand is attached
-                                    {
-                                        constraintSatisfiedTF=0; //constraint not satisfied
-                                        i=N[nf2]; //shortcut out of inner loop
-                                        nf2 = NFil; //shortcut out of middle loop
-                                        ib=bSiteTotal[nf];// shortcut out of outer loop
-                                        nf = NFil;// shortcut out of outer most loop
-                                    }
-                                }
-                           }
-                           // test against base joints
-                           for(nf2=0;nf2<NFil;nf2++)
-                               {
-                                   if ( ((bLigandCenterPropose[nf][ib][0]-rBase[nf2][0])*(bLigandCenterPropose[nf][ib][0]-rBase[nf2][0]) +
-                                         (bLigandCenterPropose[nf][ib][1]-rBase[nf2][1])*(bLigandCenterPropose[nf][ib][1]-rBase[nf2][1]) +
-                                         (bLigandCenterPropose[nf][ib][2]-rBase[nf2][2])*(bLigandCenterPropose[nf][ib][2]-rBase[nf2][2]) <= brLigand*brLigand )
-                                       && !( nf == nf2 && i == bSite[nf][ib]) ) //if proposed joint is inside ligand sphere AND joint is not where tested ligand is attached
-                                   {
-                                       constraintSatisfiedTF=0; //constraint not satisfied
-                                       nf2 = NFil; //shortcut out of middle loop
-                                       ib=bSiteTotal[nf];// shortcut out of outer loop
-                                       nf = NFil;// shortcut out of outer most loop
-                                   }
-                               }
-                           
-                        }
-                        
-                        // only have 1 base ligand for all filaments
-                        if (constraintSatisfiedTF && BASEBOUND) //if constraint is still satisfied, test bound ligand sphere with base ligand if exists
-                        {
-                            if ((bLigandCenterPropose[nf][ib][0]-baseCenter[0])*(bLigandCenterPropose[nf][ib][0]-baseCenter[0])+
-                                (bLigandCenterPropose[nf][ib][1]-baseCenter[1])*(bLigandCenterPropose[nf][ib][1]-baseCenter[1])+
-                                (bLigandCenterPropose[nf][ib][2]-baseCenter[2])*(bLigandCenterPropose[nf][ib][2]-baseCenter[2])<=
-                                (brLigand+baserLigand)*(brLigand+baserLigand)) //if distance between centers is less than brLigand+baserLigand, then ligands are intersecting
-                            {
-                                constraintSatisfiedTF=0; //constraint not satisfied
-                                ib=bSiteTotal[nf];// shortcut out of outer loop
-                                nf = NFil; //shortcut out of outer most loop
-                            }
-                            
-                         }
-                        
-
-                        if (constraintSatisfiedTF) //if constraint is still satisfied, test ligand sphere with other ligands on filaments
-                        {
-                            // check ligand against other ligands on filaments
-                            for(nf2=nf;nf2<NFil;nf2++) //look at this filament and all following filaments
-                            {
-                                for (ib2=0;ib2<bSiteTotal[nf2];ib2++) //for each next ligand
-                                {
-                                    
-                                    if ((bLigandCenterPropose[nf][ib][0]-bLigandCenterPropose[nf2][ib2][0])*(bLigandCenterPropose[nf][ib][0]-bLigandCenterPropose[nf2][ib2][0]) +
-                                        (bLigandCenterPropose[nf][ib][1]-bLigandCenterPropose[nf2][ib2][1])*(bLigandCenterPropose[nf][ib][1]-bLigandCenterPropose[nf2][ib2][1]) +
-                                        (bLigandCenterPropose[nf][ib][2]-bLigandCenterPropose[nf2][ib2][2])*(bLigandCenterPropose[nf][ib][2]-bLigandCenterPropose[nf2][ib2][2])<=
-                                        (2*brLigand)*(2*brLigand) && !(nf == nf2 && bSite[nf][ib] == bSite[nf2][ib2])) //if distance between centers is less than 2*brLigand, then ligands are intersecting, && bound ligands being compared are not the same ligand
-                                    {
-                                        constraintSatisfiedTF=0; //constraint not satisfied
-                                        ib2=bSiteTotal[nf2]; //shortcut out of loop
-                                        nf2 = NFil; //shortcut out of middle loop
-                                        ib=bSiteTotal[nf]; //shortcut out of outer loop
-                                        nf = NFil; //shortcut out of outer most loop
-                                    }
-                                }
-                            }
-                        }
-                        }
-                }
-                
-
-                } //finished last constraint
-            }
             
             constraintProposalsTotal++; //count number of times proposals are rejected this time step
         } //finish constraint while loop
@@ -916,16 +821,6 @@ void metropolisJoint()
                     //or do we want to test Occlusion of base with ligands? Could do both?
                     if (MULTIPLE && stericOcclusionBase[nf]==0)
                     {
-    //                    //initialize
-    //                    for (ib=0;ib<bSiteTotal;ib++)
-    //                    {
-    //                        boundToBaseDeliver[ib]=0;
-    //                    }
-                        
-                        
-    //                    switch (deliveryMethod)
-    //                    {
-    //                            case 0:
                         
                         //for each bound iSite, test if bound ligand intersects with base ligand site
                         for(nf2=0;nf2<NFil;nf2++)
@@ -942,28 +837,6 @@ void metropolisJoint()
                              } // finished loop through bSites
                         }
                         
-                        
-                                //break;
-                        
-    //                            case 1:
-    //
-    //                                //for each bound iSite, test if bound ligand is within "delivery" distance
- 
-    //                                for (ib=0;ib<bSiteTotal;ib++)
-    //                                {
-    //                                    if ((bLigandCenter[ib][0])*(bLigandCenter[ib][0])+(bLigandCenter[ib][1])*(bLigandCenter[ib][1])+(bLigandCenter[ib][2])*(bLigandCenter[ib][2]) <= deliveryDistance)
-    //                                    {
-    //                                        boundToBaseDeliver[ib]++;
-    //                                    }
-    //
-    //                                    //test if bound ligand intersects base site
-    //                                    if ((baseLigandCenter[0]-bLigandCenter[ib][0])*(baseLigandCenter[0]-bLigandCenter[ib][0])+(baseLigandCenter[1]-bLigandCenter[ib][1])*(baseLigandCenter[1]-bLigandCenter[ib][1])+(baseLigandCenter[2]-bLigandCenter[ib][2])*(baseLigandCenter[2]-bLigandCenter[ib][2]) <= (irLigand+brLigand)*(irLigand+brLigand))
-    //                                    {
-    //                                        stericOcclusionBase++;
-    //                                    }
-    //                                }
-    //                            break;
-    //                     }
                     } // finished checking bound ligands occlusion of base
                     
                 }//end checking occlusion of base
