@@ -53,7 +53,7 @@ end
     
     % sort lines in the file using bash 
     % create temp files
-    command = sprintf('tail -r %s | awk ''!flag; /nt/{flag = 1};'' | tail -r | sort > "%s.sorted"', full_input_file,full_temp_file); % gets last output (for live scripts) and sorts lines
+    command = sprintf('tail -r %s | awk ''!flag; /nt /{flag = 1};'' | tail -r | sort > "%s.sorted"', full_input_file,full_temp_file); % gets last output (for live scripts) and sorts lines
     system(command);
     command = sprintf( 'sed ''s/\\[[^]]*\\]//g'' %s.sorted > %s.sorted.nosquare', full_temp_file, full_temp_file); % removes brackets []
     system(command);
