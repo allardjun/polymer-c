@@ -1,23 +1,23 @@
 #!/bin/bash
 #./metropolis.out parameters.txt outputfile verboseTF NFil N iSite baseSepDist Force dimerForce
 
-for baseval in $(seq 35 35); do
+for baseval in $(seq 0 0); do
 
   cd /pub/kbogue1/GitHub/polymer-c/drivers
 
-  d=$(date +%Y.%d.%m)
+  d=$(date +%Y.%d.%m.%H.%M)
   #d=$(date +%Y.%d).${baseval}
   #d='2023.14.01'
 
   # polymer number of segments to sweep over
-  NStart=100
-  NStop=100
+  NStart=1
+  NStop=400
 
   # output directory
-  output_dir=/pub/kbogue1/GitHub/Data/polymer-c_data/testing_radius_code
+  output_dir=/pub/kbogue1/GitHub/Data/polymer-c_data/FH2_0
 
   # dimerization state
-  what='double' #'single' 'double'
+  what='dimer' #'single' 'double'
 
   mkdir $output_dir/${what}.${d}
   # type of radius run
@@ -29,13 +29,13 @@ for baseval in $(seq 35 35); do
       NFil=2       #2
       #NumSeg=${i} #single=300; double=200; dimer=122
       if [ ${NFil} -eq 2 ]; then
-        baseSepDist=35.5
-        #baseSepDist=${baseval}
+        #baseSepDist=35.5
+        baseSepDist=${baseval}
       else
         baseSepDist=0
       fi
-      #dimerForce=10 #0
-      dimerForce=0
+      dimerForce=10 #0
+      #dimerForce=0
       iSite='-1'
       force=0
       #
@@ -51,18 +51,18 @@ for baseval in $(seq 35 35); do
 
     cd $output_dir
     #mkdir ${what}.${d}
-    mkdir ${what}.${d}/BSD${baseSepDist}.radtype${radtype}
+    mkdir ${what}.${d}
     cd -
 
     for NumSeg in $(seq $NStart $NStop); do
-      mkdir $output_dir/${what}.${d}/BSD${baseSepDist}.radtype${radtype}/run.${what}.N${NumSeg}_${d}
-      cp ../src/PolymerCode/metropolis.out ../src/PolymerCode/parameters.txt ../src/PolymerCode/ISEED $output_dir/${what}.${d}/BSD${baseSepDist}.radtype${radtype}/run.${what}.N${NumSeg}_${d}
-      cp submit.${what}.N${NumSeg}.${d}.sub $output_dir/${what}.${d}/BSD${baseSepDist}.radtype${radtype}/run.${what}.N${NumSeg}_${d}
+      mkdir $output_dir/${what}.${d}/run.${what}.N${NumSeg}_${d}
+      cp ../src/PolymerCode/metropolis.out ../src/PolymerCode/parameters.txt ../src/PolymerCode/ISEED $output_dir/${what}.${d}/run.${what}.N${NumSeg}_${d}
+      cp submit.${what}.N${NumSeg}.${d}.sub $output_dir/${what}.${d}/run.${what}.N${NumSeg}_${d}
       rm submit.${what}.N${NumSeg}.${d}.sub
     done
 
     for NumSeg in $(seq $NStart $NStop); do
-      cd $output_dir/${what}.${d}/BSD${baseSepDist}.radtype${radtype}/run.${what}.N${NumSeg}_${d}
+      cd $output_dir/${what}.${d}/run.${what}.N${NumSeg}_${d}
       sbatch submit.${what}.N${NumSeg}.${d}.sub
     done
 

@@ -14,7 +14,7 @@
 #define DCHIINIT        0.1
 #define KSCRITICAL      0.002
 #define MEMBRANE        0
-#define MULTIPLE        1
+#define MULTIPLE        0
 #define STIFFEN         0
 #define ELECTRO         0
 #define HARDWALL        0
@@ -235,6 +235,7 @@ int main( int argc, char *argv[] )
 
     if(argv[10])
     {
+        printf("This is argv10: %lf\n", atof(argv[10]));
         if(atoi(argv[10])!=-1)
             radtype = atof(argv[10]);
         if (TALKATIVE) 
@@ -269,8 +270,10 @@ int main( int argc, char *argv[] )
 
     // filaments
     getFilaments();
+    printf("ran getFilaments\n");
     // iSites, bSites
     getSites();
+    printf("ran getSites\n");
 
     /***********************************************************************************/
     /******************************* FINISH INITIALIZING *******************************/
@@ -297,6 +300,7 @@ int main( int argc, char *argv[] )
 
     /***********************************************************************************/
     // run metropolis algorithm
+    printf("starting metropolisJoint\n");
 	metropolisJoint();
 
 	return 0;
