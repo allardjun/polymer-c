@@ -42,9 +42,9 @@ int iSiteTotal,newState,numValidStates;
 
 int sizeOfRateMatrix;
 int verbose, summaryOn;
-int stateStorage[100000],numberStatesStored;
-int kpolyStorage[100000];
-double timeStorage[100000];
+int stateStorage[ENDSTORAGEMAX],numberStatesStored;
+int kpolyStorage[ENDSTORAGEMAX];
+double timeStorage[ENDSTORAGEMAX];
 
 double timeAvgDuration;
 int stateStorage_End[ENDSTORAGEMAX];

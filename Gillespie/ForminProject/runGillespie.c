@@ -34,6 +34,7 @@ void runGillespie()
     }
     
     fclose(ratesFile);
+    //printf("read in rate matrix\n");
     //debugging
     if(0)
     {
@@ -75,10 +76,12 @@ void runGillespie()
     }
     
     fclose(statesFile);
+    //printf("read in state matrix\n");
     
     /*************** Binary Conversion and Initialize Stored States ************************/
     
     initializeStoreStates();
+    //printf("ran initializeStoreStates\n");
     
     /******************************* Gillespie ******************************************/
     
@@ -88,6 +91,7 @@ void runGillespie()
     currentState=0; //start at free FH1
     
     initialize_dataRecording();
+    //printf("ran initialize_dataRecording\n");
     
     // while less than number of desired steps or less than max steps
     while (timeTotal < timeEnd && it < ITMAX)
@@ -117,6 +121,12 @@ void runGillespie()
             {
                 randTime[iy] = 0; //use 0 instead of infinity - then just remove these cases later
             }
+            if (randTime[iy] < 0){
+                printf("negative time \n");
+                printf("This is the state: %d\n", iy);
+                printf("This is the rate: %f\n", rateMatrix[currentState][iy]);
+                printf("This is the time: %f\n", randTime[iy]);
+            }
         }
         
         //pick smallest of random times
@@ -144,7 +154,9 @@ void runGillespie()
         /******************************* Store Last 100 States ******************************************/
         //update stored states
         storeStates();
+        //printf("ran storestates \n");
         dataRecording();
+        //printf("ran datarecording \n");
         /*************************************************************************************************/
         
         
@@ -163,8 +175,10 @@ void runGillespie()
         it++;
     
     }
+    printf("completed gillespie loop\n");
     finalState = currentState;
     finalTotalTime = timeTotal;
+    printf("This is the total time: %f\n\n", timeTotal);
     
     outputGillespie();
     
