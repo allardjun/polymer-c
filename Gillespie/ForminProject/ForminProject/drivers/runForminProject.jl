@@ -22,8 +22,8 @@ construct_PRM_sizes = [[12], [14], [7], [5], [5, 7, 14, 12], [5, 12], [5, 14], [
 # Constants
 c_PA = 0.88
 G = 0.5
-k_cap = 73000.02274 #73.02274
-k_del = 0.00022909 #0.022909
+k_cap = 73.02274
+k_del = 0.022909
 r_cap = 37896.5784
 r_del = 0.0  # Considering release instant
 k_rel = 1e8  # Large value for instant release
@@ -36,7 +36,7 @@ prname = "Prvec0"
 fname = "/Users/katiebogue/MATLAB/GitHub/Data/polymer-c_data/bni1_msb/double.2024.03.12/BSD35.5.radtype20"
 
 # folder name to save everything to in the saveloc
-savfname = "25000testing"
+savfname = "bestfits_10000_5000"
 
 # generate transition matrices and files
 # using Profile
@@ -44,10 +44,12 @@ savfname = "25000testing"
 # @profile outfname=ForminProject.makeTM(saveloc, construct_names, construct_PRM_locs, construct_PRM_sizes, c_PA, G, k_cap, k_del, r_cap, r_del, k_rel, r_cap_exp, prname, fname, savfname)
 # Profile.print()
 
-outfname=ForminProject.makeTM(saveloc, construct_names, construct_PRM_locs, construct_PRM_sizes, c_PA, G, k_cap, k_del, r_cap, r_del, k_rel, r_cap_exp, prname, fname, savfname)
+#outfname =ForminProject.makeTM(saveloc, construct_names, construct_PRM_locs, construct_PRM_sizes, c_PA, G, k_cap, k_del, r_cap, r_del, k_rel, r_cap_exp, prname, fname, savfname, true, false)
+
+outfname =ForminProject.makeTM(saveloc, construct_names, construct_PRM_locs, construct_PRM_sizes, c_PA, G, k_cap, k_del, r_cap, r_del, k_rel, r_cap_exp, prname, fname, savfname, true, true)
 
 # # run gillespie on the folder
-ForminProject.runGillespieOnFolder(outfname, 50000.0, 25000.0)
+#ForminProject.runGillespieOnFolder(outfname, 10000.0, 5000.0)
 
 # # process the kpolys
 exp = ForminProject.process_kpoly_dict("ForminProject/src/refsums.txt")

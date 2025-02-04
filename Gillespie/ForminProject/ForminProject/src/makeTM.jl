@@ -2,9 +2,11 @@ using DelimitedFiles
 using JLD2
 using Dates
 
-function makeTM(saveloc, construct_names, construct_PRM_locs, construct_PRM_sizes, c_PA, G, k_cap, k_del, r_cap, r_del, k_rel, r_cap_exp, prname, fname, savfname)
+function makeTM(saveloc, construct_names, construct_PRM_locs, construct_PRM_sizes, c_PA, G, k_cap, k_del, r_cap, r_del, k_rel, r_cap_exp, prname, fname, savfname, saveTF, runGillespieTF, runtime=10000.0, timeavgval=5000.0)
     savfname = string(savfname, "_", Dates.format(now(),"yyyy.mm.dd.HH.MM.SS"))
     mkdir(joinpath(saveloc, savfname,))
+
+    kpolys=Dict{String,Vector{Float64}}()
 
     for k in 1:length(construct_PRM_sizes)
         # Formin information
@@ -56,29 +58,56 @@ function makeTM(saveloc, construct_names, construct_PRM_locs, construct_PRM_size
         end
 
         # Save results
-        mkdir(joinpath(saveloc, savfname, construct_names[k]))
-        jldsave(joinpath(saveloc, savfname, construct_names[k], "TM.jld2"); 
-            transitionMatrix, 
-            numValidStates, 
-            output_mat, 
-            output_cell, 
-            states, 
-            isBound, 
-            isDelivered, 
-            PRM_locs, 
-            PRM_sizes, 
-            c_PA, 
-            G, 
-            k_cap , 
-            k_del , 
-            r_cap , 
-            r_del , 
-            k_rel , 
-            r_cap_exp,
-            prname)
-        writedlm(joinpath(saveloc, savfname, construct_names[k], "states.txt"), states, ',')
-        writedlm(joinpath(saveloc, savfname, construct_names[k], "TM.txt"), transitionMatrix, ',')
+        if saveTF
+            mkdir(joinpath(saveloc, savfname, construct_names[k]))
+            jldsave(joinpath(saveloc, savfname, construct_names[k], "TM.jld2"); 
+                transitionMatrix, 
+                numValidStates, 
+                output_mat, 
+                output_cell, 
+                states, 
+                isBound, 
+                isDelivered, 
+                PRM_locs, 
+                PRM_sizes, 
+                c_PA, 
+                G, 
+                k_cap , 
+                k_del , 
+                r_cap , 
+                r_del , 
+                k_rel , 
+                r_cap_exp,
+                prname)
+            writedlm(joinpath(saveloc, savfname, construct_names[k], "states.txt"), states, ',')
+            writedlm(joinpath(saveloc, savfname, construct_names[k], "TM.txt"), transitionMatrix, ',')
+        end
+
+        if runGillespieTF
+            output_file = joinpath(saveloc, savfname, construct_names[k], "TMout_$(runtime)_$(timeavgval).txt")
+            storedTotalTime_End, storedAddedActin_End, storedKpoly_End = runGillespie(transitionMatrix, states, numValidStates, 2*length(PRM_locs), runtime, output_file, timeavgval,saveTF)
+            kpolys[construct_names[k]] = [storedTotalTime_End, storedAddedActin_End, storedKpoly_End]
+        end
+    end
+
+    open(joinpath(saveloc, savfname, "kpolys.txt"), "a") do io
+
+        println(io, "k_cap: ", k_cap)
+        println(io, "k_del: ", k_del)
+        println(io, "r_cap: ", r_cap)
+        println(io, "r_del: ", r_del)
+        println(io, "k_rel: ", k_rel)
+        println(io, "r_cap_exp: ", r_cap_exp)
+        println(io, "c_PA: ", c_PA)
+        println(io, "G: ", G)
+        println(io, "prname: ", prname)
+        
+        for (key, value) in kpolys
+            println(io, key, ": ", value[1], " ", value[2], " ", value[3])
+        end
+
     end
 
     return (joinpath(saveloc, savfname,))
+
 end

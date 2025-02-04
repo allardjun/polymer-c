@@ -5,8 +5,8 @@
 #define INF        1e14
 #define ISITEMAX   9
 #define STATEMAX   3000
-#define ITMAX      1000000000 // use 1e8 on HPC for memory restrictions
-#define ENDSTORAGEMAX 10000000 // True max: ITMAX. Unlikely to use though. Use less for memory constraints.
+#define ITMAX         1000000000 // use 1e8 on HPC for memory restrictions
+#define ENDSTORAGEMAX 1000000000 // True max: ITMAX. Unlikely to use though. Use less for memory constraints.
 #define TALKATIVE  1
 
 #include <math.h>
@@ -29,6 +29,7 @@ FILE *statesFile;
 long iseed;
 
 char outputName[1000];
+char outfnametemp[1000];
 FILE *outputFile;
 
 
@@ -42,9 +43,8 @@ int iSiteTotal,newState,numValidStates;
 
 int sizeOfRateMatrix;
 int verbose, summaryOn;
-int stateStorage[ENDSTORAGEMAX],numberStatesStored;
-int kpolyStorage[ENDSTORAGEMAX];
-double timeStorage[ENDSTORAGEMAX];
+int numberStatesStored;
+int pastState;
 
 double timeAvgDuration;
 int stateStorage_End[ENDSTORAGEMAX];
@@ -93,7 +93,7 @@ int main( int argc, char *argv[] )
 
     if(argv[5]) //total number of iterations
         timeEnd = atof(argv[5]);
-    if (TALKATIVE) printf("This is the total number of iterations: %f\n", timeEnd);
+    if (TALKATIVE) printf("This is the total time: %f\n", timeEnd);
 
     if(argv[6]) //output file name
         strcpy(outputName, argv[6]);

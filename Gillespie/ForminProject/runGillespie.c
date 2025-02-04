@@ -1,8 +1,6 @@
 /*** Allard Group jun.allard@uci.edu                    ***/
 
 void runGillespie();
-void initializeStoreStates();
-void storeStates();
 
 void runGillespie()
 {
@@ -78,11 +76,6 @@ void runGillespie()
     fclose(statesFile);
     //printf("read in state matrix\n");
     
-    /*************** Binary Conversion and Initialize Stored States ************************/
-    
-    initializeStoreStates();
-    //printf("ran initializeStoreStates\n");
-    
     /******************************* Gillespie ******************************************/
     
     
@@ -94,6 +87,10 @@ void runGillespie()
     //printf("ran initialize_dataRecording\n");
     
     // while less than number of desired steps or less than max steps
+    strcpy(outfnametemp,outputName);
+    strcat(outfnametemp, "_testing.txt");
+
+    outputFile = fopen(outfnametemp, "a");
     while (timeTotal < timeEnd && it < ITMAX)
     {
         
@@ -150,19 +147,21 @@ void runGillespie()
         timeTotal += timeStep;
         //printf("This is the total time: %f\n\n", timeTotal);
         
-        // record current state and timestep before updating - matches state with time spent in that state
-        /******************************* Store Last 100 States ******************************************/
-        //update stored states
-        storeStates();
-        //printf("ran storestates \n");
+        //update state
+        currentState = newState;     
+
+        if (timeTotal >= (timeEnd-timeAvgDuration))
+        {
+            fprintf(outputFile, "state timestep tottime %d %f %f", currentState, timeStep, timeTotal);     
+            fprintf(outputFile, "\n");   
+        }
+
         dataRecording();
         //printf("ran datarecording \n");
         /*************************************************************************************************/
         
         
-        
-        //update state
-        currentState = newState;
+    
     
         
         if (0)
@@ -180,72 +179,13 @@ void runGillespie()
     finalTotalTime = timeTotal;
     printf("This is the total time: %f\n\n", timeTotal);
     
+    fclose(outputFile);
     outputGillespie();
     
     
 }
 
-/*************************************Initialize Store States********************************************/
-/************************************************************************************************************************/
-void initializeStoreStates()
-{
-    //initialize state storage
-    numberStatesStored = 100;
 
-    pastState = 0; 
-    
-    for (i=0;i<numberStatesStored;i++)
-    {
-        stateStorage[i] = 0;
-        timeStorage[i]  = 0;
-        kpolyStorage[i] = 0; 
-    }
-    
-}
-/******************************************Store States*************************************************************/
-/************************************************************************************************************************/
-void storeStates()
-{
-    int kpolynew = 0;
-    int diffSite=0;
-    int difftot=0;
-    for (int j=0; j<iSiteTotal; j++){
-        pastState = stateStorage[numberStatesStored-1];
-        if (stateMatrix[pastState][j]!=stateMatrix[currentState][j]){
-            difftot++;
-            diffSite=j;
-        }
-    }
-    if (stateMatrix[pastState][diffSite]==2 && stateMatrix[currentState][diffSite]==0){
-            kpolynew=1;
-        }
-
-    for (i=0;i<numberStatesStored-1;i++)
-    {
-        stateStorage[i] = stateStorage[i+1];
-        timeStorage[i]  = timeStorage[i+1];
-        kpolyStorage[i]  = kpolyStorage[i+1];
-    }
-    
-    stateStorage[numberStatesStored-1] = currentState;
-    timeStorage[numberStatesStored-1]  = timeStep;
-    kpolyStorage[numberStatesStored-1]  = kpolynew;
-    
-
-    if(0)
-    {
-        for (i=0;i<numberStatesStored;i++)
-        {
-            printf("State Storage %d: %d\n", i, stateStorage[i]);
-        }
-    
-        for (i=0;i<numberStatesStored;i++)
-        {
-            printf("Time Storage %d: %f\n", i, timeStorage[i]);
-        }
-    
-    }
-}
     
 
 

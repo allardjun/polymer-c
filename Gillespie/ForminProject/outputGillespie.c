@@ -26,17 +26,11 @@ void outputGillespie()
 {
     
     {
-        storedTotalTime = 0;
-        storedAddedActin = 0; 
-        for (i=0;i<numberStatesStored;i++){
-            storedTotalTime = storedTotalTime + timeStorage[i];
-            storedAddedActin = storedAddedActin + kpolyStorage[i];
-        }
-        storedKpoly = storedAddedActin/storedTotalTime;
         
         /***************** OUTPUT ********************/
 
         outputFile = fopen(outputName, "a");
+        fprintf(outputFile, "\n");  
                              
         storedTotalTime_End = 0;
         storedAddedActin_End = 0;                     
@@ -53,10 +47,7 @@ void outputGillespie()
         fprintf(outputFile, "iSiteTotal %d\n", iSiteTotal);                      
         fprintf(outputFile, "timeEnd %f\n", timeEnd);                          
         fprintf(outputFile, "finalState %d\n", finalState);                      
-        fprintf(outputFile, "finalTotalTime %f\n", finalTotalTime);    
-        fprintf(outputFile, "storedTotalTime %f\n", storedTotalTime);    
-        fprintf(outputFile, "storedAddedActin %d\n", storedAddedActin); 
-        fprintf(outputFile, "storedKpoly %f\n", storedKpoly); 
+        fprintf(outputFile, "finalTotalTime %f\n", finalTotalTime);  
         fprintf(outputFile, "Over Avg time storedTotalTime %f\n", storedTotalTime_End);    
         fprintf(outputFile, "Over Avg time storedAddedActin %d\n", storedAddedActin_End); 
         fprintf(outputFile, "Over Avg time storedKpoly %f\n", storedKpoly_End);
@@ -78,9 +69,25 @@ void dataRecording()
     // Record last x time states
     if (timeTotal >= (timeEnd-timeAvgDuration))
     {
+
         timeStorage_End[iter]  = timeStep;
         stateStorage_End[iter] = currentState;
-        kpolyStorage_End[iter] = kpolyStorage[numberStatesStored-1];
+
+        int kpolynew = 0;
+        int diffSite=0;
+        int difftot=0;
+        for (int j=0; j<iSiteTotal; j++){
+            if (stateMatrix[pastState][j]!=stateMatrix[currentState][j]){
+                difftot++;
+                diffSite=j;
+            }
+    }
+        if (stateMatrix[pastState][diffSite]==2 && stateMatrix[currentState][diffSite]==0){
+                kpolynew=1;
+            }
+
+
+        kpolyStorage_End[iter] = kpolynew;
         endStorage_length = iter+1;
         
         if(0)
@@ -91,9 +98,19 @@ void dataRecording()
             printf("stateStorage_End iter %d : %d \n", iter, stateStorage_End[iter]);
             
         }
+
+        fprintf(outputFile, "state timestep %d %f", stateStorage_End[iter], timeStorage_End[iter]);     
+        fprintf(outputFile, "\n");  
+
+        if (stateStorage_End[iter] >timeTotal)
+        {
+            fprintf(outputFile,"ERROR: timeStorage_End is greater than timeTotal\n");
+        }
+
         
         iter++;
     }
+    pastState = currentState;
 
     /*********************************************************************/
 }
