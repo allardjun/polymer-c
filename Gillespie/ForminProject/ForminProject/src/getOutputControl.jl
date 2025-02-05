@@ -1,4 +1,4 @@
-using Statistics, Printf, JLD2
+using Printf, JLD2
 
 function getOutputControl(input_fname::String; saveTF::Bool = true, 
     input_file_path::String = "", 
