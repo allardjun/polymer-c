@@ -1,6 +1,7 @@
 using ForminProject
 
 saveloc = "/Users/katiebogue/MATLAB/GitHub/Data/Gillespie_data/testing"
+saveloc="/dfs6/pub/kbogue1/GitHub/Data/Gillespie_data/HPC3outputs"
 
 # construct_names = ["PA",  "FH1", ]
 
@@ -34,6 +35,8 @@ prname = "Prvec0"
 
 # Polymer-c output folder
 fname = "/Users/katiebogue/MATLAB/GitHub/Data/polymer-c_data/bni1_msb/double.2024.03.12/BSD35.5.radtype20"
+fname = "/dfs6/pub/kbogue1/GitHub//Data/polymer-c_data/bni1_msb/double.2024.03.12/BSD35.5.radtype20"
+
 
 # folder name to save everything to in the saveloc
 savfname = "bestfits_10000_5000"
