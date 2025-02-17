@@ -15,6 +15,10 @@ include("runGillespieOnFolder.jl")
 include("outputGillespie.jl")
 include("dataRecording.jl")
 include("runGillespie.jl")
+include("makeStatMat.jl")
+include("makeOutputDict.jl")
+include("parse_numbers.jl")
+include("visualizeStats.jl")
 
 end # module ForminProject
 
