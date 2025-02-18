@@ -39,6 +39,13 @@ function runGillespie(
     stateStorage_End = Int[]
     kpolyStorage_End = Int[]
 
+    if saveTF
+    else
+        push!(timeStorage_End, 0.0)
+        push!(kpolyStorage_End, 0)
+    end
+
+    display("starting Gillespie")
     while timeTotal < timeEnd && iter < 1_000_000_000
         timeStep = Inf
         newState = currentState
@@ -60,12 +67,13 @@ function runGillespie(
         # Record data if necessary
         dataRecording!(
             timeTotal, timeEnd, timeAvgDuration, timeStep, currentState, pastState,
-            stateMatrix, iSiteTotal, timeStorage_End, stateStorage_End, kpolyStorage_End, endStorage_length
+            stateMatrix, iSiteTotal, timeStorage_End, stateStorage_End, kpolyStorage_End, endStorage_length, saveTF
         )
 
         iter += 1
         pastState = currentState
     end
+    display("finished Gillespie")
 
     finalState = currentState
     finalTotalTime = timeTotal

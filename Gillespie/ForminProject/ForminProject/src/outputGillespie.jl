@@ -25,12 +25,14 @@ function outputGillespie(output_file::String, timeStorage_End::Vector{Float64}, 
             println(io, "Over Avg time storedKpoly $storedKpoly_End")
         end
     else
-        for i in 1:endStorage_length
-            storedTotalTime_End += timeStorage_End[i]
-            storedAddedActin_End += kpolyStorage_End[i]
-        end
+        # for i in 1:endStorage_length
+        #     storedTotalTime_End += timeStorage_End[i]
+        #     storedAddedActin_End += kpolyStorage_End[i]
+        # end
 
-        storedKpoly_End = storedAddedActin_End / storedTotalTime_End
+        storedTotalTime_End=timeStorage_End[1]
+        storedAddedActin_End=kpolyStorage_End[1]
+        storedKpoly_End = kpolyStorage_End[1] / timeStorage_End[1]
     end
 
     return storedTotalTime_End, storedAddedActin_End, storedKpoly_End

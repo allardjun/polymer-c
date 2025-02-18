@@ -11,7 +11,7 @@ d=$(date +%Y.%d.%m)
 NumSeg=121
 
 # output directory
-output_dir=/pub/kbogue1/GitHub/Data/polymer-c_data/bni1_msb
+output_dir=/pub/kbogue1/GitHub/Data/polymer-c_data/bni1_msb_16.666actin
 
 # dimerization state
 what='double' #'single' 'double'

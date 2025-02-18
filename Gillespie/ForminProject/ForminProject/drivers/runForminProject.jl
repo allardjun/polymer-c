@@ -39,7 +39,7 @@ fname = "/dfs6/pub/kbogue1/GitHub//Data/polymer-c_data/bni1_msb/double.2024.03.1
 
 
 # folder name to save everything to in the saveloc
-savfname = "bestfits_10000_5000"
+savfname = "testing_HPC3"
 
 # generate transition matrices and files
 # using Profile
@@ -49,7 +49,7 @@ savfname = "bestfits_10000_5000"
 
 #outfname =ForminProject.makeTM(saveloc, construct_names, construct_PRM_locs, construct_PRM_sizes, c_PA, G, k_cap, k_del, r_cap, r_del, k_rel, r_cap_exp, prname, fname, savfname, true, false)
 
-outfname =ForminProject.makeTM(saveloc, construct_names, construct_PRM_locs, construct_PRM_sizes, c_PA, G, k_cap, k_del, r_cap, r_del, k_rel, r_cap_exp, prname, fname, savfname, true, true)
+outfname, kpolys =ForminProject.makeTM(saveloc, construct_names, construct_PRM_locs, construct_PRM_sizes, c_PA, G, k_cap, k_del, r_cap, r_del, k_rel, r_cap_exp, prname, fname, savfname, true, true)
 
 # # run gillespie on the folder
 #ForminProject.runGillespieOnFolder(outfname, 10000.0, 5000.0)

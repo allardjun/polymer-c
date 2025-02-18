@@ -14,7 +14,7 @@
 #define DCHIINIT        0.1
 #define KSCRITICAL      0.002
 #define MEMBRANE        0
-#define MULTIPLE        0
+#define MULTIPLE        1
 #define STIFFEN         0
 #define ELECTRO         0
 #define HARDWALL        0

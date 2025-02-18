@@ -2,7 +2,7 @@ using DelimitedFiles
 using JLD2
 using Dates
 
-function makeTM(saveloc, construct_names, construct_PRM_locs, construct_PRM_sizes, c_PA, G, k_cap, k_del, r_cap, r_del, k_rel, r_cap_exp, prname, fname, savfname, saveTF, runGillespieTF, runtime=10000.0, timeavgval=5000.0)
+function makeTM(saveloc, construct_names, construct_PRM_locs, construct_PRM_sizes, c_PA::Float64, G::Float64, k_cap::Float64, k_del::Float64, r_cap::Float64, r_del::Float64, k_rel::Float64, r_cap_exp::Float64, prname, fname, savfname, saveTF, runGillespieTF, runtime=10000.0, timeavgval=5000.0)
     savfname = string(savfname, "_", Dates.format(now(),"yyyy.mm.dd.HH.MM.SS"))
     mkdir(joinpath(saveloc, savfname,))
 
@@ -108,6 +108,6 @@ function makeTM(saveloc, construct_names, construct_PRM_locs, construct_PRM_size
 
     end
 
-    return (joinpath(saveloc, savfname,))
+    return (joinpath(saveloc, savfname,)), kpolys
 
 end

@@ -19,6 +19,8 @@ include("makeStatMat.jl")
 include("makeOutputDict.jl")
 include("parse_numbers.jl")
 include("visualizeStats.jl")
+include("generateCombo.jl")
+include("gridSearch.jl")
 
 end # module ForminProject
 

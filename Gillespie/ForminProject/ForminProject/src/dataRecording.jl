@@ -3,11 +3,15 @@ function dataRecording!(
     timeStep::Float64, currentState::Int, pastState::Int,
     stateMatrix::Matrix{Int}, iSiteTotal::Int,
     timeStorage_End::Vector{Float64}, stateStorage_End::Vector{Int},
-    kpolyStorage_End::Vector{Int}, endStorage_length::Ref{Int}
+    kpolyStorage_End::Vector{Int}, endStorage_length::Ref{Int}, saveTF::Bool
 )
     if timeTotal >= (timeEnd - timeAvgDuration)
-        push!(timeStorage_End, timeStep)
-        push!(stateStorage_End, currentState)
+        if saveTF
+            push!(stateStorage_End, currentState)
+            push!(timeStorage_End, timeStep)
+        else
+            timeStorage_End[1]= timeStorage_End[1]+timeStep
+        end
 
         kpolynew = 0
         diffSite = 0
@@ -26,7 +30,12 @@ function dataRecording!(
             kpolynew = 1
         end
 
-        push!(kpolyStorage_End, kpolynew)
+        if saveTF
+            push!(kpolyStorage_End, kpolynew)
+        else
+            kpolyStorage_End[1]=kpolyStorage_End[1] + kpolynew
+        end
+        
         endStorage_length[] += 1
     end
 end
