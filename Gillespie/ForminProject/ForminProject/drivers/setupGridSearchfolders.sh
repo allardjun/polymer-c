@@ -21,19 +21,20 @@ cp combinations.txt $output_dir/GridSearch.${d}/combinations.txt
 
 while [[ $i -lt $ncombs ]];
 do 
+    
     istart=$i
     iend=$((i + step)) 
     mkdir $output_dir/GridSearch.${d}/i_${istart}_${iend}
     cp runGrid.sub $output_dir/GridSearch.${d}/i_${istart}_${iend}/runGrid.sub
-    sed -i "23c\ julia --project=/pub/kbogue1/GitHub/polymer-c/Gillespie/ForminProject/ForminProject /pub/kbogue1/GitHub/polymer-c/Gillespie/ForminProject/ForminProject/drivers/runGridSearch.jl $output_dir/GridSearch.${d}/combinations.txt $istart $iend $polymercdir $output_dir/GridSearch.${d}/i_${istart}_${iend}
+    cp maketemp.sub $output_dir/GridSearch.${d}/i_${istart}_${iend}/maketemp.sub
+    sed -i "22c\ julia --project=/pub/kbogue1/GitHub/polymer-c/Gillespie/ForminProject/ForminProject /pub/kbogue1/GitHub/polymer-c/Gillespie/ForminProject/ForminProject/drivers/runGridSearch.jl $output_dir/GridSearch.${d}/combinations.txt $istart $iend $polymercdir $output_dir/GridSearch.${d}/i_${istart}_${iend}
         " "$output_dir/GridSearch.${d}/i_${istart}_${iend}/runGrid.sub"
     
     sed -i "3c\#SBATCH --job-name=GridSearch_${istart}_${iend}     ## Name of the job.
         " "$output_dir/GridSearch.${d}/i_${istart}_${iend}/runGrid.sub"
     
     cd $output_dir/GridSearch.${d}/i_${istart}_${iend}
-    sbatch runGrid.sub
-
+    sbatch maketemp.sub
     i=$((i + step + 1)) 
 done
 

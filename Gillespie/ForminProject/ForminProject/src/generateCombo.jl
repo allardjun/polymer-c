@@ -6,19 +6,60 @@ function generateCombo(min1, max1,
                                    output_file="combinations.txt")
 
     # Generate log-spaced values
-    vals1 = exp10.(range(log10(min1), log10(max1), length=points))
-    vals2 = exp10.(range(log10(min2), log10(max2), length=points))
-    vals3 = exp10.(range(log10(min3), log10(max3), length=points))
+    
+    vals1=get_points(min1,max1,points)
+    display(vals1)
+    vals2=get_points(min2,max2,points)
+    display(vals2)
+    vals3=get_points(min3,max3,points)
+    display(vals3)
 
     # Create all combinations
-    combinations = collect(Iterators.product(vals1, vals2, vals3))
-    comb_matrix = hcat([collect(x) for x in combinations]...)'
+    comb_matrix=[]
+    for i in vals1
+        for j in vals2
+            for k in vals3
+                push!(comb_matrix,[i,j,k])
+            end
+        end
+    end
+
+    # Remove duplicate rows due to floating-point precision issues
+    unique_combinations = unique(comb_matrix, dims=1)
 
     # Shuffle rows randomly
-    Random.shuffle!(comb_matrix)
+    Random.shuffle!(unique_combinations)
 
     # Save to CSV file
-    writedlm(output_file, comb_matrix, ',')
+    writedlm(output_file, unique_combinations, ',')
 
-    println("Generated $output_file with shuffled log-spaced combinations.")
+    println("Generated $output_file with unique shuffled log-spaced combinations.")
+
+end
+
+function get_points(min, max, points)
+    display(points)
+    display(min)
+    display(max)
+    min10=log10(min)
+    max10=log10(max)
+    display(min10)
+    display(max10)
+
+    range=max10-min10
+    display(range)
+    step=range/points
+    display(step)
+
+    output=[]
+
+    i=min10
+    while i<=max10
+        push!(output,i)
+        i=i+step
+    end
+
+    display(output)
+
+    return exp10.(output)
 end

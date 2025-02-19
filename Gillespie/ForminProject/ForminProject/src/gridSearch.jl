@@ -45,7 +45,7 @@ function gridSearch(paramsfname::String, index1::Int, index2::Int ,polymercfname
         push!(df,kpolys)
 
         mv(joinpath(outfname,"kpolys.txt"),joinpath(saveloc,"kpolys_$(k_cap)_$(k_del)_$(r_cap).txt"))
-        rm(outfname, recursive=true)
+        #rm(outfname, recursive=true)
     end
 
     insertcols!(df,1, "k_cap" => data[:,1], "k_del" => data[:,2], "r_cap" => data[:,3])

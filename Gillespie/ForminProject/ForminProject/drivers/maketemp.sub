@@ -18,9 +18,9 @@ echo "Job $A started on:   " `hostname -s`
 echo "Job $A started on:   " `date `
 pwd
 
-module load julia/1.9.3
-julia --project=/pub/kbogue1/GitHub/polymer-c/Gillespie/ForminProject/ForminProject /pub/kbogue1/GitHub/polymer-c/Gillespie/ForminProject/ForminProject/drivers/runGridSearch.jl ...
-
+mkdir juliafiles
+mkdir juliafiles/compiled
+rsync -au /data/homezvol0/kbogue1/.julia/compiled/v1.9 juliafiles/compiled/
 
 # echo job info on joblog:
 echo "Job $A ended on:   " `hostname -s`
