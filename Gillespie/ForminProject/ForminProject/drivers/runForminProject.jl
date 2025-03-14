@@ -1,7 +1,7 @@
 using ForminProject
 
-saveloc = "/Users/katiebogue/MATLAB/GitHub/Data/Gillespie_data/testing"
-saveloc="/dfs6/pub/kbogue1/GitHub/Data/Gillespie_data/HPC3outputs"
+saveloc = "/Users/katiebogue/MATLAB/GitHub/Data/Gillespie_data"
+#saveloc="/dfs6/pub/kbogue1/GitHub/Data/Gillespie_data/HPC3outputs"
 
 # construct_names = ["PA",  "FH1", ]
 
@@ -24,7 +24,7 @@ construct_PRM_sizes = [[12], [14], [7], [5], [5, 7, 14, 12], [5, 12], [5, 14], [
 c_PA = 0.88
 G = 0.5
 k_cap = 73.02274
-k_del = 0.022909
+k_del = 0.0022909
 r_cap = 37896.5784
 r_del = 0.0  # Considering release instant
 k_rel = 1e8  # Large value for instant release
@@ -35,11 +35,15 @@ prname = "Prvec0"
 
 # Polymer-c output folder
 fname = "/Users/katiebogue/MATLAB/GitHub/Data/polymer-c_data/bni1_msb/double.2024.03.12/BSD35.5.radtype20"
-fname = "/dfs6/pub/kbogue1/GitHub//Data/polymer-c_data/bni1_msb/double.2024.03.12/BSD35.5.radtype20"
+fname = "/Users/katiebogue/MATLAB/GitHub/Data/polymer-c_data/bni1_msb_16.666actin_real/double.2025.19.02/BSD35.5.radtype20"
+fname = "/Users/katiebogue/MATLAB/GitHub/Data/polymer-c_data/bni1_msb_40actin/double.2025.24.02/BSD35.5.radtype20"
+
+
+#fname = "/dfs6/pub/kbogue1/GitHub//Data/polymer-c_data/bni1_msb/double.2024.03.12/BSD35.5.radtype20"
 
 
 # folder name to save everything to in the saveloc
-savfname = "testing_HPC3"
+savfname = "actinsize40"
 
 # generate transition matrices and files
 # using Profile

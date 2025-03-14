@@ -4,6 +4,7 @@ using LinearAlgebra
 function visualizeStats(outDict::Dict{Vector{Vector{Int}},Dict{String, Any}}, stat::String)
 
     statMat, PRMlocs=makeStatMat(outDict, stat)
+    display(statMat)
     PRMlocs = vcat([string(label) * " a" for label in PRMlocs],[string(label) * " b" for label in PRMlocs])
     
     

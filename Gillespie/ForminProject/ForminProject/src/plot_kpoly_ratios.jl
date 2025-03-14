@@ -28,9 +28,9 @@ function plot_kpoly_ratios(dictExp::Dict{String, Vector{Float64}}, dictSim::Dict
     end
     
 
-    p = plot([
-        bar(name="Simulated", x=keys_dict, y=log2_ratios_sim),
-        bar(name="Experimental", x=keys_dict, y=log2_ratios_exp)],
+    p = PlotlyJS.plot([
+        PlotlyJS.bar(name="Simulated", x=keys_dict, y=log2_ratios_sim),
+        PlotlyJS.bar(name="Experimental", x=keys_dict, y=log2_ratios_exp)],
         Layout(
             title="Simulated vs Experimental Log2 Ratios of Kpoly/Kpoly sum"
         )
@@ -38,13 +38,13 @@ function plot_kpoly_ratios(dictExp::Dict{String, Vector{Float64}}, dictSim::Dict
     relayout!(p, barmode="group")
     p
     if savefigsTF
-        savefig(p,"$savepath/kpolyratio.png")
+        PlotlyJS.savefig(p,"$savepath/kpolyratio.png")
         display("saved kpolyratio.png")
     end
 
-    p = plot([
-        bar(name="kpoly", x=keys_dict, y=kpoly_sim_vals),
-        bar(name="kpoly sum", x=keys_dict, y=kpoly_sum_sim_vals)],
+    p = PlotlyJS.plot([
+        PlotlyJS.bar(name="kpoly", x=keys_dict, y=kpoly_sim_vals),
+        PlotlyJS.bar(name="kpoly sum", x=keys_dict, y=kpoly_sum_sim_vals)],
         Layout(
             title="Simulated Kpoly values"
         )
@@ -52,7 +52,7 @@ function plot_kpoly_ratios(dictExp::Dict{String, Vector{Float64}}, dictSim::Dict
     relayout!(p, barmode="group")
     p
     if savefigsTF
-        savefig(p,"$savepath/kpolysim.png")
+        PlotlyJS.savefig(p,"$savepath/kpolysim.png")
         display("saved kpolysim.png")
     end
 

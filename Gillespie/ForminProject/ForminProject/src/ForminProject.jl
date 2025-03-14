@@ -19,8 +19,16 @@ include("makeStatMat.jl")
 include("makeOutputDict.jl")
 include("parse_numbers.jl")
 include("visualizeStats.jl")
+include("visualizeStatsold.jl")
 include("generateCombo.jl")
 include("gridSearch.jl")
+include("combinegridsearchout.jl")
+include("makeAllInterpolants.jl")
+include("makeInterpolant.jl")
+include("plot_all_interpolations.jl")
+include("plot_interpolation_slices.jl")
+include("makeratiointerpolations.jl")
+include("getallratiodicts.jl")
 
 end # module ForminProject
 

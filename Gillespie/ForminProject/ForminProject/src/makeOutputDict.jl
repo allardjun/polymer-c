@@ -13,6 +13,16 @@ function makeOutputDict(folder::String)
         if length(subfiles) > 1
             error("Multiple output files found for $file")
         end
+        if length(subfiles) < 1
+            livefiles= readdir(file, join=true) |> filter(f -> startswith(basename(f), "live_output_") && endswith(f, ".txt"))
+            if length(livefiles) > 1
+                error("Multiple live output files found for $file")
+            end
+            if length(livefiles) < 1
+                error("No output files found for $file")
+            end
+            subfiles=livefiles
+        end
         subfile_path = dirname(subfiles[1]) * "/"
         out_struct = getOutputControl(basename(subfiles[1]), input_file_path=subfile_path)
 

@@ -24,6 +24,14 @@ function makeTM(saveloc, construct_names, construct_PRM_locs, construct_PRM_size
 
         PRM_sizes2 = vcat(PRM_sizes, PRM_sizes)
 
+        unboundind=0
+        for i in 1:numValidStates
+            if sum(states[i, :]) ==0
+                unboundind = i
+                display(unboundind)
+            end
+        end
+
         for i in 1:numValidStates
             fromstate = states[i, :]
             for j in 1:numValidStates
@@ -33,11 +41,14 @@ function makeTM(saveloc, construct_names, construct_PRM_locs, construct_PRM_size
                     if fromstate[diffPRM] == 0  # PRM is unbound at first
                         if tostate[diffPRM] == 1  # Unbound → Bound
                             transitionMatrix[i, j] = k_cap * (1 - pocc[i, diffPRM]) * c_PA
+                            #transitionMatrix[i, j] = k_cap * (1 - pocc[unboundind, diffPRM]) * c_PA
                         end
                     elseif fromstate[diffPRM] == 1  # PRM is bound at first
                         if tostate[diffPRM] == 2  # Bound → Delivered
-                            transitionMatrix[i, j] = k_del * (1 - pocc_0[i, ((diffPRM > length(PRM_locs)) + 1)]) *
+                           transitionMatrix[i, j] = k_del * (1 - pocc_0[i, ((diffPRM > length(PRM_locs)) + 1)]) *
                                                     G * (1.0e33 * (prvec[i, diffPRM]) / (27 * 6.022e23))
+                            #transitionMatrix[i, j] = k_del * (1 - pocc_0[unboundind, ((diffPRM > length(PRM_locs)) + 1)]) *
+                                                   #G * (1.0e33 * (prvec[i, diffPRM]) / (27 * 6.022e23))
                             if (transitionMatrix[i, j]<0)
                                 println("Negative transition rate: ", transitionMatrix[i, j])
                                 println("pocc_0: ", pocc_0[i, ((diffPRM > length(PRM_locs)) + 1)])
