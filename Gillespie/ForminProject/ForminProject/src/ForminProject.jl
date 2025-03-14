@@ -1,6 +1,7 @@
 module ForminProject
 
 # Using statements
+using Revise
 
 # Include statements
 include("getOutputControl.jl")

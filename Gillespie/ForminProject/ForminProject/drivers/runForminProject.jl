@@ -1,4 +1,4 @@
-using ForminProject
+using Revise, ForminProject
 
 saveloc = "/Users/katiebogue/MATLAB/GitHub/Data/Gillespie_data"
 #saveloc="/dfs6/pub/kbogue1/GitHub/Data/Gillespie_data/HPC3outputs"

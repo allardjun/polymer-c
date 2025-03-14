@@ -1,6 +1,7 @@
 using DataFrames
 
 function makeAllInterpolants(df::DataFrame, method::String)
+    display("Making all interpolants")
 
     # Convert k_cap, k_del, r_cap to Float64
     for col in [:k_cap, :k_del, :r_cap]

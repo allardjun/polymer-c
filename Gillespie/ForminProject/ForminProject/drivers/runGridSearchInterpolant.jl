@@ -1,4 +1,4 @@
-using ForminProject, JLD2, DataFrames
+using Revise, ForminProject, JLD2, DataFrames
 
 df=load("/Users/katiebogue/MATLAB/GitHub/Data/Gillespie_data/HPC3outputs/GridSearch.2025.18.02.15.15/combinedgridsearch.jld2","outdf")
 
