@@ -1,4 +1,4 @@
-function polymerstatheatmap(ltvar,lookuptab,FH2_dist,type1,calcTF,saveTF,savefigfolder,maxNT,maxCT,minNT,minCT)
+function polymerstatheatmap(ltvar,lookuptab,FH2_dist,type1,calcTF,saveTF,savefigfolder,limits,maxNT,maxCT,minNT,minCT,xcord,ycord)
 arguments
     ltvar
     lookuptab
@@ -7,10 +7,13 @@ arguments
     calcTF =false
     saveTF =false
     savefigfolder=""
+    limits=0
     maxNT=400
     maxCT=400
     minNT=0
     minCT=1
+    xcord=0
+    ycord=0
 end
 set(groot,'defaultfigureposition',[400 250 900 750])
 fig=figure;
@@ -31,7 +34,7 @@ if calcTF
                 index=index+1;
                 FH2_dists(1,index)=FH2dist;
                 NT_dists(1,index)=NT_dist;
-                vals(1,index)=pr(FH2dist,FH2dist+NT_dist,str2double(FH2_dist),1,0,0,type1);
+                vals(1,index)=pr(FH2dist,FH2dist+NT_dist,str2double(FH2_dist),1,xcord,ycord,type1,false);
             end
         end
         tab= table(log10(vals)',FH2_dists', NT_dists');
@@ -80,10 +83,10 @@ h.NodeChildren(3).YDir='normal';
 if type1=="ratio"
     load('customcolorbar_red_blue.mat');
     h.Colormap=CustomColormap;
-    h.Title= strcat(ltvar, " ratio (dimer/double), FH2 dist= ", FH2_dist);
+    h.Title= strcat(ltvar, " ratio (dimer/double), FH2 dist= ", FH2_dist, ", x=",num2str(xcord),", y=",num2str(ycord));
 else
     h.Colormap=cool;
-    h.Title= strcat(ltvar," ", type1, " , FH2 dist= ", FH2_dist);
+    h.Title= strcat(ltvar," ", type1, " , FH2 dist= ", FH2_dist, ", x=",num2str(xcord),", y=",num2str(ycord));
 end
 
 hs=struct(h);
@@ -124,6 +127,11 @@ else
     end
 end
 
+if limits==0
+else
+    h.ColorLimits=limits;
+end
+
 
 
 for i=1:length(h.XDisplayLabels)
@@ -140,7 +148,7 @@ end
     s.XAxis.TickLabelRotation = 0;   % horizontal
 
 if saveTF
-    fname=strcat('Heatmap_',ltvar,"_FH2",FH2_dist,"_",type1);
+    fname=strcat('Heatmap_',ltvar,"_FH2",FH2_dist,"_x",num2str(xcord),"_y",num2str(ycord),"_",type1);
     if calcTF
         fname=strcat(fname,"_calculated");
     end

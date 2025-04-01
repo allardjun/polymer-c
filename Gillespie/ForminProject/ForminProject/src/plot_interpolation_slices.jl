@@ -27,14 +27,14 @@ function plot_interpolation_slices(interp_func, kcap_range, kdel_range, rcap_ran
                   for i in 1:size(kcap_grid,1), j in 1:size(kcap_grid,2)]
     
     # Set the global color scale based on the min and max k_poly values
-    cmin = minimum(x->isnan(x) ? Inf : x,kpoly_vals)
+    cmin = minimum(x -> (isnan(x) || x == 0) ? Inf : x, kpoly_vals)
     cmax = maximum(x->isnan(x) ? -Inf : x,kpoly_vals)
     for slice_r_cap in slice_r_caps
         rcap_grid = fill(slice_r_cap, size(kcap_grid))
         kpoly_vals1 = [interp_func(kcap_grid[i, j], kdel_grid[i, j], slice_r_cap) 
                   for i in 1:size(kcap_grid,1), j in 1:size(kcap_grid,2)]
         
-        cmin1 = minimum(x->isnan(x) ? Inf : x,kpoly_vals1)
+        cmin1 = minimum(x -> (isnan(x) || x == 0) ? Inf : x, kpoly_vals1)
         cmax1 = maximum(x->isnan(x) ? -Inf : x,kpoly_vals1)
         
         cmin = min(cmin1, cmin)
@@ -48,12 +48,17 @@ function plot_interpolation_slices(interp_func, kcap_range, kdel_range, rcap_ran
         cmax=max(abs(cmin),abs(cmax))
         cmin=-cmax
 
+        if cmin<-1
+            cmin=-1
+            cmax=1
+        end
+
         # Create subplots layout
         layout = Layout(
             title=String(plot_title),
             scene=attr(
-                xaxis_title="k_cap",
-                yaxis_title="k_del",
+                xaxis_title="log10(k_cap)",
+                yaxis_title="log10(k_del)",
                 zaxis_title="log10(r_cap)"
             ),
             colorway=["#636EFA", "#EF553B", "#00CC96"],
@@ -74,8 +79,8 @@ function plot_interpolation_slices(interp_func, kcap_range, kdel_range, rcap_ran
         layout = Layout(
             title=String(plot_title),
             scene=attr(
-                xaxis_title="k_cap",
-                yaxis_title="k_del",
+                xaxis_title="log10(k_cap)",
+                yaxis_title="log10(k_del)",
                 zaxis_title="log10(r_cap)"
             ),
             colorway=["#636EFA", "#EF553B", "#00CC96"],
@@ -114,8 +119,8 @@ function plot_interpolation_slices(interp_func, kcap_range, kdel_range, rcap_ran
         end
         # Create surface trace with color scale
         trace = PlotlyJS.surface(
-            x=kcap_grid,
-            y=kdel_grid,
+            x=log10.(kcap_grid),
+            y=log10.(kdel_grid),
             z=log10.(rcap_grid),
             surfacecolor=kpoly_vals,  # Set color based on k_poly values
             coloraxis="coloraxis"  # Use the global coloraxis for consistent scaling

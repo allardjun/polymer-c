@@ -22,6 +22,8 @@ function plot_all_interpolations(interp_dict, kcap_range, kdel_range, rcap_range
             continue
         end
         gif_path=joinpath(saveloc, string(key))
+        #slices = plot_interpolation_scaledslice(interp_func, kcap_range, kdel_range, slice_r_caps,key,gif_path)
+
         slices = plot_interpolation_slices(interp_func, kcap_range, kdel_range, rcap_range, slice_r_caps,key,gif_path)
         
         # Add each slice plot to the plot list

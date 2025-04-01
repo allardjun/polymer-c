@@ -4,14 +4,14 @@ using LinearAlgebra
 function visualizeStats(outDict::Dict{Vector{Vector{Int}},Dict{String, Any}}, stat::String)
 
     statMat, PRMlocs=makeStatMat(outDict, stat)
-    display(statMat)
+    #display(statMat)
     PRMlocs = vcat([string(label) * " a" for label in PRMlocs],[string(label) * " b" for label in PRMlocs])
     
     
     dict_keys = collect(keys(statMat))
     nPRMs = length(PRMlocs) # Assume all arrays have the same length
 
-    data_matrix = zeros(Float64, nPRMs*length(dict_keys), 9)
+    data_matrix = zeros(Float64, nPRMs*length(dict_keys), 13)
     indx=0
     for j in 1:nPRMs
         loc = PRMlocs[j]
@@ -35,13 +35,61 @@ function visualizeStats(outDict::Dict{Vector{Vector{Int}},Dict{String, Any}}, st
             data_matrix[indx,5] = minimum_distance(loc, key) # minimum distance to bound sites
             data_matrix[indx,6] = get_number_bound_sites(key) # number of bound sites
             data_matrix[indx,7] = (minimum_distance(loc, key)+1) * sum(length.(key)) * sum(length.(key)) # product of distance and number of bound sites, for ordering purposes
-            data_matrix[indx,8] = PRMloc * (fil) # unique identifier for each PRM
+            data_matrix[indx,8] = PRMloc * (fil) # unique identifier for each PRM)
+            data_matrix[indx,9] = key[1][1] # location of bound PRM (only valid when 1 PRM is bound)
+            data_matrix[indx,10] = key[2][1] # location of bound PRM (only valid when 1 PRM is bound)
+            if get_number_bound_sites(key) ==2
+                if minimum_distance(loc, key)==0
+                    if fil==1
+                        if key[2][1] == -1
+                            if key[1][1]==PRMloc
+                                data_matrix[indx,11] = key[1][2]
+                            else
+                                data_matrix[indx,11] = key[1][1]
+                            end
+                            data_matrix[indx,12] = -1
+                        else
+                            data_matrix[indx,11] = -1
+                            data_matrix[indx,12] = key[2][1]
+                        end
+                    elseif fil==-1
+                        if key[1][1] == -1
+                            data_matrix[indx,11] = -1
+                            if key[2][1]==PRMloc
+                                data_matrix[indx,12] = key[2][2]
+                            else
+                                data_matrix[indx,12] = key[2][1]
+                            end
+                        else
+                            data_matrix[indx,11] = key[1][1]
+                            data_matrix[indx,12] = -1
+                        end
+                    else
+                        error("Filament number must be either 1 or -1")
+                    end
+                else
+                    data_matrix[indx,11] = -2
+                    data_matrix[indx,12] = -2
+                end
+            elseif get_number_bound_sites(key)==1
+                if minimum_distance(loc, key)==0
+                    data_matrix[indx,11] = -1
+                    data_matrix[indx,12] = -1
+                else
+                    data_matrix[indx,11] = -3
+                    data_matrix[indx,12] = -3
+                end
+
+            else
+                data_matrix[indx,11] = -3
+                data_matrix[indx,12] = -3
+            end
         end
         indend = indx
         mindists = data_matrix[indstart:indend,7]
         indexes= sortperm(mindists)
         for i in indexes
-            data_matrix[indstart+i-1,9] = i
+            data_matrix[indstart+i-1,13] = i
         end
     end
     
@@ -53,7 +101,7 @@ function visualizeStats(outDict::Dict{Vector{Vector{Int}},Dict{String, Any}}, st
         x=x, y=y, z=z,
         title="$stat Heatmap"
     )
-    display(p)
+    #display(p)
     return data_matrix, x, y, z
 end
 

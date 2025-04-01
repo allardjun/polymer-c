@@ -18,7 +18,10 @@ function makeinterpolant(df::DataFrame, method::String)
         data_dict = Dict(zip(zip(df.k_cap, df.k_del, df.r_cap), df.kpoly))
 
         # Fill missing values with NaNs (detect missing values)
-        values = [get(data_dict, (kc, kd, rc), NaN) for (kc, kd, rc) in grid_points]
+        #values = [get(data_dict, (kc, kd, rc), NaN) for (kc, kd, rc) in grid_points]
+
+        # Replace missing values with the average of the nearest points
+        values = [get(data_dict, (kc, kd, rc), get_nearest_avg(data_dict, kc, kd, rc, grid_points)) for (kc, kd, rc) in grid_points]
 
         # Reshape into a 3D array matching grid structure
         values_array = reshape(values, length(k_cap_vals), length(k_del_vals), length(r_cap_vals))
@@ -52,9 +55,28 @@ function makeinterpolant(df::DataFrame, method::String)
         interp = ScatteredInterpolation.interpolate(InverseMultiquadratic(), points, values)
         
         # Return a function that directly evaluates the interpolation
-        return (k_cap, k_del, r_cap) -> evaluate(interp, [k_cap, k_del, r_cap]), kcap_range, kdel_range, rcap_range
+        return (k_cap, k_del, r_cap) -> ScatteredInterpolation.evaluate(interp, [k_cap, k_del, r_cap]), kcap_range, kdel_range, rcap_range
 
     else
         error("Invalid method: Choose either \"grid\" or \"scattered\"")
     end
+end
+
+function get_nearest_avg(data_dict, kc, kd, rc, grid_points)
+    # Find the nearest points to (kc, kd, rc) in grid_points
+    distances = [(abs(kc - kc_n) + abs(kd - kd_n) + abs(rc - rc_n), (kc_n, kd_n, rc_n)) for (kc_n, kd_n, rc_n) in grid_points if (kc_n, kd_n, rc_n) != (kc, kd, rc)]
+    
+    # Sort by distance and select the nearest points
+    sorted_distances = sort(distances, by = x -> x[1])
+    nearest_points = [get(data_dict, point, NaN) for (_, point) in sorted_distances[1:3]]  # Adjust to how many nearest points you want to use
+    
+    # Calculate the sum and count of valid (non-NaN) values
+    valid_points = filter(!isnan, nearest_points)
+    total = sum(valid_points)
+    count = length(valid_points)
+    
+    # Calculate the average (handle the case where there are no valid points)
+    nearest_avg = count > 0 ? total / count : NaN
+    
+    return nearest_avg
 end

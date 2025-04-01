@@ -30,6 +30,10 @@ include("plot_all_interpolations.jl")
 include("plot_interpolation_slices.jl")
 include("makeratiointerpolations.jl")
 include("getallratiodicts.jl")
+include("plot_interpolation_scaledslice.jl")
+include("make2Dgridplots.jl")
+include("scattervisuals.jl")
+include("barvisuals.jl")
 
 end # module ForminProject
 

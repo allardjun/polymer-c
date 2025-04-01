@@ -26,6 +26,8 @@ arguments
     saveTF=0
     savefigfolder="" 
 end
+    load('customcolorbar_red_blue.mat','CustomColormap');
+
     fig=figure;
 
     f=@(n1,fh1length,FH2size,k,x,y) pr(n1,fh1length,FH2size,k,x,y);
@@ -107,12 +109,13 @@ end
     ax1=nexttile(3);
     hold on
     
-    fc=fcontour(val_ratio,[-5 FH2size+5 -ceil((FH2size+10)/2) ceil((FH2size+10)/2)],"Fill","on","MeshDensity",300);
+    fc=fcontour(val_ratio,[-5 FH2size+5 -ceil((FH2size+10)/2) ceil((FH2size+10)/2)],"Fill","on","MeshDensity",700);
     c=colorbar;
     c.Label.String = 'log_2(dimer/double)';
     
-    colormap(ax1,flipud(sky))
-    %clim([-10 10]);
+    
+    colormap(ax1,(CustomColormap))
+    clim([-max(abs(c.Limits)) max(abs(c.Limits))]);
 
     levels=[-100,0];
     [C,h]=contour(fc.XData,fc.YData,fc.ZData,levels,'black',"LineWidth",2.5,"ShowText",true);
