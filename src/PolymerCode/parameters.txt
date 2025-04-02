@@ -4,7 +4,7 @@ N			60
 filamentInputMethod	0
 baseSepDistance		1
 irLigand		2.25
-brLigand		8.333
+brLigand		40
 kBound			1000
 baserLigand		4
 Force			0
