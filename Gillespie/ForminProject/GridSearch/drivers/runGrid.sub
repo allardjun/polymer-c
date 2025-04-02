@@ -1,0 +1,28 @@
+#!/bin/bash
+
+#SBATCH --job-name=test      ## Name of the job.
+#SBATCH -A jallard_lab     ## account to charge
+#SBATCH -p standard          ## partition/queue name
+#SBATCH --nodes=1            ## (-N) number of nodes to use
+#SBATCH --ntasks=1           ## (-n) number of tasks to launch
+#SBATCH --cpus-per-task=1    ## number of cores the job needs
+#SBATCH --mem=6G  
+#SBATCH --error=error_%A_%a.txt ## error log file; %A is job id, %a is array task id
+#SBATCH --output=out_%A_%a.txt  ## output filename
+#SBATCH --time=3-00:00:00          ## time limit for each array task
+#SBATCH --mail-type=all,time_limit,TIME_LIMIT_50,TIME_LIMIT_90
+#SBATCH --mail-user=kbogue1@uci.edu
+
+# echo job info on log:
+echo "Job $A started on:   " `hostname -s`
+echo "Job $A started on:   " `date `
+pwd 
+
+module load julia/1.9.3
+/usr/bin/time -v stdbuf -oL julia --project=/pub/kbogue1/GitHub/polymer-c/Gillespie/ForminProject/Gridsearch /pub/kbogue1/GitHub/polymer-c/Gillespie/ForminProject/drivers/runGridSearch.jl ...
+
+
+# echo job info on joblog:
+echo "Job $A ended on:   " `hostname -s`
+echo "Job $A ended on:   " `date `
+echo " "
