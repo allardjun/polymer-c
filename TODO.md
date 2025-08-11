@@ -1,5 +1,5 @@
 
-
+# Wishlist written by Jun
 
 - Move configs to their own directory
 - Minimal bash scripts for short local testing runs
@@ -11,7 +11,7 @@
 
 ---
 
-# Comprehensive Refactoring Plan
+# Comprehensive Refactoring Plan (written by Claude Code)
 
 Based on repository analysis and existing TODO items, here are comprehensive refactoring recommendations organized by priority:
 
