@@ -3,7 +3,7 @@
 #define TWISTER genrand_real3()
 #define NFILMAX         3
 #define NMAX            1201
-#define NTMAX           2e9
+#define NTMAX           1e10
 #define NTADAPT         20000
 #define NTCHECK         200000
 #define DCHIMIN         1e-4
@@ -12,9 +12,9 @@
 #define PI              3.14159265359
 #define INF             1e14
 #define DCHIINIT        0.1
-#define KSCRITICAL      0.004
+#define KSCRITICAL      0.002
 #define MEMBRANE        0
-#define MULTIPLE        0
+#define MULTIPLE        1
 #define STIFFEN         0
 #define ELECTRO         0
 #define HARDWALL        0
@@ -116,6 +116,8 @@ double localConcCutoff;
 int deliveryMethod;
 long boundToBaseDeliver[NFILMAX][NMAX];
 
+int radtype;
+
 /* ELECTRO Global Variables */
 double Eelectro, EelectroNew;
 double Erepulsion, Zrepulsion;
@@ -177,7 +179,7 @@ int main( int argc, char *argv[] )
         if (TALKATIVE) printf("This is the output filename: %s\n", listName);
         strcat(liveListName, "live_");
         strcat(liveListName, listName);
- 
+
         if (TALKATIVE) printf("This is the liveoutput filename: %s\n", listName);
 
     }
@@ -231,6 +233,36 @@ int main( int argc, char *argv[] )
         if (TALKATIVE) printf("This is the dimerization force: %lf\n", kdimer);
     }
 
+    if(argv[10])
+    {
+        printf("This is argv10: %lf\n", atof(argv[10]));
+        if(atoi(argv[10])!=-1)
+            radtype = atof(argv[10]);
+        if (TALKATIVE) 
+        {
+            /* types are: (where iy is actually iy+1)
+                # between 1-9 - that is the value of the radius
+                10 - N/NBINS
+                20 - iy/NBINS
+                30 - (N*iy)^0.5/(NBINS)
+                40 - N+iy/(2*NBINS)
+                50 - for iy>200, N/NBINS, for iy<=200 iy/NBINS
+            */
+            printf("This is the radius type: %lf\n", radtype);
+        }
+    }else{
+        radtype = 10;
+        /* types are: (where iy is actually iy+1)
+            # between 1-9 - that is the value of the radius
+            10 - N/NBINS
+            20 - iy/NBINS
+            30 - (N*iy)^0.5/(NBINS)
+            40 - N+iy/(2*NBINS)
+            50 - for iy>200, N/NBINS, for iy<=200 iy/NBINS
+        */
+        printf("This is the radius type: %lf\n", radtype);
+    }
+
 
     /***********************************************************************************/
     /********* INITIALIZE FILAMENTS, ISITES, BSITES, AND BASIC SITES *******************/
@@ -238,14 +270,10 @@ int main( int argc, char *argv[] )
 
     // filaments
     getFilaments();
+    printf("ran getFilaments\n");
     // iSites, bSites
     getSites();
-
-    if(ELECTRO)
-    {
-        // basic sites
-        getBasicSites();
-    }
+    printf("ran getSites\n");
 
     /***********************************************************************************/
     /******************************* FINISH INITIALIZING *******************************/
@@ -272,6 +300,7 @@ int main( int argc, char *argv[] )
 
     /***********************************************************************************/
     // run metropolis algorithm
+    printf("starting metropolisJoint\n");
 	metropolisJoint();
 
 	return 0;

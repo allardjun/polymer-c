@@ -268,6 +268,7 @@ void getSites()
                                 bSite[nf][ib] = atoi(linepart);
                                 linepart = strtok(NULL, " ,");
                                 ib++;
+                                //printf("Testing: %d .\n",bSite[nf][ib]);
                             }
                             else
                             {

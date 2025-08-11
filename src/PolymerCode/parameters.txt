@@ -4,12 +4,12 @@ N			60
 filamentInputMethod	0
 baseSepDistance		1
 irLigand		2.25
-brLigand		1
+brLigand		40
 kBound			1000
 baserLigand		4
 Force			0
 kdimer			0
-dimerDist0		1
+dimerDist0		14
 verboseTF		0
 iSiteInputMethod	4
 StiffenRange		0

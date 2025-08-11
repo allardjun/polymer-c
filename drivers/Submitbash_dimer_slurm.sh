@@ -5,8 +5,8 @@ d=$(date +%Y.%d.%m)
 #d='2023.14.01'
 
 # polymer number of segments to sweep over
-NStart=2
-NStop=2
+NStart=300
+NStop=300
 
 # output directory
 output_dir=/pub/kbogue1/GitHub/Data/polymer-c_data/
@@ -19,7 +19,7 @@ for NumSeg in $(seq $NStart $NStop); do
   NFil=2       #2
   #NumSeg=${i} #single=300; double=200; dimer=122
   if [ ${NFil} -eq 2 ]; then
-    baseSepDist=16.667000
+    baseSepDist=35.5
   else
     baseSepDist=0
   fi
@@ -52,3 +52,4 @@ for NumSeg in $(seq $NStart $NStop); do
   cd $output_dir/${what}.${d}/run.${what}.N${NumSeg}_${d}
   sbatch submit.${what}.N${NumSeg}.${d}.sub
 done
+

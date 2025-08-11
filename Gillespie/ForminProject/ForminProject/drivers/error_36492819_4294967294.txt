@@ -1,0 +1,7 @@
+ERROR: LoadError: BoundsError: attempt to access 1-element Vector{String} at index [2]
+Stacktrace:
+ [1] getindex(A::Vector{String}, i1::Int64)
+   @ Base ./essentials.jl:13
+ [2] top-level scope
+   @ /pub/kbogue1/GitHub/polymer-c/Gillespie/ForminProject/ForminProject/drivers/runGridSearch.jl:2
+in expression starting at /pub/kbogue1/GitHub/polymer-c/Gillespie/ForminProject/ForminProject/drivers/runGridSearch.jl:2
