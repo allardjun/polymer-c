@@ -1,6 +1,0 @@
-Job  started on:    hpc3-23-16
-Job  started on:    Wed Mar 19 11:05:23 PDT 2025
-/pub/kbogue1/GitHub/polymer-c/Gillespie/ForminProject/ForminProject/drivers
-Job  ended on:    hpc3-23-16
-Job  ended on:    Wed Mar 19 11:05:24 PDT 2025
- 
