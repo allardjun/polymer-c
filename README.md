@@ -26,9 +26,9 @@ This repository implements a comprehensive simulation framework for studying fle
 
 ### Supporting Files
 
-- **Configuration files**: `parameters.txt`, `filaments.txt`, `iSites.txt`, `bSites.txt`, `basicSites.txt`
+- **Configuration files**: Located in `config/parameters/` and `config/sites/`
 - **Analysis tools**: MATLAB scripts in `Analysis/` directory
-- **HPC drivers**: Job submission scripts in `drivers/` directory
+- **Scripts**: Located in `scripts/` with subdirectories for batch, HPC, local utilities, and testing
 
 ## Quick Start
 
@@ -45,15 +45,21 @@ This repository implements a comprehensive simulation framework for studying fle
    cd src/PolymerCode/
    ```
 
-2. **Compile the simulation:**
+2. **Compile and run quick test:**
    ```bash
-   make
+   make test
+   ```
+   This builds the executable and runs a fast validation test with output in `local_experiments/YYMMDD/`
+
+3. **Manual compilation:**
+   ```bash
+   make all
    ```
    This creates the `metropolis.out` executable.
 
-3. **Run a basic simulation:**
+4. **Run a basic simulation:**
    ```bash
-   ./metropolis.out parameters.txt outputTest.txt 0 2 30 3 -1 -1 -1
+   ./metropolis.out ../../config/parameters/default.txt outputTest.txt 0 2 30 3 -1 -1 -1
    ```
 
 ### Command Line Arguments
@@ -63,7 +69,7 @@ The simulation accepts the following arguments:
 ./metropolis.out [params_file] [output_file] [verbose] [n_filaments] [filament_length] [isite_location] [base_separation] [force] [kdimer] [radius_type]
 ```
 
-- `params_file`: Parameter configuration file (default: `parameters.txt`)
+- `params_file`: Parameter configuration file (e.g., `../../config/parameters/default.txt`)
 - `output_file`: Output filename for results
 - `verbose`: Verbosity level (0=quiet, 1=verbose)
 - `n_filaments`: Number of polymer filaments
@@ -76,12 +82,19 @@ The simulation accepts the following arguments:
 
 ### Configuration Files
 
-#### `parameters.txt`
-Main parameter file containing simulation settings:
+Configuration files are organized in the `config/` directory:
+
+#### Parameter Files (`config/parameters/`)
+- **`default.txt`**: Production config with NTMAX=10,000,000,000 (original behavior)
+- **`testing.txt`**: Testing config with NTMAX=100,000 (fast execution for validation)
+- **`detailed.txt`**: Additional parameter configurations
+
+Example parameter file format:
 ```
 listName		outputTest
 NFil			1
 N			60
+NTMAX			10000000000
 filamentInputMethod	0
 baseSepDistance		1
 irLigand		2.25
@@ -92,32 +105,30 @@ kdimer			0
 ...
 ```
 
-#### `filaments.txt`
-Specifies filament lengths:
-```
-60
-```
-
-#### `iSites.txt` 
-Comma-separated list of interaction site positions:
-```
-5,17,29,41,53
-```
-
-#### `bSites.txt`
-Bound site specifications (use -1 for no bound sites):
-```
--1
--1
-```
+#### Site Definition Files (`config/sites/`)
+- **`filaments.txt`**: Specifies filament lengths (e.g., `60`)
+- **`iSites.txt`**: Comma-separated interaction site positions (e.g., `5,17,29,41,53`)
+- **`bSites.txt`**: Bound site specifications (use -1 for no bound sites)
+- **`basicSites.txt`**: Basic site definitions
 
 ### Make Targets
 
 - `make` or `make all`: Compile the simulation
+- `make test` or `make quick-test`: Run comprehensive validation test
 - `make run`: Compile and run with default parameters
 - `make batch`: Compile and run batch processing
 - `make hpc`: Prepare for HPC cluster submission
 - `make parallel`: Run parallel simulations
+
+### Testing
+
+The repository includes a comprehensive testing framework:
+
+- **Quick Test**: `scripts/test/quick_test.sh` provides automated validation
+- **Fast execution**: Uses `testing.txt` config with NTMAX=100,000
+- **Organized output**: Results saved to `local_experiments/YYMMDD[_N]/`
+- **Build verification**: Automatically compiles if needed
+- **Config validation**: Checks for required parameter files
 
 ## Output
 
@@ -136,8 +147,15 @@ MATLAB analysis scripts in `Analysis/` directory can process simulation output t
 - Force-extension relationships
 - Electrostatic interaction analysis
 
-## Advanced Features
+## Key Features
 
+### NTMAX Parameterization
+A major enhancement allows runtime control of iteration limits:
+- **No recompilation needed**: NTMAX is now a configurable parameter read from config files
+- **Flexible simulation control**: Different configs for testing vs. production
+- **Backward compatibility**: Maintains all existing functionality
+
+### Advanced Features
 The simulation supports several advanced modeling options controlled by preprocessor flags in `driveMetropolis.c`:
 
 - **`MEMBRANE`**: Membrane association interactions
@@ -150,22 +168,31 @@ The simulation supports several advanced modeling options controlled by preproce
 
 For high-performance computing environments:
 
-1. **Prepare job scripts** in `drivers/` directory
-2. **Modify account settings** in `drivers/testslurm.sub`
+1. **Prepare job scripts** in `scripts/hpc/` directory
+2. **Modify account settings** in HPC submission scripts
 3. **Submit jobs** using provided batch scripts:
    ```bash
-   sh drivers/Submitbash_single_slurm.sh
+   make hpc
    ```
 
 ## Repository Structure
 
 ```
 polymer-c/
-├── src/PolymerCode/        # Core simulation code
-├── Analysis/               # MATLAB analysis scripts  
-├── drivers/                # HPC job submission scripts
-├── docs/                   # Documentation and flowcharts
-└── README.md              # This file
+├── config/
+│   ├── parameters/         # Parameter files (default.txt, testing.txt, etc.)
+│   └── sites/             # Site definition files (filaments.txt, iSites.txt, etc.)
+├── scripts/
+│   ├── batch/             # Batch processing scripts
+│   ├── hpc/               # SLURM and HPC scripts
+│   ├── local/             # Utility scripts
+│   ├── test/              # Testing scripts (quick_test.sh)
+│   └── examples/          # Example files
+├── local_experiments/      # Date-organized simulation output
+├── src/PolymerCode/       # Core simulation code
+├── Analysis/              # MATLAB analysis scripts
+├── docs/                  # Documentation and flowcharts
+└── README.md             # This file
 ```
 
 ## Citation

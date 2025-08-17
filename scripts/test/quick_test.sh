@@ -15,9 +15,17 @@ EXECUTABLE="metropolis.out"
 DATE_DIR=$(date +%y%m%d)
 OUTPUT_DIR="$EXPERIMENTS_DIR/$DATE_DIR"
 
+# Find next available number for today's test to avoid overwriting
+COUNTER=1
+while [ -d "$OUTPUT_DIR" ] && [ -f "$OUTPUT_DIR/quick_test_output.txt" ]; do
+    COUNTER=$((COUNTER + 1))
+    OUTPUT_DIR="$EXPERIMENTS_DIR/${DATE_DIR}_${COUNTER}"
+done
+
 # Test parameters (using testing config with lower NTMAX for faster execution)
 PARAMS_FILE="$CONFIG_DIR/parameters/testing.txt"
 OUTPUT_FILE="quick_test_output.txt"
+LOG_FILE="quick_test_log.txt"
 VERBOSE=0
 N_FILAMENTS=2
 FILAMENT_LENGTH=30
@@ -59,19 +67,22 @@ echo "  ISite location: $ISITE_LOCATION"
 
 echo "Executing: ./$EXECUTABLE $PARAMS_FILE $OUTPUT_FILE $VERBOSE $N_FILAMENTS $FILAMENT_LENGTH $ISITE_LOCATION $BASE_SEPARATION $FORCE $KDIMER"
 
-# Run the simulation
-./"$EXECUTABLE" "$PARAMS_FILE" "$OUTPUT_FILE" $VERBOSE $N_FILAMENTS $FILAMENT_LENGTH $ISITE_LOCATION $BASE_SEPARATION $FORCE $KDIMER
+# Run the simulation and redirect stdout to log file
+./"$EXECUTABLE" "$PARAMS_FILE" "$OUTPUT_FILE" $VERBOSE $N_FILAMENTS $FILAMENT_LENGTH $ISITE_LOCATION $BASE_SEPARATION $FORCE $KDIMER > "$LOG_FILE" 2>&1
 
 # Check if output was generated and move to experiments directory
 if [ -f "$OUTPUT_FILE" ]; then
     echo "✓ Test completed successfully!"
     echo "✓ Output file generated: $OUTPUT_FILE"
     
-    # Move output to experiments directory
+    # Move output and log files to experiments directory
     mv "$OUTPUT_FILE" "$OUTPUT_DIR/"
+    mv "$LOG_FILE" "$OUTPUT_DIR/"
     FINAL_OUTPUT="$OUTPUT_DIR/$OUTPUT_FILE"
+    FINAL_LOG="$OUTPUT_DIR/$LOG_FILE"
     
     echo "✓ Output moved to: $FINAL_OUTPUT"
+    echo "✓ Log moved to: $FINAL_LOG"
     echo "Output file size: $(wc -l < "$FINAL_OUTPUT") lines"
     echo "First few lines of output:"
     head -5 "$FINAL_OUTPUT"
