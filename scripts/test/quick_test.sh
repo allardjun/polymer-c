@@ -39,6 +39,9 @@ echo "=== Polymer-C Quick Test ==="
 echo "Starting quick validation test..."
 echo "Output will be saved to: $OUTPUT_DIR"
 
+# Start timer
+START_TIME=$(date +%s)
+
 # Change to source directory
 cd "$SRC_DIR"
 
@@ -86,6 +89,29 @@ if [ -f "$OUTPUT_FILE" ]; then
     echo "Output file size: $(wc -l < "$FINAL_OUTPUT") lines"
     echo "First few lines of output:"
     head -5 "$FINAL_OUTPUT"
+    
+    # End timer and display elapsed time
+    END_TIME=$(date +%s)
+    ELAPSED_TIME=$((END_TIME - START_TIME))
+    echo "✓ Simulation completed in ${ELAPSED_TIME} seconds"
+    
+    # Run Julia analysis
+    echo "Running Julia analysis..."
+    ANALYSIS_DIR="../../Analysis"
+    PLOT_OUTPUT="$OUTPUT_DIR/occlusion_probability_plot.pdf"
+    
+    # Convert to absolute paths for Julia
+    FINAL_OUTPUT_ABS=$(readlink -f "$FINAL_OUTPUT")
+    PLOT_OUTPUT_ABS="$(readlink -f "$OUTPUT_DIR")/occlusion_probability_plot.pdf"
+    
+    cd "$ANALYSIS_DIR"
+    julia --project=. analyze_single.jl "$FINAL_OUTPUT_ABS" "$PLOT_OUTPUT_ABS"
+    
+    if [ -f "$PLOT_OUTPUT_ABS" ]; then
+        echo "✓ Analysis plot generated: $PLOT_OUTPUT_ABS"
+    else
+        echo "⚠ Warning: Analysis plot not generated"
+    fi
 else
     echo "✗ Test failed: No output file generated"
     exit 1
