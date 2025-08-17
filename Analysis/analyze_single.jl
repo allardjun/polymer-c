@@ -3,21 +3,37 @@
 """
 analyze_single.jl
 
-Analyzes single simulation output from polymer-c to plot occlusion probability
-versus location on the polymer chain.
+Comprehensive analysis tool for polymer-c simulation output.
+Generates multiple plots for all site-dependent variables with multi-filament support.
 
 Usage:
-    julia analyze_single.jl <path_to_output_file>
+    julia analyze_single.jl <input_file> <output_prefix>
     
 Example:
-    julia analyze_single.jl ../local_experiments/250816/quick_test_output.txt
+    julia analyze_single.jl ../local_experiments/250817/quick_test_output.txt ../local_experiments/250817/analysis
+
+Output:
+    Multiple PDF files with prefix:
+    - {prefix}_POcclude_NumSites.pdf (legacy compatibility)
+    - {prefix}_POcclude_vs_position.pdf
+    - {prefix}_Prvec0_vs_position.pdf
+    - ... (one for each site-dependent variable)
 """
 
 using DelimitedFiles
 using CairoMakie
 using Statistics
 
-# Data structures for organizing simulation output
+# ============================================================================
+# DATA STRUCTURES
+# ============================================================================
+
+"""
+    SimulationData
+
+Structured container for polymer simulation output data.
+Organizes data by type: parameters, global arrays, per-filament, and per-site data.
+"""
 struct SimulationData
     parameters::Dict{String, Any}
     global_data::Dict{String, Vector{Float64}}
@@ -27,6 +43,7 @@ struct SimulationData
     n_filaments::Int
 end
 
+"""Create empty SimulationData with initialized containers."""
 function SimulationData()
     return SimulationData(
         Dict{String, Any}(),
@@ -38,12 +55,13 @@ function SimulationData()
     )
 end
 
+# ============================================================================
+# DATA PARSING FUNCTIONS
+# ============================================================================
+
+"""Parse complete simulation output file into structured data."""
 function parse_simulation_output(filename::String)
-    """Parse complete simulation output file into structured data."""
-    
-    if !isfile(filename)
-        error("Output file not found: $filename")
-    end
+    validate_input_file(filename)
     
     lines = readlines(filename)
     data = SimulationData()
@@ -54,6 +72,20 @@ function parse_simulation_output(filename::String)
     end
     
     # Extract legacy format for backward compatibility
+    positions, probabilities = extract_legacy_format(data, filename)
+    
+    return positions, probabilities, data
+end
+
+"""Validate input file exists and is readable."""
+function validate_input_file(filename::String)
+    if !isfile(filename)
+        error("Output file not found: $filename")
+    end
+end
+
+"""Extract legacy POcclude_NumSites format for backward compatibility."""
+function extract_legacy_format(data::SimulationData, filename::String)
     positions = Int[]
     probabilities = Float64[]
     
@@ -66,7 +98,7 @@ function parse_simulation_output(filename::String)
         error("No POcclude_NumSites data found in file: $filename")
     end
     
-    return positions, probabilities, data
+    return positions, probabilities
 end
 
 function parse_line!(data::SimulationData, line::String)
@@ -100,77 +132,105 @@ function parse_line!(data::SimulationData, line::String)
     end
 end
 
+"""Parse indexed data (global arrays, per-filament, per-site)."""
 function parse_indexed_data!(data::SimulationData, parts::Vector{SubString{String}})
-    """Parse indexed data (global arrays, per-filament, per-site)."""
-    
     variable_part = parts[1]
     
-    # Global data: Variable[i] index value
     if occursin("[i]", variable_part)
-        var_name = split(variable_part, "[i]")[1]
-        if length(parts) >= 3
-            index = parse(Int, parts[2])
-            value = parse(Float64, parts[3])
-            
-            if !haskey(data.global_data, var_name)
-                data.global_data[var_name] = Float64[]
-            end
-            
-            # Ensure array is large enough
-            while length(data.global_data[var_name]) <= index
-                push!(data.global_data[var_name], 0.0)
-            end
-            
-            data.global_data[var_name][index + 1] = value
-        end
+        parse_global_data!(data, parts, variable_part)
     
-    # Per-filament data: Variable[nf] filament_index value  
     elseif occursin("[nf]", variable_part) && !occursin("[iy]", variable_part)
-        var_name = split(variable_part, "[nf]")[1]
-        if length(parts) >= 3
-            nf = parse(Int, parts[2])
-            value = parse(Float64, parts[3])
-            
-            if !haskey(data.per_filament_data, var_name)
-                data.per_filament_data[var_name] = Float64[]
-            end
-            
-            # Ensure array is large enough
-            while length(data.per_filament_data[var_name]) <= nf
-                push!(data.per_filament_data[var_name], 0.0)
-            end
-            
-            data.per_filament_data[var_name][nf + 1] = value
-            
-            # Track filament lengths
-            if var_name == "N"
-                while length(data.filament_lengths) <= nf
-                    push!(data.filament_lengths, 0)
-                end
-                data.filament_lengths[nf + 1] = Int(value)
-            end
-        end
+        parse_per_filament_data!(data, parts, variable_part)
     
-    # Per-site data: Variable[nf][iy] filament_index site_index value
     elseif occursin("[nf][iy]", variable_part)
-        var_name = split(variable_part, "[nf][iy]")[1]
-        if length(parts) >= 4
-            nf = parse(Int, parts[2])
-            iy = parse(Int, parts[3])
-            value = parse(Float64, parts[4])
-            
-            if !haskey(data.per_site_data, var_name)
-                data.per_site_data[var_name] = Dict{Int, Dict{Int, Float64}}()
-            end
-            
-            if !haskey(data.per_site_data[var_name], nf)
-                data.per_site_data[var_name][nf] = Dict{Int, Float64}()
-            end
-            
-            data.per_site_data[var_name][nf][iy] = value
+        parse_per_site_data!(data, parts, variable_part)
+    end
+end
+
+# Helper functions for parsing different data types
+"""Parse global data: Variable[i] index value"""
+function parse_global_data!(data::SimulationData, parts::Vector{SubString{String}}, variable_part::SubString{String})
+    var_name = String(split(variable_part, "[i]")[1])
+    if length(parts) >= 3
+        index = parse(Int, parts[2])
+        value = parse(Float64, parts[3])
+        
+        ensure_global_array_exists!(data, var_name)
+        ensure_array_size!(data.global_data[var_name], index)
+        
+        data.global_data[var_name][index + 1] = value
+    end
+end
+
+"""Parse per-filament data: Variable[nf] filament_index value"""
+function parse_per_filament_data!(data::SimulationData, parts::Vector{SubString{String}}, variable_part::SubString{String})
+    var_name = String(split(variable_part, "[nf]")[1])
+    if length(parts) >= 3
+        nf = parse(Int, parts[2])
+        value = parse(Float64, parts[3])
+        
+        ensure_filament_array_exists!(data, var_name)
+        ensure_array_size!(data.per_filament_data[var_name], nf)
+        
+        data.per_filament_data[var_name][nf + 1] = value
+        
+        # Track filament lengths
+        if var_name == "N"
+            ensure_array_size!(data.filament_lengths, nf)
+            data.filament_lengths[nf + 1] = Int(value)
         end
     end
 end
+
+"""Parse per-site data: Variable[nf][iy] filament_index site_index value"""
+function parse_per_site_data!(data::SimulationData, parts::Vector{SubString{String}}, variable_part::SubString{String})
+    var_name = String(split(variable_part, "[nf][iy]")[1])
+    if length(parts) >= 4
+        nf = parse(Int, parts[2])
+        iy = parse(Int, parts[3])
+        value = parse(Float64, parts[4])
+        
+        ensure_site_data_exists!(data, var_name, nf)
+        data.per_site_data[var_name][nf][iy] = value
+    end
+end
+
+# Reusable utility functions for array management
+"""Ensure global array exists for given variable name"""
+function ensure_global_array_exists!(data::SimulationData, var_name::String)
+    if !haskey(data.global_data, var_name)
+        data.global_data[var_name] = Float64[]
+    end
+end
+
+"""Ensure filament array exists for given variable name"""
+function ensure_filament_array_exists!(data::SimulationData, var_name::String)
+    if !haskey(data.per_filament_data, var_name)
+        data.per_filament_data[var_name] = Float64[]
+    end
+end
+
+"""Ensure site data structure exists for given variable and filament"""
+function ensure_site_data_exists!(data::SimulationData, var_name::String, nf::Int)
+    if !haskey(data.per_site_data, var_name)
+        data.per_site_data[var_name] = Dict{Int, Dict{Int, Float64}}()
+    end
+    
+    if !haskey(data.per_site_data[var_name], nf)
+        data.per_site_data[var_name][nf] = Dict{Int, Float64}()
+    end
+end
+
+"""Ensure array is large enough to accommodate given index"""
+function ensure_array_size!(array::Vector{T}, index::Int) where T
+    while length(array) <= index
+        push!(array, zero(T))
+    end
+end
+
+# ============================================================================
+# DATA ACCESS AND UTILITY FUNCTIONS
+# ============================================================================
 
 function extract_simulation_parameters(data::SimulationData)
     """Extract simulation parameters from parsed data (legacy compatibility)."""
@@ -220,6 +280,10 @@ function get_site_dependent_variables(data::SimulationData)
     """Get list of all site-dependent variables in the data."""
     return collect(keys(data.per_site_data))
 end
+
+# ============================================================================
+# PLOTTING FUNCTIONS
+# ============================================================================
 
 function plot_occlusion_probability(positions, probabilities, params, output_file)
     """Create a plot of occlusion probability vs chain position."""
@@ -315,6 +379,41 @@ function plot_per_site_variable(data::SimulationData, variable_name::String, out
     return fig
 end
 
+# Common plotting utilities to eliminate duplication
+"""Create standardized plot layout with common formatting"""
+function create_standard_plot(xlabel::String, ylabel::String, title::String)
+    fig = Figure(size = (800, 600))
+    ax = Axis(fig[1, 1], 
+        xlabel = xlabel,
+        ylabel = ylabel,
+        title = title
+    )
+    return fig, ax
+end
+
+"""Add parameter information text to plot"""
+function add_parameter_text!(ax, params::Dict{String, Any})
+    param_text = "Parameters:\n"
+    for (key, value) in params
+        param_text *= "$key: $value\n"
+    end
+    
+    text!(ax, 0.02, 0.98, text = param_text, 
+          space = :relative, align = (:left, :top), 
+          fontsize = 8, color = :black)
+end
+
+"""Save plot with status message"""
+function save_plot_with_message(fig, output_file::String)
+    save(output_file, fig)
+    println("Plot saved to: $output_file")
+end
+
+"""Generate standardized filename from prefix and variable name"""
+function generate_plot_filename(prefix::String, variable_name::String)
+    return prefix * "_$(variable_name)_vs_position.pdf"
+end
+
 function create_comprehensive_plots(data::SimulationData, output_prefix::String)
     """Create plots for all important site-dependent variables using prefix-based naming."""
     
@@ -337,7 +436,7 @@ function create_comprehensive_plots(data::SimulationData, output_prefix::String)
     
     for (var_name, title, ylabel) in plot_configs
         if haskey(data.per_site_data, var_name)
-            output_file = output_prefix * "_$(var_name)_vs_position.pdf"
+            output_file = generate_plot_filename(output_prefix, var_name)
             
             fig = plot_per_site_variable(data, var_name, output_file; 
                                        ylabel=ylabel, title=title)
@@ -352,6 +451,10 @@ function create_comprehensive_plots(data::SimulationData, output_prefix::String)
     
     return created_plots
 end
+
+# ============================================================================
+# MAIN ANALYSIS FUNCTION
+# ============================================================================
 
 function analyze_single_run(input_file::String, output_prefix::String = "")
     """Main analysis function."""
@@ -460,8 +563,8 @@ elseif isinteractive()
     # inputfile  = "data/default_input.txt"
     # outputprefix = "results/default_analysis"
 
-    inputfile = "../local_experiments/250816_2/quick_test_output.txt"
-    outputprefix = "../local_experiments/250816_2/analysis"
+    inputfile = "../local_experiments/250817/quick_test_output.txt"
+    outputprefix = "../local_experiments/250817/analysis"
 
     main(inputfile, outputprefix)
 else
