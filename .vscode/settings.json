@@ -5,6 +5,5 @@
         "initializer_list": "c",
         "string": "c",
         "string_view": "c"
-    },
-    "julia.environmentPath": "/pub/kbogue1/GitHub/polymer-c/Gillespie/ForminProject/ForminProject"
+    }
 }

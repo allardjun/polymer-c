@@ -11,6 +11,113 @@
 
 ---
 
+# CURRENT
+
+## End-to-end test including analysis
+
+Read outputControl.c and local_experiments/*/quick_test_output.txt to understand how output looks. 
+Create Analysis/analyze_single.jl julia file, create a Julia project.toml (using Julia tools?)
+The julia script should read in the data from the single run, and plot occlusion probability versus location on the chain.
+
+Find out everything in the output that can be reasonably plotted, and plot it. 
+For a free chain, both Pocc and prvec0 have analytical forms to compare to. 
+
+### All Plottable Output Variables (from outputControl.c analysis):
+
+#### Simulation Parameters
+- `nt` - Number of iterations
+- `NFil` - Number of filaments  
+- `irLigand`, `brLigand` - Ligand interaction parameters
+- `Force`, `kdimer` - Force and dimerization parameters
+- `dimerDist0`, `baseSepDistance` - Geometric parameters
+
+#### Global Occlusion Statistics
+- **`POcclude_NumSites[i]`** - Occlusion probability vs number of occupied sites *(already implemented)*
+- **`PAvailable_NumSites[i]`** - Availability probability vs number of sites
+
+#### Per-Filament Statistics
+- **`N[nf]`** - Length of each filament
+- **`ksStatistic[nf]`** - Kolmogorov-Smirnov convergence statistic
+- **`reeBar[nf]`**, **`ree2Bar[nf]`** - Mean and second moment of end-to-end distance
+- **`rMBar[nf]`**, **`rM2Bar[nf]`** - Mean and second moment of midpoint distance
+
+#### Per-Site Data (indexed by nf, iy)
+##### Core Binding/Occlusion Probabilities:
+- **`POcclude[nf][iy]`** - Site occlusion probability *(key analytical comparison)*
+- **`1-POcclude[nf][iy]`** - Site availability (1-occlusion)
+- **`PMembraneOcclude[nf][iy]`** - Membrane occlusion probability
+
+##### Distance Distribution Probabilities (Prvec):
+- **`Prvec0[nf][iy]`** - Basic polymer vector probability *(analytical comparison available)*
+- **`Prvec0_up[nf][iy]`**, **`Prvec0_halfup[nf][iy]`** - Directional variants
+- **`Prvec0_rad[nf][iy]`** - Radial probability distributions
+
+##### Radius-Specific Measurements:
+- **`Prvec0_X.XXXXXX[nf][iy]`** - Probability at specific radii (0.1, 0.5, 0.75, etc.)
+- **`Prvec0_up_X.XXXXXX[nf][iy]`** - Directional variants at specific radii
+
+##### Bound State Analysis:
+- **`Prvec0_bound_center[nf][iy]`**, **`Prvec0_bound_edge[nf][iy]`** - Center vs edge binding
+- Multiple variants with `_up` and `_halfup` prefixes
+
+##### Distance From Sites:
+- **`rMiSiteBar[nf][iy]`**, **`rM2iSiteBar[nf][iy]`** - Distance statistics from interaction sites
+- **`reeiSiteBar[nf][iy]`**, **`ree2iSiteBar[nf][iy]`** - End-to-end distances from sites
+
+##### Base Occlusion:
+- **`1-POccludeBase[nf]`** - Base availability probability
+
+##### Inter-Filament Statistics:
+- **`reeFilBar[nf][nf2]`**, **`ree2FilBar[nf][nf2]`** - Cross-filament end-to-end distances
+
+#### Spatial Distribution Data:
+- **`polymerLocationCounts[nf][iSiteCurrent][j]`** - Spatial location histograms
+- **`occupied[i]`** - Site occupation patterns
+
+#### Most Important for Analysis:
+1. **`POcclude[nf][iy]`** vs position - *(has analytical form for free chain)*
+2. **`Prvec0[nf][iy]`** vs position - *(has analytical form for free chain)*
+3. **`reeBar[nf]`**, **`rMBar[nf]`** - Chain statistics
+4. **`POcclude_NumSites[i]`** - Overall binding distribution *(already implemented)*
+
+### Critical: NTCHECK = 200,000 iterations required for meaningful output
+
+**Most output variables are only meaningful after NTCHECK iterations** because:
+
+#### Variables that depend on (nt - NTCHECK):
+All statistical averages are calculated using the denominator `(nt - NTCHECK)` rather than `nt`:
+
+1. **`POcclude[nf][iy]`** - Site occlusion probability
+2. **`POcclude_NumSites[i]`** - Global occlusion distribution 
+3. **`PMembraneOcclude[nf][iy]`** - Membrane occlusion
+4. **`reeBar[nf]`**, **`ree2Bar[nf]`** - End-to-end distance statistics
+5. **`reeFilBar[nf][nf2]`**, **`ree2FilBar[nf][nf2]`** - Inter-filament distances
+6. **`POccludeBase[nf]`** - Base occlusion probability
+7. **All `Prvec0` variants** - Polymer vector probabilities
+8. **All `Prvec_*` variants** - Distance distribution probabilities
+
+#### Why NTCHECK matters:
+- **Equilibration period**: The first 200,000 steps are considered "burn-in" to reach equilibrium
+- **Binding transitions**: Ligand binding/unbinding only allowed after `nt > NTCHECK`
+- **Convergence testing**: Stationarity checks begin at `2*NTCHECK = 400,000` steps
+
+#### Impact on current testing:
+Our `testing.txt` config has **NTMAX = 1,000,000**, which means:
+- **Equilibration**: Steps 1-200,000 (discarded)
+- **Data collection**: Steps 200,001-1,000,000 (800,000 meaningful steps)
+- **Statistical validity**: ✅ Sufficient for meaningful output
+
+#### Variables that work immediately:
+- **Simulation parameters** (`nt`, `NFil`, `irLigand`, etc.)
+- **Raw counts** (like `*_sum` variables in output)
+- **Instantaneous measurements** before statistical averaging
+
+**Conclusion**: For meaningful statistical output, simulations need **nt > 200,000**. Our current testing setup with 1M iterations provides 800k valid data points, which is adequate for analysis.
+
+
+---
+
+
 # Comprehensive Refactoring Plan (written by Claude Code)
 
 Based on repository analysis and existing TODO items, here are comprehensive refactoring recommendations organized by priority:
@@ -238,3 +345,31 @@ tools/
 11. Add development tools
 
 This refactoring plan addresses all existing TODO items while adding structure for long-term maintainability.
+
+# Performance improvements in metropolisJoint.c
+
+1. **Memory Access Patterns (metropolisJoint.c:279-324)**
+   - Lines 287-302 and 308-323 copy entire arrays element by element. Pre-compute these arrays only once and use memcpy() for bulk copying instead of loops.
+
+2. **Redundant Distance Calculations**
+   - Lines 404-406, 479-481, 451-453: Distance calculations use expensive sqrt() unnecessarily. Compare squared distances instead and only use sqrt() when the actual distance value is needed.
+
+3. **Loop Structure Optimizations**
+   - Lines 703-718: Nested loops with early exit shortcuts could benefit from loop reordering - put most selective conditions first.
+   - Lines 475-491: Multiple nested loops checking same conditions repeatedly.
+
+4. **Expensive Math Operations (metropolisJoint.c:949-1082)**
+   - The rotate() function recalculates trigonometric values. Cache sin/cos values when angles don't change.
+   - Lines 952-960: RLocal matrix computation repeated - could be cached.
+
+5. **Branch Prediction Issues**
+   - Lines 244-268: Multiple switch statements and conditionals in hot loops. Consider loop unrolling or lookup tables.
+
+6. **Memory Layout**
+   - Global arrays like `r[NFILMAX][NMAX][3]` have poor cache locality. Consider structure-of-arrays vs array-of-structures reorganization.
+
+7. **Redundant Calculations**
+   - Lines 625-627, 356-358: Same ligand center calculations repeated multiple times. Cache results.
+
+8. **Integer Division in Hot Path**
+   - Line 206: `floor(N[nfPropose]*TWISTER)` could use bit operations if N values are powers of 2.

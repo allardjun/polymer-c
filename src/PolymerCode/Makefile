@@ -2,6 +2,8 @@ all:
 	gcc -O3 driveMetropolis.c -o metropolis.out -lm
 
 quick-test:
+	gcc -O3 driveMetropolis.c -o metropolis.out -lm
+	
 	../../scripts/test/quick_test.sh
 
 test: quick-test

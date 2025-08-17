@@ -39,8 +39,7 @@ echo "=== Polymer-C Quick Test ==="
 echo "Starting quick validation test..."
 echo "Output will be saved to: $OUTPUT_DIR"
 
-# Start timer
-START_TIME=$(date +%s)
+
 
 # Change to source directory
 cd "$SRC_DIR"
@@ -69,6 +68,9 @@ echo "  Filament length: $FILAMENT_LENGTH"
 echo "  ISite location: $ISITE_LOCATION"
 
 echo "Executing: ./$EXECUTABLE $PARAMS_FILE $OUTPUT_FILE $VERBOSE $N_FILAMENTS $FILAMENT_LENGTH $ISITE_LOCATION $BASE_SEPARATION $FORCE $KDIMER"
+
+# Start timer
+START_TIME=$(date +%s)
 
 # Run the simulation and redirect stdout to log file
 ./"$EXECUTABLE" "$PARAMS_FILE" "$OUTPUT_FILE" $VERBOSE $N_FILAMENTS $FILAMENT_LENGTH $ISITE_LOCATION $BASE_SEPARATION $FORCE $KDIMER > "$LOG_FILE" 2>&1
@@ -102,7 +104,7 @@ if [ -f "$OUTPUT_FILE" ]; then
     
     # Convert to absolute paths for Julia
     FINAL_OUTPUT_ABS=$(readlink -f "$FINAL_OUTPUT")
-    PLOT_OUTPUT_ABS="$(readlink -f "$OUTPUT_DIR")/occlusion_probability_plot.pdf"
+    PLOT_OUTPUT_ABS="$(readlink -f "$OUTPUT_DIR")/occlusion_probability_plot.pdf_ree2iSiteBar_vs_position.pdf"
     
     cd "$ANALYSIS_DIR"
     julia --project=. analyze_single.jl "$FINAL_OUTPUT_ABS" "$PLOT_OUTPUT_ABS"
