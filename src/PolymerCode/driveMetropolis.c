@@ -3,7 +3,6 @@
 #define TWISTER genrand_real3()
 #define NFILMAX         3
 #define NMAX            1201
-#define NTMAX           1e10
 #define NTADAPT         20000
 #define NTCHECK         200000
 #define DCHIMIN         1e-4
@@ -50,6 +49,7 @@ FILE *paramsFile, *filList, *iSiteList, *bSiteList, *basicSiteList;
 
 long NFil,N[NFILMAX];
 long Ntemp,iSiteTemp;
+long NTMAX;
 long iSite[NFILMAX][NMAX], iSiteTotal[NFILMAX], iSiteCurrent, iy,ty, stericOcclusion[NFILMAX][NMAX];
 long NumberiSites;
 long Ncurrent;
@@ -248,7 +248,7 @@ int main( int argc, char *argv[] )
                 40 - N+iy/(2*NBINS)
                 50 - for iy>200, N/NBINS, for iy<=200 iy/NBINS
             */
-            printf("This is the radius type: %lf\n", radtype);
+            printf("This is the radius type: %d\n", radtype);
         }
     }else{
         radtype = 10;
@@ -260,7 +260,7 @@ int main( int argc, char *argv[] )
             40 - N+iy/(2*NBINS)
             50 - for iy>200, N/NBINS, for iy<=200 iy/NBINS
         */
-        printf("This is the radius type: %lf\n", radtype);
+        printf("This is the radius type: %d\n", radtype);
     }
 
 

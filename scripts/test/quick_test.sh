@@ -1,0 +1,83 @@
+#!/bin/bash
+
+# Quick test script for polymer-c simulation
+# This runs a minimal test to verify the simulation works
+
+set -e  # Exit on any error
+
+# Configuration
+SRC_DIR="../../src/PolymerCode"
+CONFIG_DIR="../../config"
+EXPERIMENTS_DIR="../../local_experiments"
+EXECUTABLE="metropolis.out"
+
+# Generate date-based output directory (YYMMDD format)
+DATE_DIR=$(date +%y%m%d)
+OUTPUT_DIR="$EXPERIMENTS_DIR/$DATE_DIR"
+
+# Test parameters (using testing config with lower NTMAX for faster execution)
+PARAMS_FILE="$CONFIG_DIR/parameters/testing.txt"
+OUTPUT_FILE="quick_test_output.txt"
+VERBOSE=0
+N_FILAMENTS=2
+FILAMENT_LENGTH=30
+ISITE_LOCATION=3
+BASE_SEPARATION=-1
+FORCE=-1
+KDIMER=-1
+RADIUS_TYPE=-1
+
+echo "=== Polymer-C Quick Test ==="
+echo "Starting quick validation test..."
+echo "Output will be saved to: $OUTPUT_DIR"
+
+# Change to source directory
+cd "$SRC_DIR"
+
+# Create output directory if it doesn't exist
+mkdir -p "$OUTPUT_DIR"
+
+# Check if executable exists, build if not
+if [ ! -f "$EXECUTABLE" ]; then
+    echo "Building simulation executable..."
+    make all
+fi
+
+# Verify required config files exist
+if [ ! -f "$PARAMS_FILE" ]; then
+    echo "Error: Parameters file not found at $PARAMS_FILE"
+    exit 1
+fi
+
+# Run the quick test
+echo "Running simulation with parameters:"
+echo "  Parameters file: $PARAMS_FILE"
+echo "  Output file: $OUTPUT_FILE"
+echo "  N_filaments: $N_FILAMENTS"
+echo "  Filament length: $FILAMENT_LENGTH"
+echo "  ISite location: $ISITE_LOCATION"
+
+echo "Executing: ./$EXECUTABLE $PARAMS_FILE $OUTPUT_FILE $VERBOSE $N_FILAMENTS $FILAMENT_LENGTH $ISITE_LOCATION $BASE_SEPARATION $FORCE $KDIMER"
+
+# Run the simulation
+./"$EXECUTABLE" "$PARAMS_FILE" "$OUTPUT_FILE" $VERBOSE $N_FILAMENTS $FILAMENT_LENGTH $ISITE_LOCATION $BASE_SEPARATION $FORCE $KDIMER
+
+# Check if output was generated and move to experiments directory
+if [ -f "$OUTPUT_FILE" ]; then
+    echo "✓ Test completed successfully!"
+    echo "✓ Output file generated: $OUTPUT_FILE"
+    
+    # Move output to experiments directory
+    mv "$OUTPUT_FILE" "$OUTPUT_DIR/"
+    FINAL_OUTPUT="$OUTPUT_DIR/$OUTPUT_FILE"
+    
+    echo "✓ Output moved to: $FINAL_OUTPUT"
+    echo "Output file size: $(wc -l < "$FINAL_OUTPUT") lines"
+    echo "First few lines of output:"
+    head -5 "$FINAL_OUTPUT"
+else
+    echo "✗ Test failed: No output file generated"
+    exit 1
+fi
+
+echo "=== Quick Test Complete ==="

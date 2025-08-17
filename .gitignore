@@ -1,4 +1,80 @@
+# Executable files
+*.out
+*.exe
+
+# System files
 *.DS_Store
+*.swp
+*~
 *.m~
+
+# Build artifacts
+*.o
+*.a
+*.so
+*.dll
+
+# Simulation outputs
+ISEED
+metropolis.*
+output*.txt
+*.dat
+
+# IDE and editor files
 .vscode/
+*.code-workspace
+.idea/
+*.sublime-*
+
+# MATLAB files
 *.mat
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+~$*
+
+# Log files
+*.log
+
+# Mac OS
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db:encryptable
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*

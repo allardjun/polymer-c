@@ -1,6 +1,6 @@
 listName		outputTest
-NFil			1
-N			60
+NFil			2
+N			30
 filamentInputMethod	0
 baseSepDistance		1
 irLigand		2.25
@@ -16,10 +16,10 @@ StiffenRange		0
 stiffCase		0
 occupiedSites		0_0_0_0_0_0
 occupiedSitesNoSpace 	000000
-filamentFilename	filaments.txt
-iSiteFilename		iSites.txt
-bSiteFilename		bSites.txt
-basicSiteFilename	basicSites.txt
+filamentFilename	../../config/sites/filaments.txt
+iSiteFilename		../../config/sites/iSites.txt
+bSiteFilename		../../config/sites/bSites.txt
+basicSiteFilename	../../config/sites/basicSites.txt
 bSiteInputMethod	3
 parabolaDepth		0
 parabolaWidth		0
@@ -29,3 +29,4 @@ Zrepulsion		0
 PhosElectroRange 	0
 localConcCutoff		1
 iSiteTemp		1
+NTMAX			10000000000

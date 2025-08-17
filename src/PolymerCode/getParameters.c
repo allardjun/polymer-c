@@ -110,6 +110,9 @@ void getParameters()
     fscanf(paramsFile,"%s %ld", tmpString, &iSiteTemp);
     if (TALKATIVE) printf("This is iSiteTemp: %ld\n", iSiteTemp);
     
+    fscanf(paramsFile,"%s %ld", tmpString, &NTMAX);
+    if (TALKATIVE) printf("This is NTMAX: %ld\n", NTMAX);
+    
     fclose(paramsFile);
     
 }

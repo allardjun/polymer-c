@@ -1,11 +1,15 @@
 all:
 	gcc -O3 driveMetropolis.c -o metropolis.out -lm
 
+quick-test:
+	../../scripts/test/quick_test.sh
+
+test: quick-test
 
 run:
 	gcc -O3 driveMetropolis.c -o metropolis.out -lm
 
-	./metropolis.out parameters.txt outputTest.txt 0 2 30 3 -1 -1 -1
+	./metropolis.out ../../config/parameters/default.txt outputTest.txt 0 2 30 3 -1 -1 -1
 
 batch:
 
@@ -19,13 +23,13 @@ hpc:
 
 	gcc -O3 driveMetropolis.c -o metropolis.out -lm
 	
-	chmod a+x makePubs.pl
+	chmod a+x ../../scripts/hpc/makePubs.pl
 
-	./makePubs.pl
+	../../scripts/hpc/makePubs.pl
 
-	chmod a+x submit.pl
+	chmod a+x ../../scripts/hpc/submit.pl
 
-	./submit.pl
+	../../scripts/hpc/submit.pl
 
 copyrepo:
 
@@ -37,11 +41,11 @@ parallel:
 
 	gcc -O3 driveMetropolis.c -o metropolis.out -lm
 
-	chmod a+x batchMetropolis.sh
+	chmod a+x ../../scripts/batch/batchMetropolis.sh
 
-	./batchMetropolis.sh 7 v
+	../../scripts/batch/batchMetropolis.sh 7 v
 
 copycat:
-	chmod a+x copyCatFiles.sh
+	chmod a+x ../../scripts/local/copyCatFiles.sh
 
-	./copyCatFiles.sh
+	../../scripts/local/copyCatFiles.sh
