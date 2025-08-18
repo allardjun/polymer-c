@@ -639,23 +639,30 @@ void metropolisJoint()
                     
                     if (stericOcclusion[nf][iy]==0) //if not occluded yet, do further tests
                     {
-                        for(nf2=0;nf2<NFil;nf2++)
+                        // Performance Improvement #3: Optimized loop structure with early exit
+                        // Cache constant values outside loops to avoid repeated calculations
+                        double irLigand_squared = irLigand*irLigand;
+                        long currentSite = iSite[nf][iy];
+                        
+                        for(nf2=0;nf2<NFil && stericOcclusion[nf][iy]==0;nf2++)
                         {
                             for(i=0;i<N[nf2];i++) // loop through joints
                             {
+                                // Fast exclusion check first (cheaper than distance calculation)
+                                if (nf == nf2 && i == currentSite) continue;
+                                
+                                // Distance calculation - avoid variable creation in loop
                                 if ( (iLigandCenter[nf][iy][0]-r(nf2,i,0))*(iLigandCenter[nf][iy][0]-r(nf2,i,0)) +
                                      (iLigandCenter[nf][iy][1]-r(nf2,i,1))*(iLigandCenter[nf][iy][1]-r(nf2,i,1)) +
-                                     (iLigandCenter[nf][iy][2]-r(nf2,i,2))*(iLigandCenter[nf][iy][2]-r(nf2,i,2)) <= irLigand*irLigand
-                                    && !(nf == nf2 && i == iSite[nf][iy]))
+                                     (iLigandCenter[nf][iy][2]-r(nf2,i,2))*(iLigandCenter[nf][iy][2]-r(nf2,i,2)) <= irLigand_squared)
                                 {
                                     stericOcclusion[nf][iy]++;
                                     membraneAndSegmentOcclusion[nf][iy]++;
-                                    i=N[nf2]; // shortcut out of the loop
-                                    nf2 = NFil; //shortcut out of outer loop
+                                    goto exit_joint_loops; // Clean exit from nested loops
                                 }
                             }
                         } // finished loop through joints
-
+                        exit_joint_loops:;
                     }
                     
                     if (stericOcclusion[nf][iy]==0) //if not occluded yet, do further tests
@@ -887,16 +894,25 @@ void appendBins()
 // This function rotates the orthogonal vectors tIn, e1In and e2In by angles (phiHere, thetaHere, psiHere) in their own frame of reference
 void rotate(double *tIn, double *e1In, double *e2In, double *tOut, double *e1Out, double *e2Out, double phiHere, double thetaHere,double psiHere)
 {	
-	// R Local
-    RLocal[0][0] =   cos(thetaHere)*cos(psiHere);
-    RLocal[0][1] =   cos(phiHere)*sin(psiHere)     + sin(phiHere)*sin(thetaHere)*cos(psiHere);
-    RLocal[0][2] =   sin(phiHere)*sin(psiHere)     - cos(phiHere)*sin(thetaHere)*cos(psiHere);
-    RLocal[1][0] =  -cos(thetaHere)*sin(psiHere);
-    RLocal[1][1] =   cos(phiHere)*cos(psiHere)     - sin(phiHere)*sin(thetaHere)*sin(psiHere);
-    RLocal[1][2] =   sin(phiHere)*cos(psiHere)     + cos(phiHere)*sin(thetaHere)*sin(psiHere);
-    RLocal[2][0] =   sin(thetaHere);
-    RLocal[2][1] =  -sin(phiHere)*cos(thetaHere);
-    RLocal[2][2] =   cos(phiHere)*cos(thetaHere);
+	// Performance Improvement #4: Cache trigonometric calculations
+    // Calculate sin/cos values once and reuse them
+    double cos_phi = cos(phiHere);
+    double sin_phi = sin(phiHere);
+    double cos_theta = cos(thetaHere);
+    double sin_theta = sin(thetaHere);
+    double cos_psi = cos(psiHere);
+    double sin_psi = sin(psiHere);
+    
+    // R Local - using cached trigonometric values
+    RLocal[0][0] =   cos_theta*cos_psi;
+    RLocal[0][1] =   cos_phi*sin_psi     + sin_phi*sin_theta*cos_psi;
+    RLocal[0][2] =   sin_phi*sin_psi     - cos_phi*sin_theta*cos_psi;
+    RLocal[1][0] =  -cos_theta*sin_psi;
+    RLocal[1][1] =   cos_phi*cos_psi     - sin_phi*sin_theta*sin_psi;
+    RLocal[1][2] =   sin_phi*cos_psi     + cos_phi*sin_theta*sin_psi;
+    RLocal[2][0] =   sin_theta;
+    RLocal[2][1] =  -sin_phi*cos_theta;
+    RLocal[2][2] =   cos_phi*cos_theta;
     
     
 	// R Global
