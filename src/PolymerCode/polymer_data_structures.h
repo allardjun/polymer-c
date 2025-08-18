@@ -91,7 +91,7 @@ typedef struct {
 } simulation_state_t;
 
 // Function declarations
-void allocate_simulation_state(simulation_state_t *state, int NFil, const int *N);
+void allocate_simulation_state(simulation_state_t *state, int NFil, const long *N);
 void free_simulation_state(simulation_state_t *state);
 void convert_old_to_new_format(simulation_state_t *state);
 void convert_new_to_old_format(simulation_state_t *state);

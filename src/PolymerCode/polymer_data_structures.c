@@ -10,7 +10,7 @@
 simulation_state_t g_sim_state = {0};
 #endif
 
-void allocate_simulation_state(simulation_state_t *state, int NFil, const int *N) {
+void allocate_simulation_state(simulation_state_t *state, int NFil, const long *N) {
     if (state->allocated) {
         printf("Warning: Simulation state already allocated. Freeing first.\n");
         free_simulation_state(state);

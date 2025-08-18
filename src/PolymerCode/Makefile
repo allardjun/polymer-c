@@ -1,5 +1,5 @@
 all:
-	gcc -O3 driveMetropolis.c -o metropolis.out -lm
+	gcc -O3 driveMetropolis.c polymer_data_structures.c -o metropolis.out -lm
 
 # Test new data structures (Performance Improvement #6)
 test-data-structures:
@@ -10,20 +10,20 @@ clean-test:
 	rm -f test_data_structures
 
 quick-test:
-	gcc -O3 driveMetropolis.c -o metropolis.out -lm
+	gcc -O3 driveMetropolis.c polymer_data_structures.c -o metropolis.out -lm
 	
 	../../scripts/test/quick_test.sh
 
 test: quick-test
 
 run:
-	gcc -O3 driveMetropolis.c -o metropolis.out -lm
+	gcc -O3 driveMetropolis.c polymer_data_structures.c -o metropolis.out -lm
 
 	./metropolis.out ../../config/parameters/default.txt outputTest.txt 0 2 30 3 -1 -1 -1
 
 batch:
 
-	gcc -O3 driveMetropolis.c -o metropolis.out -lm
+	gcc -O3 driveMetropolis.c polymer_data_structures.c -o metropolis.out -lm
 
 	chmod a+x runBatch.sh
 
@@ -31,7 +31,7 @@ batch:
 
 hpc:
 
-	gcc -O3 driveMetropolis.c -o metropolis.out -lm
+	gcc -O3 driveMetropolis.c polymer_data_structures.c -o metropolis.out -lm
 	
 	chmod a+x ../../scripts/hpc/makePubs.pl
 
@@ -49,7 +49,7 @@ copyrepo:
 
 parallel:
 
-	gcc -O3 driveMetropolis.c -o metropolis.out -lm
+	gcc -O3 driveMetropolis.c polymer_data_structures.c -o metropolis.out -lm
 
 	chmod a+x ../../scripts/batch/batchMetropolis.sh
 

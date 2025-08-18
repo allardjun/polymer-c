@@ -113,40 +113,41 @@ The new data structures are designed to be drop-in replacements that provide imm
 
 The codebase contains hundreds of array accesses like `r[nf][i][coord]` that need to be converted to `r(nf,i,coord)` to use the compatibility macros. Manual conversion would be error-prone and time-consuming.
 
-### Lessons Learned from First Attempt
+### Lessons Learned from Implementation
 
-**What Went Wrong:**
-1. **Too broad matching**: `s/r\[\([^]]*\)\]\[\([^]]*\)\]\[\([^]]*\)\]/r(\1,\2,\3)/g` converted everything, including variable declarations
-2. **Converted wrong arrays**: Changed arrays like `reeiSite[NFILMAX][NMAX]` that should stay as regular arrays
-3. **Invalid syntax**: Converted `double ree2iSite[NFILMAX][NMAX]` to `double ree2iSite(NFILMAX,NMAX)` (invalid)
+**Critical Discovery:**
+The generic regex patterns like `s/\br\[\([^]]*\)\]\[\([^]]*\)\]\[\([^]]*\)\]/r(\1,\2,\3)/g` **DO NOT WORK** because they don't match the actual code patterns.
 
-**Strategy for Success:**
-- Use word boundaries (`\b`) for precision
-- Only convert arrays that have compatibility macros defined
-- Test compilation after each conversion
-- Distinguish between **optimized arrays** (use macros) vs **regular arrays** (stay unchanged)
+**What Actually Works:**
+1. **Specific literal patterns**: Need to match exact variable names like `r[nf][i][0]`, not generic `r[anything][anything][anything]`
+2. **Test-driven conversion**: Compile after each change and fix the exact error patterns reported
+3. **Progressive approach**: Address compiler errors in order, converting exactly what's needed
+
+**Working Strategy:**
+- Use **specific literal patterns** for each error type
+- Test compilation after each sed command  
+- Follow compiler error progression systematically
+- Handle function call arguments specially (need `&` for address-of operators)
 
 ### Arrays to Convert (Have Compatibility Macros)
 
-**3D Arrays:**
+**ACTUAL Working Commands (Specific Patterns):**
 ```bash
-# Core position/orientation arrays
-sed -i '' 's/\br\[\([^]]*\)\]\[\([^]]*\)\]\[\([^]]*\)\]/r(\1,\2,\3)/g'
-sed -i '' 's/\bt\[\([^]]*\)\]\[\([^]]*\)\]\[\([^]]*\)\]/t(\1,\2,\3)/g'  
-sed -i '' 's/\be1\[\([^]]*\)\]\[\([^]]*\)\]\[\([^]]*\)\]/e1(\1,\2,\3)/g'
-sed -i '' 's/\be2\[\([^]]*\)\]\[\([^]]*\)\]\[\([^]]*\)\]/e2(\1,\2,\3)/g'
+# outputControl.c - Convert specific coordinate patterns  
+sed -i '' 's/r\[nf\]\[Ncurrent-1\]\[0\]/r(nf,Ncurrent-1,0)/g; s/r\[nf\]\[Ncurrent-1\]\[1\]/r(nf,Ncurrent-1,1)/g; s/r\[nf\]\[Ncurrent-1\]\[2\]/r(nf,Ncurrent-1,2)/g'
+sed -i '' 's/r\[nf2\]\[Ncurrent-1\]\[0\]/r(nf2,Ncurrent-1,0)/g; s/r\[nf2\]\[Ncurrent-1\]\[1\]/r(nf2,Ncurrent-1,1)/g; s/r\[nf2\]\[Ncurrent-1\]\[2\]/r(nf2,Ncurrent-1,2)/g'
+sed -i '' 's/r\[nf\]\[iSiteCurrent\]\[0\]/r(nf,iSiteCurrent,0)/g; s/r\[nf\]\[iSiteCurrent\]\[1\]/r(nf,iSiteCurrent,1)/g; s/r\[nf\]\[iSiteCurrent\]\[2\]/r(nf,iSiteCurrent,2)/g'
+sed -i '' 's/r\[nf\]\[i\]\[0\]/r(nf,i,0)/g; s/r\[nf\]\[i\]\[1\]/r(nf,i,1)/g; s/r\[nf\]\[i\]\[2\]/r(nf,i,2)/g'
 
-# Proposal arrays  
-sed -i '' 's/\brPropose\[\([^]]*\)\]\[\([^]]*\)\]\[\([^]]*\)\]/rPropose(\1,\2,\3)/g'
-sed -i '' 's/\btPropose\[\([^]]*\)\]\[\([^]]*\)\]\[\([^]]*\)\]/tPropose(\1,\2,\3)/g'
-sed -i '' 's/\be1Propose\[\([^]]*\)\]\[\([^]]*\)\]\[\([^]]*\)\]/e1Propose(\1,\2,\3)/g'
-sed -i '' 's/\be2Propose\[\([^]]*\)\]\[\([^]]*\)\]\[\([^]]*\)\]/e2Propose(\1,\2,\3)/g'
+# metropolisJoint.c - Convert basic patterns first
+sed -i '' 's/phi\[nf\]\[i\]/phi(nf,i)/g; s/theta\[nf\]\[i\]/theta(nf,i)/g; s/psi\[nf\]\[i\]/psi(nf,i)/g'
+sed -i '' 's/r\[nf\]\[bSiteCurrent\]\[0\]/r(nf,bSiteCurrent,0)/g; s/r\[nf\]\[bSiteCurrent\]\[1\]/r(nf,bSiteCurrent,1)/g; s/r\[nf\]\[bSiteCurrent\]\[2\]/r(nf,bSiteCurrent,2)/g'
+sed -i '' 's/e1\[nf\]\[bSiteCurrent\]\[0\]/e1(nf,bSiteCurrent,0)/g; s/e1\[nf\]\[bSiteCurrent\]\[1\]/e1(nf,bSiteCurrent,1)/g; s/e1\[nf\]\[bSiteCurrent\]\[2\]/e1(nf,bSiteCurrent,2)/g'
 
-# Ligand center arrays
-sed -i '' 's/\biLigandCenter\[\([^]]*\)\]\[\([^]]*\)\]\[\([^]]*\)\]/iLigandCenter(\1,\2,\3)/g'
-sed -i '' 's/\bbLigandCenter\[\([^]]*\)\]\[\([^]]*\)\]\[\([^]]*\)\]/bLigandCenter(\1,\2,\3)/g'
-sed -i '' 's/\bbLigandCenterPropose\[\([^]]*\)\]\[\([^]]*\)\]\[\([^]]*\)\]/bLigandCenterPropose(\1,\2,\3)/g'
+# Continue with compiler-error-driven pattern-by-pattern conversion...
 ```
+
+**Key Insight:** Generic regex doesn't work because variables have specific names (`nf`, `i`, `nf2`, `iSiteCurrent`, etc.) rather than arbitrary expressions.
 
 **2D Arrays:**
 ```bash
@@ -179,13 +180,29 @@ These arrays are NOT part of the optimized data structure and should remain unch
 - `PDeliver[NFILMAX][NMAX]` - stays as regular array
 - All variable declarations like `double arrayName[SIZE][SIZE]`
 
-### Execution Plan
+### REVISED Execution Plan (Based on Implementation Experience)
 
-1. **Apply 3D array conversions** to outputControl.c and test compilation
-2. **Apply 2D array conversions** and test compilation  
-3. **Apply same conversions** to metropolisJoint.c
-4. **Test full compilation** and fix any remaining issues
-5. **Validate** that optimized bulk operations work correctly
+**Successful Test-Driven Strategy:**
+1. **Start with outputControl.c** - Apply specific patterns and test compilation
+2. **Follow compiler errors** - Each error tells you exactly what pattern to convert next
+3. **Convert pattern-by-pattern** - Don't try to convert everything at once
+4. **Move to metropolisJoint.c** - Apply same iterative approach
+5. **Handle special cases** - Function arguments need `&` operator handling
+
+**Example Error-Driven Workflow:**
+```bash
+# Test compilation
+gcc -O3 driveMetropolis.c -o metropolis.out -lm
+
+# Error: "use of undeclared identifier 'r' at line 812"
+# Look at line 812: r[nf][Ncurrent-1][0]
+# Convert that specific pattern:
+sed -i '' 's/r\[nf\]\[Ncurrent-1\]\[0\]/r(nf,Ncurrent-1,0)/g'
+
+# Test again, get next error, convert next pattern, repeat...
+```
+
+This approach is much more reliable than trying to anticipate all patterns.
 
 ### Validation
 

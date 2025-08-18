@@ -49,25 +49,25 @@ void metropolisJoint()
     {
         for(i=0;i<N[nf];i++)
         {
-            phi[nf][i]   = 0;
-            theta[nf][i] = 0;
-            psi[nf][i]   = 0;
+            phi(nf,i)   = 0;
+            theta(nf,i) = 0;
+            psi(nf,i)   = 0;
             
-            r[nf][i][0]  = rBase[nf][0];
-            r[nf][i][1]  = rBase[nf][1];
-            r[nf][i][2]  = i+1;
+            r(nf,i,0)  = rBase[nf][0];
+            r(nf,i,1)  = rBase[nf][1];
+            r(nf,i,2)  = i+1;
             
-            t[nf][i][0]  = 0;
-            t[nf][i][1]  = 0;
-            t[nf][i][2]  = 1;
+            t(nf,i,0)  = 0;
+            t(nf,i,1)  = 0;
+            t(nf,i,2)  = 1;
             
-            e1[nf][i][0] = 1;
-            e1[nf][i][1] = 0;
-            e1[nf][i][2] = 0;
+            e1(nf,i,0) = 1;
+            e1(nf,i,1) = 0;
+            e1(nf,i,2) = 0;
             
-            e2[nf][i][0] = 0;
-            e2[nf][i][1] = 1;
-            e2[nf][i][2] = 0;
+            e2(nf,i,0) = 0;
+            e2(nf,i,1) = 1;
+            e2(nf,i,2) = 0;
             
         }
     }
@@ -92,33 +92,33 @@ void metropolisJoint()
                 case 0: //standard orientation - same as used for iSite Pocc calculations
                     
                     bSiteCurrent = bSite[nf][ib];
-                    bLigandCenter[nf][ib][0] = r[nf][bSiteCurrent][0] + brLigand*e1[nf][bSiteCurrent][0];
-                    bLigandCenter[nf][ib][1] = r[nf][bSiteCurrent][1] + brLigand*e1[nf][bSiteCurrent][1];
-                    bLigandCenter[nf][ib][2] = r[nf][bSiteCurrent][2] + brLigand*e1[nf][bSiteCurrent][2];
+                    bLigandCenter[nf][ib][0] = r(nf,bSiteCurrent,0) + brLigand*e1(nf,bSiteCurrent,0);
+                    bLigandCenter[nf][ib][1] = r(nf,bSiteCurrent,1) + brLigand*e1(nf,bSiteCurrent,1);
+                    bLigandCenter[nf][ib][2] = r(nf,bSiteCurrent,2) + brLigand*e1(nf,bSiteCurrent,2);
                     break;
                     
                 case 1: //180 degrees from standard
                     
                     bSiteCurrent = bSite[nf][ib];
-                    bLigandCenter[nf][ib][0] = r[nf][bSiteCurrent][0] - brLigand*e1[nf][bSiteCurrent][0];
-                    bLigandCenter[nf][ib][1] = r[nf][bSiteCurrent][1] - brLigand*e1[nf][bSiteCurrent][1];
-                    bLigandCenter[nf][ib][2] = r[nf][bSiteCurrent][2] - brLigand*e1[nf][bSiteCurrent][2];
+                    bLigandCenter[nf][ib][0] = r(nf,bSiteCurrent,0) - brLigand*e1(nf,bSiteCurrent,0);
+                    bLigandCenter[nf][ib][1] = r(nf,bSiteCurrent,1) - brLigand*e1(nf,bSiteCurrent,1);
+                    bLigandCenter[nf][ib][2] = r(nf,bSiteCurrent,2) - brLigand*e1(nf,bSiteCurrent,2);
                     break;
                     
                 case 2: //90 degrees from standard
                     
                     bSiteCurrent = bSite[nf][ib];
-                    bLigandCenter[nf][ib][0] = r[nf][bSiteCurrent][0] + brLigand*e2[nf][bSiteCurrent][0];
-                    bLigandCenter[nf][ib][1] = r[nf][bSiteCurrent][1] + brLigand*e2[nf][bSiteCurrent][1];
-                    bLigandCenter[nf][ib][2] = r[nf][bSiteCurrent][2] + brLigand*e2[nf][bSiteCurrent][2];
+                    bLigandCenter[nf][ib][0] = r(nf,bSiteCurrent,0) + brLigand*e2(nf,bSiteCurrent,0);
+                    bLigandCenter[nf][ib][1] = r(nf,bSiteCurrent,1) + brLigand*e2(nf,bSiteCurrent,1);
+                    bLigandCenter[nf][ib][2] = r(nf,bSiteCurrent,2) + brLigand*e2(nf,bSiteCurrent,2);
                     break;
                     
                 case 3: //270 from standard
                     
                     bSiteCurrent = bSite[nf][ib];
-                    bLigandCenter[nf][ib][0] = r[nf][bSiteCurrent][0] - brLigand*e2[nf][bSiteCurrent][0];
-                    bLigandCenter[nf][ib][1] = r[nf][bSiteCurrent][1] - brLigand*e2[nf][bSiteCurrent][1];
-                    bLigandCenter[nf][ib][2] = r[nf][bSiteCurrent][2] - brLigand*e2[nf][bSiteCurrent][2];
+                    bLigandCenter[nf][ib][0] = r(nf,bSiteCurrent,0) - brLigand*e2(nf,bSiteCurrent,0);
+                    bLigandCenter[nf][ib][1] = r(nf,bSiteCurrent,1) - brLigand*e2(nf,bSiteCurrent,1);
+                    bLigandCenter[nf][ib][2] = r(nf,bSiteCurrent,2) - brLigand*e2(nf,bSiteCurrent,2);
                     break;
             }
             
@@ -200,9 +200,9 @@ void metropolisJoint()
         {
             for(i=0;i<N[nf];i++)
             {
-                phiPropose[nf][i]   = phi[nf][i];
-                thetaPropose[nf][i] = theta[nf][i];
-                psiPropose[nf][i]   = psi[nf][i];
+                phiPropose(nf,i)   = phi(nf,i);
+                thetaPropose(nf,i) = theta(nf,i);
+                psiPropose(nf,i)   = psi(nf,i);
             }
         }
 		
@@ -257,16 +257,16 @@ void metropolisJoint()
             switch (iChi)
             {
                 case 0:
-                    //phiPropose[nfPropose][iPropose]   = phiPropose[nfPropose][iPropose]   + dChiHere*sqrt(-2*log(TWISTER))*cos(2*PI*TWISTER);
-                    phiPropose[nfPropose][iPropose]   = phiPropose[nfPropose][iPropose]   + dChiHere*(2*TWISTER-1);
+                    //phiPropose(nfPropose,iPropose)   = phiPropose(nfPropose,iPropose)   + dChiHere*sqrt(-2*log(TWISTER))*cos(2*PI*TWISTER);
+                    phiPropose(nfPropose,iPropose)   = phiPropose(nfPropose,iPropose)   + dChiHere*(2*TWISTER-1);
                     break;
                 case 1:
-                    //thetaPropose[nfPropose][iPropose] = thetaPropose[nfPropose][iPropose] + dChiHere*sqrt(-2*log(TWISTER))*cos(2*PI*TWISTER);
-                    thetaPropose[nfPropose][iPropose] = thetaPropose[nfPropose][iPropose] + dChiHere*(2*TWISTER-1);
+                    //thetaPropose(nfPropose,iPropose) = thetaPropose(nfPropose,iPropose) + dChiHere*sqrt(-2*log(TWISTER))*cos(2*PI*TWISTER);
+                    thetaPropose(nfPropose,iPropose) = thetaPropose(nfPropose,iPropose) + dChiHere*(2*TWISTER-1);
                     break;
                 case 2:
-                    //psiPropose[nfPropose][iPropose]   = psiPropose[nfPropose][iPropose]   + dChiHere*sqrt(-2*log(TWISTER))*cos(2*PI*TWISTER);
-                    psiPropose[nfPropose][iPropose]   = psiPropose[nfPropose][iPropose]   + dChiHere*(2*TWISTER-1);
+                    //psiPropose(nfPropose,iPropose)   = psiPropose(nfPropose,iPropose)   + dChiHere*sqrt(-2*log(TWISTER))*cos(2*PI*TWISTER);
+                    psiPropose(nfPropose,iPropose)   = psiPropose(nfPropose,iPropose)   + dChiHere*(2*TWISTER-1);
                     break;
             }
 
@@ -275,10 +275,10 @@ void metropolisJoint()
             
             // rotate only the proposed filament
             // do I need to 'set/rotate' proposed base for other filaments??
-            rotate(&tBase[nfPropose][0], &e1Base[nfPropose][0], &e2Base[nfPropose][0], &tPropose[nfPropose][0][0], &e1Propose[nfPropose][0][0], &e2Propose[nfPropose][0][0], phiPropose[nfPropose][0], thetaPropose[nfPropose][0], psiPropose[nfPropose][0]);
+            rotate(&tBase[nfPropose][0], &e1Base[nfPropose][0], &e2Base[nfPropose][0], &tPropose(nfPropose,0,0), &e1Propose(nfPropose,0,0), &e2Propose(nfPropose,0,0), phiPropose(nfPropose,0), thetaPropose(nfPropose,0), psiPropose(nfPropose,0));
             
             for(ix=0;ix<3;ix++)
-                rPropose[nfPropose][0][ix] = rBase[nfPropose][ix] + tPropose[nfPropose][0][ix];
+                rPropose(nfPropose,0,ix) = rBase[nfPropose][ix] + tPropose(nfPropose,0,ix);
             
             // if nf != nfPropose, proposal configuration is the same as current configuration
             // if nf = nfPropose and i<iPropose, proposal configuration is the same as current configuration
@@ -288,42 +288,42 @@ void metropolisJoint()
                 {
                     for(i=1;i<iPropose;i++)
                     {
-                        rPropose[nf][i][0] = r[nf][i][0];
-                        rPropose[nf][i][1] = r[nf][i][1];
-                        rPropose[nf][i][2] = r[nf][i][2];
+                        rPropose(nf,i,0) = r(nf,i,0);
+                        rPropose(nf,i,1) = r(nf,i,1);
+                        rPropose(nf,i,2) = r(nf,i,2);
                         
-                        tPropose[nf][i][0] = t[nf][i][0];
-                        tPropose[nf][i][1] = t[nf][i][1];
-                        tPropose[nf][i][2] = t[nf][i][2];
+                        tPropose(nf,i,0) = t(nf,i,0);
+                        tPropose(nf,i,1) = t(nf,i,1);
+                        tPropose(nf,i,2) = t(nf,i,2);
                         
-                        e1Propose[nf][i][0] = e1[nf][i][0];
-                        e1Propose[nf][i][1] = e1[nf][i][1];
-                        e1Propose[nf][i][2] = e1[nf][i][2];
+                        e1Propose(nf,i,0) = e1(nf,i,0);
+                        e1Propose(nf,i,1) = e1(nf,i,1);
+                        e1Propose(nf,i,2) = e1(nf,i,2);
                         
-                        e2Propose[nf][i][0] = e2[nf][i][0];
-                        e2Propose[nf][i][1] = e2[nf][i][1];
-                        e2Propose[nf][i][2] = e2[nf][i][2];
+                        e2Propose(nf,i,0) = e2(nf,i,0);
+                        e2Propose(nf,i,1) = e2(nf,i,1);
+                        e2Propose(nf,i,2) = e2(nf,i,2);
                     }
                 }
                 else{ //if not proposed filament, keep all segments the same
                     // start this one at 0 since didn't rotate base/0 segment above
                     for(i=0;i<N[nf];i++)
                     {
-                        rPropose[nf][i][0] = r[nf][i][0];
-                        rPropose[nf][i][1] = r[nf][i][1];
-                        rPropose[nf][i][2] = r[nf][i][2];
+                        rPropose(nf,i,0) = r(nf,i,0);
+                        rPropose(nf,i,1) = r(nf,i,1);
+                        rPropose(nf,i,2) = r(nf,i,2);
                         
-                        tPropose[nf][i][0] = t[nf][i][0];
-                        tPropose[nf][i][1] = t[nf][i][1];
-                        tPropose[nf][i][2] = t[nf][i][2];
+                        tPropose(nf,i,0) = t(nf,i,0);
+                        tPropose(nf,i,1) = t(nf,i,1);
+                        tPropose(nf,i,2) = t(nf,i,2);
                         
-                        e1Propose[nf][i][0] = e1[nf][i][0];
-                        e1Propose[nf][i][1] = e1[nf][i][1];
-                        e1Propose[nf][i][2] = e1[nf][i][2];
+                        e1Propose(nf,i,0) = e1(nf,i,0);
+                        e1Propose(nf,i,1) = e1(nf,i,1);
+                        e1Propose(nf,i,2) = e1(nf,i,2);
                         
-                        e2Propose[nf][i][0] = e2[nf][i][0];
-                        e2Propose[nf][i][1] = e2[nf][i][1];
-                        e2Propose[nf][i][2] = e2[nf][i][2];
+                        e2Propose(nf,i,0) = e2(nf,i,0);
+                        e2Propose(nf,i,1) = e2(nf,i,1);
+                        e2Propose(nf,i,2) = e2(nf,i,2);
                     }
                 }
             }
@@ -336,11 +336,11 @@ void metropolisJoint()
                 iStart=iPropose;
             for(i=iStart;i<N[nfPropose];i++)
             {
-                rotate(&tPropose[nfPropose][i-1][0], &e1Propose[nfPropose][i-1][0], &e2Propose[nfPropose][i-1][0],
-                       &tPropose[nfPropose][i][0], &e1Propose[nfPropose][i][0], &e2Propose[nfPropose][i][0],
-                    phiPropose[nfPropose][i], thetaPropose[nfPropose][i], psiPropose[nfPropose][i]);
+                rotate(&tPropose(nfPropose,i-1,0), &e1Propose(nfPropose,i-1,0), &e2Propose(nfPropose,i-1,0),
+                       &tPropose(nfPropose,i,0), &e1Propose(nfPropose,i,0), &e2Propose(nfPropose,i,0),
+                    phiPropose(nfPropose,i), thetaPropose(nfPropose,i), psiPropose(nfPropose,i));
                 for (ix=0;ix<3;ix++)
-                    rPropose[nfPropose][i][ix] = rPropose[nfPropose][i-1][ix] + tPropose[nfPropose][i][ix];
+                    rPropose(nfPropose,i,ix) = rPropose(nfPropose,i-1,ix) + tPropose(nfPropose,i,ix);
             }
            
             
@@ -357,33 +357,33 @@ void metropolisJoint()
                         case 0: //standard orientation - same as used for iSite Pocc calculations
                             
                             bSiteCurrent = bSite[nf][ib];
-                            bLigandCenterPropose[nf][ib][0] = rPropose[nf][bSiteCurrent][0] + brLigand*e1Propose[nf][bSiteCurrent][0];
-                            bLigandCenterPropose[nf][ib][1] = rPropose[nf][bSiteCurrent][1] + brLigand*e1Propose[nf][bSiteCurrent][1];
-                            bLigandCenterPropose[nf][ib][2] = rPropose[nf][bSiteCurrent][2] + brLigand*e1Propose[nf][bSiteCurrent][2];
+                            bLigandCenterPropose[nf][ib][0] = rPropose(nf,bSiteCurrent,0) + brLigand*e1Propose(nf,bSiteCurrent,0);
+                            bLigandCenterPropose[nf][ib][1] = rPropose(nf,bSiteCurrent,1) + brLigand*e1Propose(nf,bSiteCurrent,1);
+                            bLigandCenterPropose[nf][ib][2] = rPropose(nf,bSiteCurrent,2) + brLigand*e1Propose(nf,bSiteCurrent,2);
                             break;
                             
                         case 1: //180 degrees from standard
                             
                             bSiteCurrent = bSite[nf][ib];
-                            bLigandCenterPropose[nf][ib][0] = rPropose[nf][bSiteCurrent][0] - brLigand*e1Propose[nf][bSiteCurrent][0];
-                            bLigandCenterPropose[nf][ib][1] = rPropose[nf][bSiteCurrent][1] - brLigand*e1Propose[nf][bSiteCurrent][1];
-                            bLigandCenterPropose[nf][ib][2] = rPropose[nf][bSiteCurrent][2] - brLigand*e1Propose[nf][bSiteCurrent][2];
+                            bLigandCenterPropose[nf][ib][0] = rPropose(nf,bSiteCurrent,0) - brLigand*e1Propose(nf,bSiteCurrent,0);
+                            bLigandCenterPropose[nf][ib][1] = rPropose(nf,bSiteCurrent,1) - brLigand*e1Propose(nf,bSiteCurrent,1);
+                            bLigandCenterPropose[nf][ib][2] = rPropose(nf,bSiteCurrent,2) - brLigand*e1Propose(nf,bSiteCurrent,2);
                             break;
                             
                         case 2: //90 degrees from standard
                             
                             bSiteCurrent = bSite[nf][ib];
-                            bLigandCenterPropose[nf][ib][0] = rPropose[nf][bSiteCurrent][0] + brLigand*e2Propose[nf][bSiteCurrent][0];
-                            bLigandCenterPropose[nf][ib][1] = rPropose[nf][bSiteCurrent][1] + brLigand*e2Propose[nf][bSiteCurrent][1];
-                            bLigandCenterPropose[nf][ib][2] = rPropose[nf][bSiteCurrent][2] + brLigand*e2Propose[nf][bSiteCurrent][2];
+                            bLigandCenterPropose[nf][ib][0] = rPropose(nf,bSiteCurrent,0) + brLigand*e2Propose(nf,bSiteCurrent,0);
+                            bLigandCenterPropose[nf][ib][1] = rPropose(nf,bSiteCurrent,1) + brLigand*e2Propose(nf,bSiteCurrent,1);
+                            bLigandCenterPropose[nf][ib][2] = rPropose(nf,bSiteCurrent,2) + brLigand*e2Propose(nf,bSiteCurrent,2);
                             break;
                             
                         case 3: //270 from standard
                             
                             bSiteCurrent = bSite[nf][ib];
-                            bLigandCenterPropose[nf][ib][0] = rPropose[nf][bSiteCurrent][0] - brLigand*e2Propose[nf][bSiteCurrent][0];
-                            bLigandCenterPropose[nf][ib][1] = rPropose[nf][bSiteCurrent][1] - brLigand*e2Propose[nf][bSiteCurrent][1];
-                            bLigandCenterPropose[nf][ib][2] = rPropose[nf][bSiteCurrent][2] - brLigand*e2Propose[nf][bSiteCurrent][2];
+                            bLigandCenterPropose[nf][ib][0] = rPropose(nf,bSiteCurrent,0) - brLigand*e2Propose(nf,bSiteCurrent,0);
+                            bLigandCenterPropose[nf][ib][1] = rPropose(nf,bSiteCurrent,1) - brLigand*e2Propose(nf,bSiteCurrent,1);
+                            bLigandCenterPropose[nf][ib][2] = rPropose(nf,bSiteCurrent,2) - brLigand*e2Propose(nf,bSiteCurrent,2);
                             break;
                     }
                 }
@@ -405,9 +405,9 @@ void metropolisJoint()
                     for(i=0;i<N[nf];i++)// for each joint
                     {
                         //test polymer against sphere at base
-                        if ( ((baseCenter[0]-rPropose[nf][i][0])*(baseCenter[0]-rPropose[nf][i][0]) +
-                              (baseCenter[1]-rPropose[nf][i][1])*(baseCenter[1]-rPropose[nf][i][1]) +
-                              (baseCenter[2]-rPropose[nf][i][2])*(baseCenter[2]-rPropose[nf][i][2]) <= baserLigand*baserLigand )) //if proposed joint is inside base ligand sphere
+                        if ( ((baseCenter[0]-rPropose(nf,i,0))*(baseCenter[0]-rPropose(nf,i,0)) +
+                              (baseCenter[1]-rPropose(nf,i,1))*(baseCenter[1]-rPropose(nf,i,1)) +
+                              (baseCenter[2]-rPropose(nf,i,2))*(baseCenter[2]-rPropose(nf,i,2)) <= baserLigand*baserLigand )) //if proposed joint is inside base ligand sphere
                         {
                             constraintSatisfiedTF=0; //constraint not satisfied
                             i=N[nf]; //shortcut out of inner loop
@@ -442,7 +442,7 @@ void metropolisJoint()
             for(nf=0;nf<NFil;nf++)
             {
                 Ncurrent = N[nf];
-                ENew += -rPropose[nf][Ncurrent-1][2]*Force; // Energy in units of kBT. Force in units of kBT/Kuhn
+                ENew += -rPropose(nf,Ncurrent-1,2)*Force; // Energy in units of kBT. Force in units of kBT/Kuhn
             }
             
             /****************************************************************/
@@ -452,9 +452,9 @@ void metropolisJoint()
                 Ncurrent = N[nf];
                 for(nf2=(nf+1);nf2<NFil;nf2++)
                 {
-                    dimerDistCurrent = sqrt((rPropose[nf][Ncurrent-1][0]-rPropose[nf2][N[nf2]-1][0])*(rPropose[nf][Ncurrent-1][0]-rPropose[nf2][N[nf2]-1][0])+
-                                             (rPropose[nf][Ncurrent-1][1]-rPropose[nf2][N[nf2]-1][1])*(rPropose[nf][Ncurrent-1][1]-rPropose[nf2][N[nf2]-1][1])+
-                                            (rPropose[nf][Ncurrent-1][2]-rPropose[nf2][N[nf2]-1][2])*(rPropose[nf][Ncurrent-1][2]-rPropose[nf2][N[nf2]-1][2]));
+                    dimerDistCurrent = sqrt((rPropose(nf,Ncurrent-1,0)-rPropose(nf2,N[nf2]-1,0))*(rPropose(nf,Ncurrent-1,0)-rPropose(nf2,N[nf2]-1,0))+
+                                             (rPropose(nf,Ncurrent-1,1)-rPropose(nf2,N[nf2]-1,1))*(rPropose(nf,Ncurrent-1,1)-rPropose(nf2,N[nf2]-1,1))+
+                                            (rPropose(nf,Ncurrent-1,2)-rPropose(nf2,N[nf2]-1,2))*(rPropose(nf,Ncurrent-1,2)-rPropose(nf2,N[nf2]-1,2)));
                     ENew += 0.5*kdimer*(dimerDistCurrent-dimerDist0)*(dimerDistCurrent-dimerDist0);
                 }
             }
@@ -480,14 +480,14 @@ void metropolisJoint()
                         {
                             for(i=0;i<N[nf2];i++)// for each joint
                             {
-                                if ( ((bLigandCenterPropose[nf][ib][0]-rPropose[nf2][i][0])*(bLigandCenterPropose[nf][ib][0]-rPropose[nf2][i][0]) +
-                                      (bLigandCenterPropose[nf][ib][1]-rPropose[nf2][i][1])*(bLigandCenterPropose[nf][ib][1]-rPropose[nf2][i][1]) +
-                                      (bLigandCenterPropose[nf][ib][2]-rPropose[nf2][i][2])*(bLigandCenterPropose[nf][ib][2]-rPropose[nf2][i][2]) <= brLigand*brLigand )
+                                if ( ((bLigandCenterPropose[nf][ib][0]-rPropose(nf2,i,0))*(bLigandCenterPropose[nf][ib][0]-rPropose(nf2,i,0)) +
+                                      (bLigandCenterPropose[nf][ib][1]-rPropose(nf2,i,1))*(bLigandCenterPropose[nf][ib][1]-rPropose(nf2,i,1)) +
+                                      (bLigandCenterPropose[nf][ib][2]-rPropose(nf2,i,2))*(bLigandCenterPropose[nf][ib][2]-rPropose(nf2,i,2)) <= brLigand*brLigand )
                                     && !( nf == nf2 && i == bSite[nf][ib]) ) //if proposed joint is inside ligand sphere AND joint is not where tested ligand is attached
                                 {
-                                    boundCentertoJointDistance = sqrt((bLigandCenterPropose[nf][ib][0]-rPropose[nf2][i][0])*(bLigandCenterPropose[nf][ib][0]-rPropose[nf2][i][0]) +
-                                                                       (bLigandCenterPropose[nf][ib][1]-rPropose[nf2][i][1])*(bLigandCenterPropose[nf][ib][1]-rPropose[nf2][i][1]) +
-                                                                       (bLigandCenterPropose[nf][ib][2]-rPropose[nf2][i][2])*(bLigandCenterPropose[nf][ib][2]-rPropose[nf2][i][2])) - brLigand;
+                                    boundCentertoJointDistance = sqrt((bLigandCenterPropose[nf][ib][0]-rPropose(nf2,i,0))*(bLigandCenterPropose[nf][ib][0]-rPropose(nf2,i,0)) +
+                                                                       (bLigandCenterPropose[nf][ib][1]-rPropose(nf2,i,1))*(bLigandCenterPropose[nf][ib][1]-rPropose(nf2,i,1)) +
+                                                                       (bLigandCenterPropose[nf][ib][2]-rPropose(nf2,i,2))*(bLigandCenterPropose[nf][ib][2]-rPropose(nf2,i,2))) - brLigand;
                                     
                                     ENew += 0.5*kBound*boundCentertoJointDistance*boundCentertoJointDistance;
                                 }
@@ -567,25 +567,25 @@ void metropolisJoint()
                 // Make configuration into the proposal configuration
                 for(i=iPropose;i<N[nfPropose];i++)
                 {
-                    phi[nfPropose][i]   = phiPropose[nfPropose][i];
-                    theta[nfPropose][i] = thetaPropose[nfPropose][i];
-                    psi[nfPropose][i]   = psiPropose[nfPropose][i];
+                    phi(nfPropose,i)   = phiPropose(nfPropose,i);
+                    theta(nfPropose,i) = thetaPropose(nfPropose,i);
+                    psi(nfPropose,i)   = psiPropose(nfPropose,i);
                     
-                    r[nfPropose][i][0] = rPropose[nfPropose][i][0];
-                    r[nfPropose][i][1] = rPropose[nfPropose][i][1];
-                    r[nfPropose][i][2] = rPropose[nfPropose][i][2];
+                    r(nfPropose,i,0) = rPropose(nfPropose,i,0);
+                    r(nfPropose,i,1) = rPropose(nfPropose,i,1);
+                    r(nfPropose,i,2) = rPropose(nfPropose,i,2);
                     
-                    t[nfPropose][i][0] = tPropose[nfPropose][i][0];
-                    t[nfPropose][i][1] = tPropose[nfPropose][i][1];
-                    t[nfPropose][i][2] = tPropose[nfPropose][i][2];
+                    t(nfPropose,i,0) = tPropose(nfPropose,i,0);
+                    t(nfPropose,i,1) = tPropose(nfPropose,i,1);
+                    t(nfPropose,i,2) = tPropose(nfPropose,i,2);
                     
-                    e1[nfPropose][i][0] = e1Propose[nfPropose][i][0];
-                    e1[nfPropose][i][1] = e1Propose[nfPropose][i][1];
-                    e1[nfPropose][i][2] = e1Propose[nfPropose][i][2];
+                    e1(nfPropose,i,0) = e1Propose(nfPropose,i,0);
+                    e1(nfPropose,i,1) = e1Propose(nfPropose,i,1);
+                    e1(nfPropose,i,2) = e1Propose(nfPropose,i,2);
                     
-                    e2[nfPropose][i][0] = e2Propose[nfPropose][i][0];
-                    e2[nfPropose][i][1] = e2Propose[nfPropose][i][1];
-                    e2[nfPropose][i][2] = e2Propose[nfPropose][i][2];
+                    e2(nfPropose,i,0) = e2Propose(nfPropose,i,0);
+                    e2(nfPropose,i,1) = e2Propose(nfPropose,i,1);
+                    e2(nfPropose,i,2) = e2Propose(nfPropose,i,2);
                  
                 }
                 
@@ -626,9 +626,9 @@ void metropolisJoint()
                 for(iy=0;iy<iSiteTotal[nf];iy++) //for each iSite, determine the center of the ligand sphere
                 {
                     iSiteCurrent = iSite[nf][iy];
-                    iLigandCenter[nf][iy][0] = r[nf][iSiteCurrent][0] + irLigand*e1[nf][iSiteCurrent][0];
-                    iLigandCenter[nf][iy][1] = r[nf][iSiteCurrent][1] + irLigand*e1[nf][iSiteCurrent][1];
-                    iLigandCenter[nf][iy][2] = r[nf][iSiteCurrent][2] + irLigand*e1[nf][iSiteCurrent][2];
+                    iLigandCenter[nf][iy][0] = r(nf,iSiteCurrent,0) + irLigand*e1(nf,iSiteCurrent,0);
+                    iLigandCenter[nf][iy][1] = r(nf,iSiteCurrent,1) + irLigand*e1(nf,iSiteCurrent,1);
+                    iLigandCenter[nf][iy][2] = r(nf,iSiteCurrent,2) + irLigand*e1(nf,iSiteCurrent,2);
                 
                     stericOcclusion[nf][iy]             = 0; //set steric occlusion array to 0 for each iSite
                     membraneOcclusion[nf][iy]           = 0; //set membrane occlusion array to 0 for each iSite
@@ -708,9 +708,9 @@ void metropolisJoint()
                         {
                             for(i=0;i<N[nf2];i++) // loop through joints
                             {
-                                if ( (iLigandCenter[nf][iy][0]-r[nf2][i][0])*(iLigandCenter[nf][iy][0]-r[nf2][i][0]) +
-                                     (iLigandCenter[nf][iy][1]-r[nf2][i][1])*(iLigandCenter[nf][iy][1]-r[nf2][i][1]) +
-                                     (iLigandCenter[nf][iy][2]-r[nf2][i][2])*(iLigandCenter[nf][iy][2]-r[nf2][i][2]) <= irLigand*irLigand
+                                if ( (iLigandCenter[nf][iy][0]-r(nf2,i,0))*(iLigandCenter[nf][iy][0]-r(nf2,i,0)) +
+                                     (iLigandCenter[nf][iy][1]-r(nf2,i,1))*(iLigandCenter[nf][iy][1]-r(nf2,i,1)) +
+                                     (iLigandCenter[nf][iy][2]-r(nf2,i,2))*(iLigandCenter[nf][iy][2]-r(nf2,i,2)) <= irLigand*irLigand
                                     && !(nf == nf2 && i == iSite[nf][iy]))
                                 {
                                     stericOcclusion[nf][iy]++;
@@ -798,9 +798,9 @@ void metropolisJoint()
                     {
                         for(i=0;i<N[nf2];i++)
                         {
-                            if ( (baseLigandCenter[nf][0]-r[nf2][i][0])*(baseLigandCenter[nf][0]-r[nf2][i][0]) +
-                                (baseLigandCenter[nf][1]-r[nf2][i][1])*(baseLigandCenter[nf][1]-r[nf2][i][1]) +
-                                (baseLigandCenter[nf][2]-r[nf2][i][2])*(baseLigandCenter[nf][2]-r[nf2][i][2]) <= irLigand*irLigand)
+                            if ( (baseLigandCenter[nf][0]-r(nf2,i,0))*(baseLigandCenter[nf][0]-r(nf2,i,0)) +
+                                (baseLigandCenter[nf][1]-r(nf2,i,1))*(baseLigandCenter[nf][1]-r(nf2,i,1)) +
+                                (baseLigandCenter[nf][2]-r(nf2,i,2))*(baseLigandCenter[nf][2]-r(nf2,i,2)) <= irLigand*irLigand)
                             {
                                 stericOcclusionBase[nf]+=N[nf2];
                                 i=N[nf2]; // shortcut out of the loop

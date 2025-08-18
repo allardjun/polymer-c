@@ -809,9 +809,9 @@ void dataRecording()
     for(nf=0;nf<NFil;nf++)
     {
         Ncurrent = N[nf];
-        ree[nf]  = sqrt((r[nf][Ncurrent-1][0]-rBase[nf][0])*(r[nf][Ncurrent-1][0]-rBase[nf][0])+
-                        (r[nf][Ncurrent-1][1]-rBase[nf][1])*(r[nf][Ncurrent-1][1]-rBase[nf][1])+
-                        (r[nf][Ncurrent-1][2]-rBase[nf][2])*(r[nf][Ncurrent-1][2]-rBase[nf][2]));
+        ree[nf]  = sqrt((r(nf,Ncurrent-1,0)-rBase[nf][0])*(r(nf,Ncurrent-1,0)-rBase[nf][0])+
+                        (r(nf,Ncurrent-1,1)-rBase[nf][1])*(r(nf,Ncurrent-1,1)-rBase[nf][1])+
+                        (r(nf,Ncurrent-1,2)-rBase[nf][2])*(r(nf,Ncurrent-1,2)-rBase[nf][2]));
     }
 
     // distance between ends of filaments
@@ -820,9 +820,9 @@ void dataRecording()
         for(nf2=0;nf2<NFil;nf2++)
         {
             Ncurrent = N[nf];
-            reeFil[nf][nf2] = sqrt((r[nf][Ncurrent-1][0]-r[nf2][Ncurrent-1][0])*(r[nf][Ncurrent-1][0]-r[nf2][Ncurrent-1][0])+
-                                  (r[nf][Ncurrent-1][1]-r[nf2][Ncurrent-1][1])*(r[nf][Ncurrent-1][1]-r[nf2][Ncurrent-1][1])+
-                                  (r[nf][Ncurrent-1][2]-r[nf2][Ncurrent-1][2])*(r[nf][Ncurrent-1][2]-r[nf2][Ncurrent-1][2]));
+            reeFil[nf][nf2] = sqrt((r(nf,Ncurrent-1,0)-r(nf2,Ncurrent-1,0))*(r(nf,Ncurrent-1,0)-r(nf2,Ncurrent-1,0))+
+                                  (r(nf,Ncurrent-1,1)-r(nf2,Ncurrent-1,1))*(r(nf,Ncurrent-1,1)-r(nf2,Ncurrent-1,1))+
+                                  (r(nf,Ncurrent-1,2)-r(nf2,Ncurrent-1,2))*(r(nf,Ncurrent-1,2)-r(nf2,Ncurrent-1,2)));
         }
     }
 
@@ -835,15 +835,15 @@ void dataRecording()
         for(iy=0;iy<iSiteTotal[nf];iy++)
         {
             iSiteCurrent = iSite[nf][iy];
-            reeiSite[nf][iy] = sqrt((r[nf][iSiteCurrent][0]-rBase[nf][0])*(r[nf][iSiteCurrent][0]-rBase[nf][0]) +
-                                    (r[nf][iSiteCurrent][1]-rBase[nf][1])*(r[nf][iSiteCurrent][1]-rBase[nf][1]) +
-                                    (r[nf][iSiteCurrent][2]-rBase[nf][2])*(r[nf][iSiteCurrent][2]-rBase[nf][2]));
-            reeiSite_up[nf][iy] = sqrt((r[nf][iSiteCurrent][0]-rBase[nf][0])*(r[nf][iSiteCurrent][0]-rBase[nf][0]) +
-                                    (r[nf][iSiteCurrent][1]-rBase[nf][1])*(r[nf][iSiteCurrent][1]-rBase[nf][1]) +
-                                    (r[nf][iSiteCurrent][2]-(rBase[nf][2]+yshift))*(r[nf][iSiteCurrent][2]-(rBase[nf][2]+yshift)));
-            reeiSite_halfup[nf][iy] = sqrt((r[nf][iSiteCurrent][0]-rBase[nf][0])*(r[nf][iSiteCurrent][0]-rBase[nf][0]) +
-                                    (r[nf][iSiteCurrent][1]-rBase[nf][1])*(r[nf][iSiteCurrent][1]-rBase[nf][1]) +
-                                    (r[nf][iSiteCurrent][2]-(rBase[nf][2]+halfyshift))*(r[nf][iSiteCurrent][2]-(rBase[nf][2]+halfyshift)));
+            reeiSite[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase[nf][0])*(r(nf,iSiteCurrent,0)-rBase[nf][0]) +
+                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                    (r(nf,iSiteCurrent,2)-rBase[nf][2])*(r(nf,iSiteCurrent,2)-rBase[nf][2]));
+            reeiSite_up[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase[nf][0])*(r(nf,iSiteCurrent,0)-rBase[nf][0]) +
+                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                    (r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift)));
+            reeiSite_halfup[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase[nf][0])*(r(nf,iSiteCurrent,0)-rBase[nf][0]) +
+                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                    (r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift)));
             
         
             if(NFil<=2){
@@ -864,60 +864,60 @@ void dataRecording()
                     rBase_offcen_op = rBase_cen - (8.33333333333333);
                 }
                 
-                reeiSite_op[nf][iy] = sqrt((r[nf][iSiteCurrent][0]-rBase_op)*(r[nf][iSiteCurrent][0]-rBase_op) +
-                                    (r[nf][iSiteCurrent][1]-rBase[nf][1])*(r[nf][iSiteCurrent][1]-rBase[nf][1]) +
-                                    (r[nf][iSiteCurrent][2]-rBase[nf][2])*(r[nf][iSiteCurrent][2]-rBase[nf][2]));
+                reeiSite_op[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase_op)*(r(nf,iSiteCurrent,0)-rBase_op) +
+                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                    (r(nf,iSiteCurrent,2)-rBase[nf][2])*(r(nf,iSiteCurrent,2)-rBase[nf][2]));
 
-                reeiSite_cen[nf][iy] = sqrt((r[nf][iSiteCurrent][0]-rBase_cen)*(r[nf][iSiteCurrent][0]-(rBase_cen)) +
-                                    (r[nf][iSiteCurrent][1]-rBase[nf][1])*(r[nf][iSiteCurrent][1]-rBase[nf][1]) +
-                                    (r[nf][iSiteCurrent][2]-rBase[nf][2])*(r[nf][iSiteCurrent][2]-rBase[nf][2]));
+                reeiSite_cen[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase_cen)*(r(nf,iSiteCurrent,0)-(rBase_cen)) +
+                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                    (r(nf,iSiteCurrent,2)-rBase[nf][2])*(r(nf,iSiteCurrent,2)-rBase[nf][2]));
 
-                reeiSite_offcen[nf][iy] = sqrt((r[nf][iSiteCurrent][0]-rBase_offcen)*(r[nf][iSiteCurrent][0]-(rBase_offcen)) +
-                                    (r[nf][iSiteCurrent][1]-rBase[nf][1])*(r[nf][iSiteCurrent][1]-rBase[nf][1]) +
-                                    (r[nf][iSiteCurrent][2]-rBase[nf][2])*(r[nf][iSiteCurrent][2]-rBase[nf][2]));
+                reeiSite_offcen[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase_offcen)*(r(nf,iSiteCurrent,0)-(rBase_offcen)) +
+                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                    (r(nf,iSiteCurrent,2)-rBase[nf][2])*(r(nf,iSiteCurrent,2)-rBase[nf][2]));
                 
-                reeiSite_offcen_op[nf][iy] = sqrt((r[nf][iSiteCurrent][0]-rBase_offcen_op)*(r[nf][iSiteCurrent][0]-(rBase_offcen_op)) +
-                                    (r[nf][iSiteCurrent][1]-rBase[nf][1])*(r[nf][iSiteCurrent][1]-rBase[nf][1]) +
-                                    (r[nf][iSiteCurrent][2]-rBase[nf][2])*(r[nf][iSiteCurrent][2]-rBase[nf][2]));
+                reeiSite_offcen_op[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase_offcen_op)*(r(nf,iSiteCurrent,0)-(rBase_offcen_op)) +
+                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                    (r(nf,iSiteCurrent,2)-rBase[nf][2])*(r(nf,iSiteCurrent,2)-rBase[nf][2]));
 
-                reeiSite_up_op[nf][iy] = sqrt((r[nf][iSiteCurrent][0]-rBase_op)*(r[nf][iSiteCurrent][0]-rBase_op) +
-                                    (r[nf][iSiteCurrent][1]-rBase[nf][1])*(r[nf][iSiteCurrent][1]-rBase[nf][1]) +
-                                    (r[nf][iSiteCurrent][2]-(rBase[nf][2]+yshift))*(r[nf][iSiteCurrent][2]-(rBase[nf][2]+yshift)));
+                reeiSite_up_op[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase_op)*(r(nf,iSiteCurrent,0)-rBase_op) +
+                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                    (r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift)));
 
-                reeiSite_cen_up[nf][iy] = sqrt((r[nf][iSiteCurrent][0]-rBase_cen)*(r[nf][iSiteCurrent][0]-(rBase_cen)) +
-                                    (r[nf][iSiteCurrent][1]-rBase[nf][1])*(r[nf][iSiteCurrent][1]-rBase[nf][1]) +
-                                    (r[nf][iSiteCurrent][2]-(rBase[nf][2]+yshift))*(r[nf][iSiteCurrent][2]-(rBase[nf][2]+yshift)));
+                reeiSite_cen_up[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase_cen)*(r(nf,iSiteCurrent,0)-(rBase_cen)) +
+                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                    (r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift)));
 
-                reeiSite_offcen_up[nf][iy] = sqrt((r[nf][iSiteCurrent][0]-rBase_offcen)*(r[nf][iSiteCurrent][0]-(rBase_offcen)) +
-                                    (r[nf][iSiteCurrent][1]-rBase[nf][1])*(r[nf][iSiteCurrent][1]-rBase[nf][1]) +
-                                    (r[nf][iSiteCurrent][2]-(rBase[nf][2]+yshift))*(r[nf][iSiteCurrent][2]-(rBase[nf][2]+yshift)));
+                reeiSite_offcen_up[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase_offcen)*(r(nf,iSiteCurrent,0)-(rBase_offcen)) +
+                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                    (r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift)));
                 
-                reeiSite_offcen_up_op[nf][iy] = sqrt((r[nf][iSiteCurrent][0]-rBase_offcen_op)*(r[nf][iSiteCurrent][0]-(rBase_offcen_op)) +
-                                    (r[nf][iSiteCurrent][1]-rBase[nf][1])*(r[nf][iSiteCurrent][1]-rBase[nf][1]) +
-                                    (r[nf][iSiteCurrent][2]-(rBase[nf][2]+yshift))*(r[nf][iSiteCurrent][2]-(rBase[nf][2]+yshift)));
-                reeiSite_halfup_op[nf][iy] = sqrt((r[nf][iSiteCurrent][0]-rBase_op)*(r[nf][iSiteCurrent][0]-rBase_op) +
-                                    (r[nf][iSiteCurrent][1]-rBase[nf][1])*(r[nf][iSiteCurrent][1]-rBase[nf][1]) +
-                                    (r[nf][iSiteCurrent][2]-(rBase[nf][2]+halfyshift))*(r[nf][iSiteCurrent][2]-(rBase[nf][2]+halfyshift)));
+                reeiSite_offcen_up_op[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase_offcen_op)*(r(nf,iSiteCurrent,0)-(rBase_offcen_op)) +
+                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                    (r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift)));
+                reeiSite_halfup_op[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase_op)*(r(nf,iSiteCurrent,0)-rBase_op) +
+                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                    (r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift)));
 
-                reeiSite_cen_halfup[nf][iy] = sqrt((r[nf][iSiteCurrent][0]-rBase_cen)*(r[nf][iSiteCurrent][0]-(rBase_cen)) +
-                                    (r[nf][iSiteCurrent][1]-rBase[nf][1])*(r[nf][iSiteCurrent][1]-rBase[nf][1]) +
-                                    (r[nf][iSiteCurrent][2]-(rBase[nf][2]+halfyshift))*(r[nf][iSiteCurrent][2]-(rBase[nf][2]+halfyshift)));
+                reeiSite_cen_halfup[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase_cen)*(r(nf,iSiteCurrent,0)-(rBase_cen)) +
+                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                    (r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift)));
 
-                reeiSite_offcen_halfup[nf][iy] = sqrt((r[nf][iSiteCurrent][0]-rBase_offcen)*(r[nf][iSiteCurrent][0]-(rBase_offcen)) +
-                                    (r[nf][iSiteCurrent][1]-rBase[nf][1])*(r[nf][iSiteCurrent][1]-rBase[nf][1]) +
-                                    (r[nf][iSiteCurrent][2]-(rBase[nf][2]+halfyshift))*(r[nf][iSiteCurrent][2]-(rBase[nf][2]+halfyshift)));
+                reeiSite_offcen_halfup[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase_offcen)*(r(nf,iSiteCurrent,0)-(rBase_offcen)) +
+                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                    (r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift)));
                 
-                reeiSite_offcen_halfup_op[nf][iy] = sqrt((r[nf][iSiteCurrent][0]-rBase_offcen_op)*(r[nf][iSiteCurrent][0]-(rBase_offcen_op)) +
-                                    (r[nf][iSiteCurrent][1]-rBase[nf][1])*(r[nf][iSiteCurrent][1]-rBase[nf][1]) +
-                                    (r[nf][iSiteCurrent][2]-(rBase[nf][2]+halfyshift))*(r[nf][iSiteCurrent][2]-(rBase[nf][2]+halfyshift)));
+                reeiSite_offcen_halfup_op[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase_offcen_op)*(r(nf,iSiteCurrent,0)-(rBase_offcen_op)) +
+                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                    (r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift)));
             }
 
             if(iy==bSite[nf][ib])
             {
                 double bLigandEdge[3];
-                bLigandEdge[0]=bLigandCenter[nf][ib][0]+(bLigandCenter[nf][ib][0]-r[nf][iSiteCurrent][0]);
-                bLigandEdge[1]=bLigandCenter[nf][ib][1]+(bLigandCenter[nf][ib][1]-r[nf][iSiteCurrent][1]);
-                bLigandEdge[2]=bLigandCenter[nf][ib][2]+(bLigandCenter[nf][ib][2]-r[nf][iSiteCurrent][2]);
+                bLigandEdge[0]=bLigandCenter[nf][ib][0]+(bLigandCenter[nf][ib][0]-r(nf,iSiteCurrent,0));
+                bLigandEdge[1]=bLigandCenter[nf][ib][1]+(bLigandCenter[nf][ib][1]-r(nf,iSiteCurrent,1));
+                bLigandEdge[2]=bLigandCenter[nf][ib][2]+(bLigandCenter[nf][ib][2]-r(nf,iSiteCurrent,2));
 
                 reeiSite_bound[nf][iy][0] = sqrt((bLigandCenter[nf][ib][0]-rBase[nf][0])*(bLigandCenter[nf][ib][0]-rBase[nf][0]) +
                                     (bLigandCenter[nf][ib][1]-rBase[nf][1])*(bLigandCenter[nf][ib][1]-rBase[nf][1]) +
@@ -1055,9 +1055,9 @@ void dataRecording()
                 }
             }
 
-            ree2iSite[nf][iy] = (r[nf][iSiteCurrent][0]-rBase[nf][0])*(r[nf][iSiteCurrent][0]-rBase[nf][0]) +
-                                    (r[nf][iSiteCurrent][1]-rBase[nf][1])*(r[nf][iSiteCurrent][1]-rBase[nf][1]) +
-                                    (r[nf][iSiteCurrent][2]-rBase[nf][2])*(r[nf][iSiteCurrent][2]-rBase[nf][2]);
+            ree2iSite[nf][iy] = (r(nf,iSiteCurrent,0)-rBase[nf][0])*(r(nf,iSiteCurrent,0)-rBase[nf][0]) +
+                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                    (r(nf,iSiteCurrent,2)-rBase[nf][2])*(r(nf,iSiteCurrent,2)-rBase[nf][2]);
         }
 
     }
@@ -1066,8 +1066,8 @@ void dataRecording()
     for(nf=0;nf<NFil;nf++)
     {
         Ncurrent = N[nf];
-        rM[nf] = r[nf][Ncurrent-1][2];
-        rM2[nf] = r[nf][Ncurrent-1][2]*r[nf][Ncurrent-1][2];
+        rM[nf] = r(nf,Ncurrent-1,2);
+        rM2[nf] = r(nf,Ncurrent-1,2)*r(nf,Ncurrent-1,2);
     }
 
     //distance of iSites to membrane
@@ -1076,8 +1076,8 @@ void dataRecording()
         for (iy=0;iy<iSiteTotal[nf];iy++)
         {
             iSiteCurrent = iSite[nf][iy];
-            rMiSite[nf][iy] = r[nf][iSiteCurrent][2];
-            rM2iSite[nf][iy] = r[nf][iSiteCurrent][2]*r[nf][iSiteCurrent][2];
+            rMiSite[nf][iy] = r(nf,iSiteCurrent,2);
+            rM2iSite[nf][iy] = r(nf,iSiteCurrent,2)*r(nf,iSiteCurrent,2);
         }
     }
 
@@ -1088,8 +1088,8 @@ void dataRecording()
         {
             rH[nf] = 0;
             for(i=0;i<N[nf];i++)
-                if (r[nf][i][2]>rH[nf])
-                    rH[nf] = r[nf][i][2];
+                if (r(nf,i,2)>rH[nf])
+                    rH[nf] = r(nf,i,2);
         }
     }
 
@@ -1149,9 +1149,9 @@ void dataRecording()
                 for (i=0;i<N[nf];i++)
                 {
                     fprintf(fList, " %f %f %f",
-                            r[nf][i][0],    // 20 + (NFil-1) + 3*(iSiteTotal[nf]-1) + 3*i
-                            r[nf][i][1],    // 21 + (NFil-1) + 3*(iSiteTotal[nf]-1) + 3*i
-                            r[nf][i][2]);   // 22 + (NFil-1) + 3*(iSiteTotal[nf]-1) + 3*i
+                            r(nf,i,0),    // 20 + (NFil-1) + 3*(iSiteTotal[nf]-1) + 3*i
+                            r(nf,i,1),    // 21 + (NFil-1) + 3*(iSiteTotal[nf]-1) + 3*i
+                            r(nf,i,2));   // 22 + (NFil-1) + 3*(iSiteTotal[nf]-1) + 3*i
                 }
 
                 // print iSite ligand centers
@@ -1380,7 +1380,7 @@ void dataRecording()
         {
             for(i=0;i<N[nf];i++)
             {
-                binCurrent = (long)floor(((double)r[nf][i][2]+N[nf])/binSize[nf]);
+                binCurrent = (long)floor(((double)r(nf,i,2)+N[nf])/binSize[nf]);
                 polymerLocationCounts[nf][i][binCurrent]++;
             }
         }
