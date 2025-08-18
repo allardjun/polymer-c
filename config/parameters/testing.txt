@@ -1,6 +1,6 @@
 listName		outputTest
 NFil			2
-N			30
+N			100
 filamentInputMethod	0
 baseSepDistance		1
 irLigand		2.25

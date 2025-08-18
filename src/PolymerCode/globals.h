@@ -30,6 +30,17 @@
 #define CD3ZETA         0
 #define BINDTRANSITION  0
 
+extern char listName[100];
+extern FILE *fList;
+
+extern char liveListName[100];
+
+//
+extern char paramsFilename[100], filamentFilename[100], iSiteFilename[100], bSiteFilename[100], basicSiteFilename[100];
+extern FILE *paramsFile, *filList, *iSiteList, *bSiteList, *basicSiteList;
+
+
+
 // Global variable declarations (extern)
 extern long NFil, N[NFILMAX];
 extern long Ntemp, iSiteTemp;

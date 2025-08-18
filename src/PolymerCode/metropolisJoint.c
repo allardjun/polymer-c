@@ -4,6 +4,7 @@
 #define USE_COMPATIBILITY_LAYER
 #include "polymer_data_structures.h"
 #include "globals.h"
+#include <time.h>
 
 void metropolisJoint();
 void stationarity();
@@ -151,6 +152,10 @@ void metropolisJoint()
 	
     // summary variables
     initializeSummary();
+
+    // Timing variables for performance measurement
+    clock_t program_start = clock();
+    clock_t dataRecording_time = 0;
 
     /********* BEGIN LOOP THROUGH ITERATIONS! *******************/
 	while(!convergedTF && nt < NTMAX) // Time loop!
@@ -806,7 +811,9 @@ void metropolisJoint()
         }
 		
         // output to time series file
+        clock_t dataRecording_start = clock();
 		dataRecording();
+        dataRecording_time += clock() - dataRecording_start;
         
         /********* 6. Increment time *******************/
 		nt++;
@@ -815,6 +822,19 @@ void metropolisJoint()
     
     // finalize summary statistics
     finalizeSummary(1);
+    
+    // Report timing results
+    clock_t total_time = clock() - program_start;
+    double dataRecording_percent = 100.0 * dataRecording_time / total_time;
+    double dataRecording_seconds = (double)dataRecording_time / CLOCKS_PER_SEC;
+    double total_seconds = (double)total_time / CLOCKS_PER_SEC;
+    
+    printf("=== PERFORMANCE TIMING ===\n");
+    printf("dataRecording() took %.3f seconds (%.2f%% of total runtime)\n", 
+           dataRecording_seconds, dataRecording_percent);
+    printf("Total simulation time: %.3f seconds\n", total_seconds);
+    printf("Average dataRecording() time per iteration: %.6f seconds\n", 
+           dataRecording_seconds / nt);
 
 }
 
