@@ -104,7 +104,7 @@ if [ -f "$OUTPUT_FILE" ]; then
     
     # Convert to absolute paths for Julia
     FINAL_OUTPUT_ABS=$(readlink -f "$FINAL_OUTPUT")
-    PLOT_OUTPUT_ABS="$(readlink -f "$OUTPUT_DIR")/occlusion_probability_plot.pdf_ree2iSiteBar_vs_position.pdf"
+    PLOT_OUTPUT_ABS="$(readlink -f "$OUTPUT_DIR")/occlusion_probability_plot.pdf"
     
     cd "$ANALYSIS_DIR"
     julia --project=. analyze_single.jl "$FINAL_OUTPUT_ABS" "$PLOT_OUTPUT_ABS"

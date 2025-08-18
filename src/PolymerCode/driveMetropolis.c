@@ -1,28 +1,7 @@
 /*** Allard Lab jun.allard@uci.edu                    ***/
 
-#define TWISTER genrand_real3()
-#define NFILMAX         3
-#define NMAX            1201
-#define NTADAPT         20000
-#define NTCHECK         200000
-#define DCHIMIN         1e-4
-#define NBINS           100
-#define NBINSPOLYMER    3000
-#define PI              3.14159265359
-#define INF             1e14
-#define DCHIINIT        0.1
-#define KSCRITICAL      0.002
-#define MEMBRANE        0
-#define MULTIPLE        1
-#define STIFFEN         0
-#define ELECTRO         0
-#define HARDWALL        0
-#define BASEBOUND       0
-#define CPMAX           1e8
-#define TALKATIVE       1
-#define VISUALIZE       1
-#define CD3ZETA         0
-#define BINDTRANSITION  0
+// Constants moved to globals.h for proper single source of truth
+#include "globals.h"
 
 #include <math.h>
 #include <stdlib.h>

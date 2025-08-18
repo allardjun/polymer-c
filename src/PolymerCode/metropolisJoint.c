@@ -3,6 +3,7 @@
 // Performance Improvement #6: Use compatibility layer for optimized data access
 #define USE_COMPATIBILITY_LAYER
 #include "polymer_data_structures.h"
+#include "globals.h"
 
 void metropolisJoint();
 void stationarity();
