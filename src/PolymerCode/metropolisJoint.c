@@ -280,53 +280,9 @@ void metropolisJoint()
             for(ix=0;ix<3;ix++)
                 rPropose(nfPropose,0,ix) = rBase[nfPropose][ix] + tPropose(nfPropose,0,ix);
             
-            // if nf != nfPropose, proposal configuration is the same as current configuration
-            // if nf = nfPropose and i<iPropose, proposal configuration is the same as current configuration
-            for(nf=0;nf<NFil;nf++)
-            {
-                if(nf==nfPropose) // if proposed filament, only keep segments before iPropose the same
-                {
-                    for(i=1;i<iPropose;i++)
-                    {
-                        rPropose(nf,i,0) = r(nf,i,0);
-                        rPropose(nf,i,1) = r(nf,i,1);
-                        rPropose(nf,i,2) = r(nf,i,2);
-                        
-                        tPropose(nf,i,0) = t(nf,i,0);
-                        tPropose(nf,i,1) = t(nf,i,1);
-                        tPropose(nf,i,2) = t(nf,i,2);
-                        
-                        e1Propose(nf,i,0) = e1(nf,i,0);
-                        e1Propose(nf,i,1) = e1(nf,i,1);
-                        e1Propose(nf,i,2) = e1(nf,i,2);
-                        
-                        e2Propose(nf,i,0) = e2(nf,i,0);
-                        e2Propose(nf,i,1) = e2(nf,i,1);
-                        e2Propose(nf,i,2) = e2(nf,i,2);
-                    }
-                }
-                else{ //if not proposed filament, keep all segments the same
-                    // start this one at 0 since didn't rotate base/0 segment above
-                    for(i=0;i<N[nf];i++)
-                    {
-                        rPropose(nf,i,0) = r(nf,i,0);
-                        rPropose(nf,i,1) = r(nf,i,1);
-                        rPropose(nf,i,2) = r(nf,i,2);
-                        
-                        tPropose(nf,i,0) = t(nf,i,0);
-                        tPropose(nf,i,1) = t(nf,i,1);
-                        tPropose(nf,i,2) = t(nf,i,2);
-                        
-                        e1Propose(nf,i,0) = e1(nf,i,0);
-                        e1Propose(nf,i,1) = e1(nf,i,1);
-                        e1Propose(nf,i,2) = e1(nf,i,2);
-                        
-                        e2Propose(nf,i,0) = e2(nf,i,0);
-                        e2Propose(nf,i,1) = e2(nf,i,1);
-                        e2Propose(nf,i,2) = e2(nf,i,2);
-                    }
-                }
-            }
+            // Use optimized bulk copy operation (Performance Improvement #6)
+            // This replaces element-by-element loops with fast memcpy operations
+            optimized_copy_to_proposal(nfPropose, iPropose);
             
             // rotate all segments above (and including) iPropose on proposed filament nfPropose
             
@@ -564,30 +520,9 @@ void metropolisJoint()
             {
                 E = ENew;
                 
-                // Make configuration into the proposal configuration
-                for(i=iPropose;i<N[nfPropose];i++)
-                {
-                    phi(nfPropose,i)   = phiPropose(nfPropose,i);
-                    theta(nfPropose,i) = thetaPropose(nfPropose,i);
-                    psi(nfPropose,i)   = psiPropose(nfPropose,i);
-                    
-                    r(nfPropose,i,0) = rPropose(nfPropose,i,0);
-                    r(nfPropose,i,1) = rPropose(nfPropose,i,1);
-                    r(nfPropose,i,2) = rPropose(nfPropose,i,2);
-                    
-                    t(nfPropose,i,0) = tPropose(nfPropose,i,0);
-                    t(nfPropose,i,1) = tPropose(nfPropose,i,1);
-                    t(nfPropose,i,2) = tPropose(nfPropose,i,2);
-                    
-                    e1(nfPropose,i,0) = e1Propose(nfPropose,i,0);
-                    e1(nfPropose,i,1) = e1Propose(nfPropose,i,1);
-                    e1(nfPropose,i,2) = e1Propose(nfPropose,i,2);
-                    
-                    e2(nfPropose,i,0) = e2Propose(nfPropose,i,0);
-                    e2(nfPropose,i,1) = e2Propose(nfPropose,i,1);
-                    e2(nfPropose,i,2) = e2Propose(nfPropose,i,2);
-                 
-                }
+                // Accept proposal using optimized bulk copy operation (Performance Improvement #6)
+                // This replaces element-by-element loops with fast memcpy operations
+                optimized_copy_from_proposal(nfPropose, iPropose);
                 
                 if(MULTIPLE)
                 {
