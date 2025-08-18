@@ -1,6 +1,14 @@
 all:
 	gcc -O3 driveMetropolis.c -o metropolis.out -lm
 
+# Test new data structures (Performance Improvement #6)
+test-data-structures:
+	gcc -O3 test_data_structures.c polymer_data_structures.c -o test_data_structures -lm
+	./test_data_structures
+
+clean-test:
+	rm -f test_data_structures
+
 quick-test:
 	gcc -O3 driveMetropolis.c -o metropolis.out -lm
 	

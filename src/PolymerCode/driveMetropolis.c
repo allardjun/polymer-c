@@ -32,6 +32,10 @@
 #include <limits.h>
 #include "twister.c"
 
+// Performance Improvement #6: Use new optimized data structures
+#define USE_COMPATIBILITY_LAYER
+#include "polymer_data_structures.h"
+
 
 /*******************************************************************************/
 //  GLOBAL VARIABLES
@@ -63,11 +67,10 @@ double reeFil[NFILMAX][NFILMAX];
 
 long iseed;
 
-double phi[NFILMAX][NMAX], theta[NFILMAX][NMAX], psi[NFILMAX][NMAX];
-double phiPropose[NFILMAX][NMAX], thetaPropose[NFILMAX][NMAX], psiPropose[NFILMAX][NMAX];
-double r[NFILMAX][NMAX][3],t[NFILMAX][NMAX][3], e1[NFILMAX][NMAX][3], e2[NFILMAX][NMAX][3],
-       rBase[NFILMAX][3], tBase[NFILMAX][3], e1Base[NFILMAX][3], e2Base[NFILMAX][3],
-       rPropose[NFILMAX][NMAX][3],tPropose[NFILMAX][NMAX][3], e1Propose[NFILMAX][NMAX][3], e2Propose[NFILMAX][NMAX][3];
+// OLD ARRAYS - Replaced by optimized data structure (Performance Improvement #6)  
+// Arrays r, t, e1, e2, phi, theta, psi, rPropose, etc. now accessed via compatibility macros
+// Only keeping base arrays which aren't part of the optimized structure yet
+double rBase[NFILMAX][3], tBase[NFILMAX][3], e1Base[NFILMAX][3], e2Base[NFILMAX][3];
 double norm;
 double iLigandCenter[NFILMAX][NMAX][3];
 
@@ -295,6 +298,11 @@ int main( int argc, char *argv[] )
     }
 
     /***********************************************************************************/
+    // Initialize optimized data structure (Performance Improvement #6)
+    printf("Initializing optimized data structures\n");
+    allocate_simulation_state(&g_sim_state, NFil, N);
+    
+    /***********************************************************************************/
     // initialize random seed
 	iseed = RanInitReturnIseed(0);
 
@@ -302,6 +310,10 @@ int main( int argc, char *argv[] )
     // run metropolis algorithm
     printf("starting metropolisJoint\n");
 	metropolisJoint();
+	
+	// Clean up optimized data structure (Performance Improvement #6)
+	printf("Cleaning up optimized data structures\n");
+	free_simulation_state(&g_sim_state);
 
 	return 0;
 

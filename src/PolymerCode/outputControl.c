@@ -1,5 +1,9 @@
 /*** Allard Group jun.allard@uci.edu                    ***/
 
+// Performance Improvement #6: Use compatibility layer for optimized data access
+#define USE_COMPATIBILITY_LAYER
+#include "polymer_data_structures.h"
+
 void initializeSummary();
 void finalizeSummary(int reallyFinal);
 void dataRecording();
