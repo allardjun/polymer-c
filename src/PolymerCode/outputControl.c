@@ -43,6 +43,22 @@ double reeiSite_cen_halfup[NFILMAX][NMAX]; // 2.5nm (8.333 aa) above the center 
 double reeiSite_offcen_halfup[NFILMAX][NMAX]; // 2.5nm (8.333 aa) above and 2.5nm (8.333 aa) away from the center, towards the attachment site of same filament
 double reeiSite_offcen_halfup_op[NFILMAX][NMAX]; // 2.5nm (8.333 aa) above and 2.5nm (8.333 aa) away from the center, towards the attachment site of opposite filament
 
+// Squared distance variables for optimization (avoiding sqrt calculations)
+double reeiSite_squared[NFILMAX][NMAX]; // attachment site of same filament - squared
+double reeiSite_op_squared[NFILMAX][NMAX]; // attachment site of opposite filament - squared
+double reeiSite_cen_squared[NFILMAX][NMAX]; // center of of bases - squared
+double reeiSite_offcen_squared[NFILMAX][NMAX]; // 2.5nm away from center, towards same filament - squared
+double reeiSite_offcen_op_squared[NFILMAX][NMAX]; // 2.5nm away from center, towards opposite filament - squared
+double reeiSite_up_squared[NFILMAX][NMAX]; // 5nm above attachment site of same filament - squared
+double reeiSite_up_op_squared[NFILMAX][NMAX]; // 5nm above attachment site of opposite filament - squared
+double reeiSite_cen_up_squared[NFILMAX][NMAX]; // 5nm above center of bases - squared
+double reeiSite_offcen_up_squared[NFILMAX][NMAX]; // 5nm above and 2.5nm away from center, towards same filament - squared
+double reeiSite_offcen_up_op_squared[NFILMAX][NMAX]; // 5nm above and 2.5nm away from center, towards opposite filament - squared
+double reeiSite_halfup_squared[NFILMAX][NMAX]; // 2.5nm above attachment site of same filament - squared
+double reeiSite_halfup_op_squared[NFILMAX][NMAX]; // 2.5nm above attachment site of opposite filament - squared
+double reeiSite_cen_halfup_squared[NFILMAX][NMAX]; // 2.5nm above center of bases - squared
+double reeiSite_offcen_halfup_squared[NFILMAX][NMAX]; // 2.5nm above and 2.5nm away from center, towards same filament - squared
+double reeiSite_offcen_halfup_op_squared[NFILMAX][NMAX]; // 2.5nm above and 2.5nm away from center, towards opposite filament - squared
 
 long Prvec0_sum[NFILMAX][NMAX]; // attachment site of same filament
 long Prvec0_op_sum[NFILMAX][NMAX]; // attachment site of opposite filament
@@ -92,6 +108,24 @@ double Prvec0_halfup_op_rad[NFILMAX][NMAX]; // 2.5nm (8.333 aa) above the attach
 double Prvec_cen_halfup_rad[NFILMAX][NMAX]; // 2.5nm (8.333 aa) above the center of of bases
 double Prvec_offcen_halfup_rad[NFILMAX][NMAX]; // 2.5nm (8.333 aa) above and 2.5nm (8.333 aa) away from the center, towards the attachment site of same filament
 double Prvec_offcen_halfup_op_rad[NFILMAX][NMAX]; // 2.5nm (8.333 aa) above and 2.5nm (8.333 aa) away from the center, towards the attachment site of opposite filament
+
+// Squared radius thresholds for optimization (avoiding sqrt calculations in comparisons)
+double Prvec0_rad_squared[NFILMAX][NMAX]; // attachment site of same filament - squared
+double Prvec0_op_rad_squared[NFILMAX][NMAX]; // attachment site of opposite filament - squared
+double Prvec_cen_rad_squared[NFILMAX][NMAX]; // center of of bases - squared
+double Prvec_offcen_rad_squared[NFILMAX][NMAX]; // 2.5nm away from center, towards same filament - squared
+double Prvec_offcen_op_rad_squared[NFILMAX][NMAX]; // 2.5nm away from center, towards opposite filament - squared
+double Prvec0_up_rad_squared[NFILMAX][NMAX]; // 5nm above attachment site of same filament - squared
+double Prvec0_up_op_rad_squared[NFILMAX][NMAX]; // 5nm above attachment site of opposite filament - squared
+double Prvec_cen_up_rad_squared[NFILMAX][NMAX]; // 5nm above center of bases - squared
+double Prvec_offcen_up_rad_squared[NFILMAX][NMAX]; // 5nm above and 2.5nm away from center, towards same filament - squared
+double Prvec_offcen_up_op_rad_squared[NFILMAX][NMAX]; // 5nm above and 2.5nm away from center, towards opposite filament - squared
+double Prvec0_halfup_rad_squared[NFILMAX][NMAX]; // 2.5nm above attachment site of same filament - squared
+double Prvec0_halfup_op_rad_squared[NFILMAX][NMAX]; // 2.5nm above attachment site of opposite filament - squared
+double Prvec_cen_halfup_rad_squared[NFILMAX][NMAX]; // 2.5nm above center of bases - squared
+double Prvec_offcen_halfup_rad_squared[NFILMAX][NMAX]; // 2.5nm above and 2.5nm away from center, towards same filament - squared
+double Prvec_offcen_halfup_op_rad_squared[NFILMAX][NMAX]; // 2.5nm above and 2.5nm away from center, towards opposite filament - squared
+float Prvec_rad_vec_squared[5]; // squared values of radius vector for optimization
 
 float Prvec_rad_vec[5]={ 0.1,0.5,0.75,1.0,4.0}; // radius values to use in following vectors
 double Prvec_rad_vec_size=5;
@@ -361,7 +395,29 @@ void initializeSummary()
             }else{
                 Prvec0_rad[nf][iy] = Prvec0_op_rad[nf][iy] = Prvec_cen_rad[nf][iy] = Prvec_offcen_rad[nf][iy] = Prvec_offcen_op_rad[nf][iy] = Prvec0_up_rad[nf][iy] = Prvec0_up_op_rad[nf][iy] = Prvec_cen_up_rad[nf][iy] = Prvec_offcen_up_rad[nf][iy] = Prvec_offcen_up_op_rad[nf][iy] = Prvec0_halfup_rad[nf][iy] = Prvec0_halfup_op_rad[nf][iy] = Prvec_cen_halfup_rad[nf][iy] = Prvec_offcen_halfup_rad[nf][iy] = Prvec_offcen_halfup_op_rad[nf][iy] = (double)radtype;
             }
+            
+            // Pre-calculate squared radius values for optimization
+            Prvec0_rad_squared[nf][iy] = Prvec0_rad[nf][iy] * Prvec0_rad[nf][iy];
+            Prvec0_op_rad_squared[nf][iy] = Prvec0_op_rad[nf][iy] * Prvec0_op_rad[nf][iy];
+            Prvec_cen_rad_squared[nf][iy] = Prvec_cen_rad[nf][iy] * Prvec_cen_rad[nf][iy];
+            Prvec_offcen_rad_squared[nf][iy] = Prvec_offcen_rad[nf][iy] * Prvec_offcen_rad[nf][iy];
+            Prvec_offcen_op_rad_squared[nf][iy] = Prvec_offcen_op_rad[nf][iy] * Prvec_offcen_op_rad[nf][iy];
+            Prvec0_up_rad_squared[nf][iy] = Prvec0_up_rad[nf][iy] * Prvec0_up_rad[nf][iy];
+            Prvec0_up_op_rad_squared[nf][iy] = Prvec0_up_op_rad[nf][iy] * Prvec0_up_op_rad[nf][iy];
+            Prvec_cen_up_rad_squared[nf][iy] = Prvec_cen_up_rad[nf][iy] * Prvec_cen_up_rad[nf][iy];
+            Prvec_offcen_up_rad_squared[nf][iy] = Prvec_offcen_up_rad[nf][iy] * Prvec_offcen_up_rad[nf][iy];
+            Prvec_offcen_up_op_rad_squared[nf][iy] = Prvec_offcen_up_op_rad[nf][iy] * Prvec_offcen_up_op_rad[nf][iy];
+            Prvec0_halfup_rad_squared[nf][iy] = Prvec0_halfup_rad[nf][iy] * Prvec0_halfup_rad[nf][iy];
+            Prvec0_halfup_op_rad_squared[nf][iy] = Prvec0_halfup_op_rad[nf][iy] * Prvec0_halfup_op_rad[nf][iy];
+            Prvec_cen_halfup_rad_squared[nf][iy] = Prvec_cen_halfup_rad[nf][iy] * Prvec_cen_halfup_rad[nf][iy];
+            Prvec_offcen_halfup_rad_squared[nf][iy] = Prvec_offcen_halfup_rad[nf][iy] * Prvec_offcen_halfup_rad[nf][iy];
+            Prvec_offcen_halfup_op_rad_squared[nf][iy] = Prvec_offcen_halfup_op_rad[nf][iy] * Prvec_offcen_halfup_op_rad[nf][iy];
         }
+
+    // Initialize squared radius vector values for optimization
+    for (int j = 0; j < 5; j++) {
+        Prvec_rad_vec_squared[j] = Prvec_rad_vec[j] * Prvec_rad_vec[j];
+    }
 
 
 }
@@ -764,15 +820,15 @@ void finalizeSummary(int reallyFinal)
 
         } // end printing data for each filament
 
-        if (CD3ZETA)
-        {
-            for (i=0; i<NumberiSites;i++)
-            {
-                fprintf(fList, "occupied[i] %ld %lf", i, occupied[i]);
-            }
+        // if (CD3ZETA)
+        // {
+        //     for (i=0; i<NumberiSites;i++)
+        //     {
+        //         fprintf(fList, "occupied[i] %ld %lf", i, occupied[i]);
+        //     }
 
-            fprintf(fList, "occupiedSitesNoSpace %s\n", occupiedSitesNoSpace);
-        }
+        //     fprintf(fList, "occupiedSitesNoSpace %s\n", occupiedSitesNoSpace);
+        // }
 
         //fprintf(fList, "\n");
         fclose(fList);
@@ -869,15 +925,23 @@ void dataRecording()
         for(iy=0;iy<iSiteTotal[nf];iy++)
         {
             iSiteCurrent = iSite[nf][iy];
-            reeiSite[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase[nf][0])*(r(nf,iSiteCurrent,0)-rBase[nf][0]) +
-                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                    (r(nf,iSiteCurrent,2)-rBase[nf][2])*(r(nf,iSiteCurrent,2)-rBase[nf][2]));
-            reeiSite_up[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase[nf][0])*(r(nf,iSiteCurrent,0)-rBase[nf][0]) +
-                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                    (r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift)));
-            reeiSite_halfup[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase[nf][0])*(r(nf,iSiteCurrent,0)-rBase[nf][0]) +
-                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                    (r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift)));
+            // Calculate squared distances first (for optimization)
+            reeiSite_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase[nf][0])*(r(nf,iSiteCurrent,0)-rBase[nf][0]) +
+                                      (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                      (r(nf,iSiteCurrent,2)-rBase[nf][2])*(r(nf,iSiteCurrent,2)-rBase[nf][2]);
+            reeiSite_up_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase[nf][0])*(r(nf,iSiteCurrent,0)-rBase[nf][0]) +
+                                         (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                         (r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift));
+            reeiSite_halfup_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase[nf][0])*(r(nf,iSiteCurrent,0)-rBase[nf][0]) +
+                                             (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                             (r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift));
+            
+            // Original sqrt calculations (only computed when not in SPEEDRUN mode)
+            if (!SPEEDRUN) {
+                reeiSite[nf][iy] = sqrt(reeiSite_squared[nf][iy]);
+                reeiSite_up[nf][iy] = sqrt(reeiSite_up_squared[nf][iy]);
+                reeiSite_halfup[nf][iy] = sqrt(reeiSite_halfup_squared[nf][iy]);
+            }
             
         
             if(NFil<=2){
@@ -898,52 +962,59 @@ void dataRecording()
                     rBase_offcen_op = rBase_cen - (8.33333333333333);
                 }
                 
-                reeiSite_op[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase_op)*(r(nf,iSiteCurrent,0)-rBase_op) +
-                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                    (r(nf,iSiteCurrent,2)-rBase[nf][2])*(r(nf,iSiteCurrent,2)-rBase[nf][2]));
+                // Calculate squared distances for optimization
+                reeiSite_op_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase_op)*(r(nf,iSiteCurrent,0)-rBase_op) +
+                                             (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                             (r(nf,iSiteCurrent,2)-rBase[nf][2])*(r(nf,iSiteCurrent,2)-rBase[nf][2]);
 
-                reeiSite_cen[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase_cen)*(r(nf,iSiteCurrent,0)-(rBase_cen)) +
-                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                    (r(nf,iSiteCurrent,2)-rBase[nf][2])*(r(nf,iSiteCurrent,2)-rBase[nf][2]));
+                reeiSite_cen_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase_cen)*(r(nf,iSiteCurrent,0)-(rBase_cen)) +
+                                              (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                              (r(nf,iSiteCurrent,2)-rBase[nf][2])*(r(nf,iSiteCurrent,2)-rBase[nf][2]);
 
-                reeiSite_offcen[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase_offcen)*(r(nf,iSiteCurrent,0)-(rBase_offcen)) +
-                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                    (r(nf,iSiteCurrent,2)-rBase[nf][2])*(r(nf,iSiteCurrent,2)-rBase[nf][2]));
+                reeiSite_offcen_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase_offcen)*(r(nf,iSiteCurrent,0)-(rBase_offcen)) +
+                                                 (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                                 (r(nf,iSiteCurrent,2)-rBase[nf][2])*(r(nf,iSiteCurrent,2)-rBase[nf][2]);
                 
-                reeiSite_offcen_op[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase_offcen_op)*(r(nf,iSiteCurrent,0)-(rBase_offcen_op)) +
-                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                    (r(nf,iSiteCurrent,2)-rBase[nf][2])*(r(nf,iSiteCurrent,2)-rBase[nf][2]));
+                reeiSite_offcen_op_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase_offcen_op)*(r(nf,iSiteCurrent,0)-(rBase_offcen_op)) +
+                                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                                    (r(nf,iSiteCurrent,2)-rBase[nf][2])*(r(nf,iSiteCurrent,2)-rBase[nf][2]);
 
-                reeiSite_up_op[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase_op)*(r(nf,iSiteCurrent,0)-rBase_op) +
-                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                    (r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift)));
+                // sqrt calculations removed - these variables only used for comparisons
 
-                reeiSite_cen_up[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase_cen)*(r(nf,iSiteCurrent,0)-(rBase_cen)) +
-                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                    (r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift)));
+                // Calculate remaining squared distances for optimization
+                reeiSite_up_op_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase_op)*(r(nf,iSiteCurrent,0)-rBase_op) +
+                                                (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                                (r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift));
 
-                reeiSite_offcen_up[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase_offcen)*(r(nf,iSiteCurrent,0)-(rBase_offcen)) +
-                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                    (r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift)));
+                reeiSite_cen_up_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase_cen)*(r(nf,iSiteCurrent,0)-(rBase_cen)) +
+                                                 (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                                 (r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift));
+
+                reeiSite_offcen_up_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase_offcen)*(r(nf,iSiteCurrent,0)-(rBase_offcen)) +
+                                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                                    (r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift));
                 
-                reeiSite_offcen_up_op[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase_offcen_op)*(r(nf,iSiteCurrent,0)-(rBase_offcen_op)) +
-                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                    (r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift)));
-                reeiSite_halfup_op[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase_op)*(r(nf,iSiteCurrent,0)-rBase_op) +
-                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                    (r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift)));
-
-                reeiSite_cen_halfup[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase_cen)*(r(nf,iSiteCurrent,0)-(rBase_cen)) +
-                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                    (r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift)));
-
-                reeiSite_offcen_halfup[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase_offcen)*(r(nf,iSiteCurrent,0)-(rBase_offcen)) +
-                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                    (r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift)));
+                reeiSite_offcen_up_op_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase_offcen_op)*(r(nf,iSiteCurrent,0)-(rBase_offcen_op)) +
+                                                       (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                                       (r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift));
                 
-                reeiSite_offcen_halfup_op[nf][iy] = sqrt((r(nf,iSiteCurrent,0)-rBase_offcen_op)*(r(nf,iSiteCurrent,0)-(rBase_offcen_op)) +
-                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                    (r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift)));
+                reeiSite_halfup_op_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase_op)*(r(nf,iSiteCurrent,0)-rBase_op) +
+                                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                                    (r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift));
+
+                reeiSite_cen_halfup_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase_cen)*(r(nf,iSiteCurrent,0)-(rBase_cen)) +
+                                                     (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                                     (r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift));
+
+                reeiSite_offcen_halfup_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase_offcen)*(r(nf,iSiteCurrent,0)-(rBase_offcen)) +
+                                                        (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                                        (r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift));
+                
+                reeiSite_offcen_halfup_op_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase_offcen_op)*(r(nf,iSiteCurrent,0)-(rBase_offcen_op)) +
+                                                           (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
+                                                           (r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift));
+
+                // sqrt calculations removed - these variables only used for comparisons
             }
 
             if(!SPEEDRUN) // no bound ligands in speedrun.
@@ -1295,9 +1366,9 @@ void dataRecording()
                 
                 POcclude_sum[nf][iy]         += (long)(stericOcclusion[nf][iy]>0);
                 
-                Prvec0_sum[nf][iy]           += (long)(reeiSite[nf][iy] < (double)Prvec0_rad[nf][iy]);
-                Prvec0_up_sum[nf][iy]           += (long)(reeiSite_up[nf][iy] < (double)Prvec0_up_rad[nf][iy]);
-                Prvec0_halfup_sum[nf][iy]           += (long)(reeiSite_halfup[nf][iy] < (double)Prvec0_halfup_rad[nf][iy]);
+                Prvec0_sum[nf][iy]           += (long)(reeiSite_squared[nf][iy] < Prvec0_rad_squared[nf][iy]);
+                Prvec0_up_sum[nf][iy]           += (long)(reeiSite_up_squared[nf][iy] < Prvec0_up_rad_squared[nf][iy]);
+                Prvec0_halfup_sum[nf][iy]           += (long)(reeiSite_halfup_squared[nf][iy] < Prvec0_halfup_rad_squared[nf][iy]);
 
                 if(iy==bSite[nf][ib])
                 {
@@ -1329,42 +1400,42 @@ void dataRecording()
                 }
 
                 if(NFil<=2){
-                    Prvec0_op_sum[nf][iy]           += (long)(reeiSite_op[nf][iy] < (double)Prvec0_op_rad[nf][iy]);
-                    Prvec_cen_sum[nf][iy]           += (long)(reeiSite_cen[nf][iy] < (double)Prvec_cen_rad[nf][iy]);
-                    Prvec_offcen_sum[nf][iy]           += (long)(reeiSite_offcen[nf][iy] < (double)Prvec_offcen_rad[nf][iy]);
-                    Prvec_offcen_op_sum[nf][iy]           += (long)(reeiSite_offcen_op[nf][iy] < (double)Prvec_offcen_op_rad[nf][iy]);
+                    Prvec0_op_sum[nf][iy]           += (long)(reeiSite_op_squared[nf][iy] < Prvec0_op_rad_squared[nf][iy]);
+                    Prvec_cen_sum[nf][iy]           += (long)(reeiSite_cen_squared[nf][iy] < Prvec_cen_rad_squared[nf][iy]);
+                    Prvec_offcen_sum[nf][iy]           += (long)(reeiSite_offcen_squared[nf][iy] < Prvec_offcen_rad_squared[nf][iy]);
+                    Prvec_offcen_op_sum[nf][iy]           += (long)(reeiSite_offcen_op_squared[nf][iy] < Prvec_offcen_op_rad_squared[nf][iy]);
 
-                    Prvec0_up_op_sum[nf][iy]           += (long)(reeiSite_up_op[nf][iy] < (double)Prvec0_up_op_rad[nf][iy]);
-                    Prvec_cen_up_sum[nf][iy]           += (long)(reeiSite_cen_up[nf][iy] < (double)Prvec_cen_up_rad[nf][iy]);
-                    Prvec_offcen_up_sum[nf][iy]           += (long)(reeiSite_offcen_up[nf][iy] < (double)Prvec_offcen_up_rad[nf][iy]);
-                    Prvec_offcen_up_op_sum[nf][iy]           += (long)(reeiSite_offcen_up_op[nf][iy] < (double)Prvec_offcen_up_op_rad[nf][iy]);
+                    Prvec0_up_op_sum[nf][iy]           += (long)(reeiSite_up_op_squared[nf][iy] < Prvec0_up_op_rad_squared[nf][iy]);
+                    Prvec_cen_up_sum[nf][iy]           += (long)(reeiSite_cen_up_squared[nf][iy] < Prvec_cen_up_rad_squared[nf][iy]);
+                    Prvec_offcen_up_sum[nf][iy]           += (long)(reeiSite_offcen_up_squared[nf][iy] < Prvec_offcen_up_rad_squared[nf][iy]);
+                    Prvec_offcen_up_op_sum[nf][iy]           += (long)(reeiSite_offcen_up_op_squared[nf][iy] < Prvec_offcen_up_op_rad_squared[nf][iy]);
 
-                    Prvec0_halfup_op_sum[nf][iy]           += (long)(reeiSite_halfup_op[nf][iy] < (double)Prvec0_halfup_op_rad[nf][iy]);
-                    Prvec_cen_halfup_sum[nf][iy]           += (long)(reeiSite_cen_halfup[nf][iy] < (double)Prvec_cen_halfup_rad[nf][iy]);
-                    Prvec_offcen_halfup_sum[nf][iy]           += (long)(reeiSite_offcen_halfup[nf][iy] < (double)Prvec_offcen_halfup_rad[nf][iy]);
-                    Prvec_offcen_halfup_op_sum[nf][iy]           += (long)(reeiSite_offcen_halfup_op[nf][iy] < (double)Prvec_offcen_halfup_op_rad[nf][iy]);}
+                    Prvec0_halfup_op_sum[nf][iy]           += (long)(reeiSite_halfup_op_squared[nf][iy] < Prvec0_halfup_op_rad_squared[nf][iy]);
+                    Prvec_cen_halfup_sum[nf][iy]           += (long)(reeiSite_cen_halfup_squared[nf][iy] < Prvec_cen_halfup_rad_squared[nf][iy]);
+                    Prvec_offcen_halfup_sum[nf][iy]           += (long)(reeiSite_offcen_halfup_squared[nf][iy] < Prvec_offcen_halfup_rad_squared[nf][iy]);
+                    Prvec_offcen_halfup_op_sum[nf][iy]           += (long)(reeiSite_offcen_halfup_op_squared[nf][iy] < Prvec_offcen_halfup_op_rad_squared[nf][iy]);}
 
                 for (j=0;j<Prvec_rad_vec_size;j++)
                 {
-                    Prvec0_sum_vec[nf][iy][j]           += (long)(reeiSite[nf][iy] < (double)Prvec_rad_vec[j]);
-                    Prvec0_up_sum_vec[nf][iy][j]           += (long)(reeiSite_up[nf][iy] < (double)Prvec_rad_vec[j]);
-                    Prvec0_halfup_sum_vec[nf][iy][j]           += (long)(reeiSite_halfup[nf][iy] < (double)Prvec_rad_vec[j]);
+                    Prvec0_sum_vec[nf][iy][j]           += (long)(reeiSite_squared[nf][iy] < (double)Prvec_rad_vec_squared[j]);
+                    Prvec0_up_sum_vec[nf][iy][j]           += (long)(reeiSite_up_squared[nf][iy] < (double)Prvec_rad_vec_squared[j]);
+                    Prvec0_halfup_sum_vec[nf][iy][j]           += (long)(reeiSite_halfup_squared[nf][iy] < (double)Prvec_rad_vec_squared[j]);
 
                     if(NFil<=2){
-                        Prvec0_op_sum_vec[nf][iy][j]           += (long)(reeiSite_op[nf][iy] < (double)Prvec_rad_vec[j]);
-                        Prvec_cen_sum_vec[nf][iy][j]           += (long)(reeiSite_cen[nf][iy] < (double)Prvec_rad_vec[j]);
-                        Prvec_offcen_sum_vec[nf][iy][j]           += (long)(reeiSite_offcen[nf][iy] < (double)Prvec_rad_vec[j]);
-                        Prvec_offcen_op_sum_vec[nf][iy][j]           += (long)(reeiSite_offcen_op[nf][iy] < (double)Prvec_rad_vec[j]);
+                        Prvec0_op_sum_vec[nf][iy][j]           += (long)(reeiSite_op_squared[nf][iy] < (double)Prvec_rad_vec_squared[j]);
+                        Prvec_cen_sum_vec[nf][iy][j]           += (long)(reeiSite_cen_squared[nf][iy] < (double)Prvec_rad_vec_squared[j]);
+                        Prvec_offcen_sum_vec[nf][iy][j]           += (long)(reeiSite_offcen_squared[nf][iy] < (double)Prvec_rad_vec_squared[j]);
+                        Prvec_offcen_op_sum_vec[nf][iy][j]           += (long)(reeiSite_offcen_op_squared[nf][iy] < (double)Prvec_rad_vec_squared[j]);
 
-                        Prvec0_up_op_sum_vec[nf][iy][j]           += (long)(reeiSite_up_op[nf][iy] < (double)Prvec_rad_vec[j]);
-                        Prvec_cen_up_sum_vec[nf][iy][j]           += (long)(reeiSite_cen_up[nf][iy] < (double)Prvec_rad_vec[j]);
-                        Prvec_offcen_up_sum_vec[nf][iy][j]           += (long)(reeiSite_offcen_up[nf][iy] < (double)Prvec_rad_vec[j]);
-                        Prvec_offcen_up_op_sum_vec[nf][iy][j]           += (long)(reeiSite_offcen_up_op[nf][iy] < (double)Prvec_rad_vec[j]);
+                        Prvec0_up_op_sum_vec[nf][iy][j]           += (long)(reeiSite_up_op_squared[nf][iy] < (double)Prvec_rad_vec_squared[j]);
+                        Prvec_cen_up_sum_vec[nf][iy][j]           += (long)(reeiSite_cen_up_squared[nf][iy] < (double)Prvec_rad_vec_squared[j]);
+                        Prvec_offcen_up_sum_vec[nf][iy][j]           += (long)(reeiSite_offcen_up_squared[nf][iy] < (double)Prvec_rad_vec_squared[j]);
+                        Prvec_offcen_up_op_sum_vec[nf][iy][j]           += (long)(reeiSite_offcen_up_op_squared[nf][iy] < (double)Prvec_rad_vec_squared[j]);
 
-                        Prvec0_halfup_op_sum_vec[nf][iy][j]           += (long)(reeiSite_halfup_op[nf][iy] < (double)Prvec_rad_vec[j]);
-                        Prvec_cen_halfup_sum_vec[nf][iy][j]           += (long)(reeiSite_cen_halfup[nf][iy] < (double)Prvec_rad_vec[j]);
-                        Prvec_offcen_halfup_sum_vec[nf][iy][j]           += (long)(reeiSite_offcen_halfup[nf][iy] < (double)Prvec_rad_vec[j]);
-                        Prvec_offcen_halfup_op_sum_vec[nf][iy][j]           += (long)(reeiSite_offcen_halfup_op[nf][iy] < (double)Prvec_rad_vec[j]);
+                        Prvec0_halfup_op_sum_vec[nf][iy][j]           += (long)(reeiSite_halfup_op_squared[nf][iy] < (double)Prvec_rad_vec_squared[j]);
+                        Prvec_cen_halfup_sum_vec[nf][iy][j]           += (long)(reeiSite_cen_halfup_squared[nf][iy] < (double)Prvec_rad_vec_squared[j]);
+                        Prvec_offcen_halfup_sum_vec[nf][iy][j]           += (long)(reeiSite_offcen_halfup_squared[nf][iy] < (double)Prvec_rad_vec_squared[j]);
+                        Prvec_offcen_halfup_op_sum_vec[nf][iy][j]           += (long)(reeiSite_offcen_halfup_op_squared[nf][iy] < (double)Prvec_rad_vec_squared[j]);
                     }
                 }
 
