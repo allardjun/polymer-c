@@ -925,16 +925,26 @@ void dataRecording()
         for(iy=0;iy<iSiteTotal[nf];iy++)
         {
             iSiteCurrent = iSite[nf][iy];
-            // Calculate squared distances first (for optimization)
-            reeiSite_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase[nf][0])*(r(nf,iSiteCurrent,0)-rBase[nf][0]) +
-                                      (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                      (r(nf,iSiteCurrent,2)-rBase[nf][2])*(r(nf,iSiteCurrent,2)-rBase[nf][2]);
-            reeiSite_up_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase[nf][0])*(r(nf,iSiteCurrent,0)-rBase[nf][0]) +
-                                         (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                         (r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift));
-            reeiSite_halfup_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase[nf][0])*(r(nf,iSiteCurrent,0)-rBase[nf][0]) +
-                                             (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                             (r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift));
+            
+            // Cache frequently accessed coordinates (Performance Optimization #8)
+            const double isite_x = r(nf,iSiteCurrent,0);
+            const double isite_y = r(nf,iSiteCurrent,1);
+            const double isite_z = r(nf,iSiteCurrent,2);
+            const double base_x = rBase[nf][0];
+            const double base_y = rBase[nf][1]; 
+            const double base_z = rBase[nf][2];
+            
+            // Compute coordinate differences once
+            const double dx = isite_x - base_x;
+            const double dy = isite_y - base_y;
+            const double dz = isite_z - base_z;
+            const double dz_up = isite_z - (base_z + yshift);
+            const double dz_halfup = isite_z - (base_z + halfyshift);
+            
+            // Calculate squared distances using cached values
+            reeiSite_squared[nf][iy] = dx*dx + dy*dy + dz*dz;
+            reeiSite_up_squared[nf][iy] = dx*dx + dy*dy + dz_up*dz_up;
+            reeiSite_halfup_squared[nf][iy] = dx*dx + dy*dy + dz_halfup*dz_halfup;
             
             // Original sqrt calculations (only computed when not in SPEEDRUN mode)
             if (!SPEEDRUN) {
@@ -962,57 +972,30 @@ void dataRecording()
                     rBase_offcen_op = rBase_cen - (8.33333333333333);
                 }
                 
-                // Calculate squared distances for optimization
-                reeiSite_op_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase_op)*(r(nf,iSiteCurrent,0)-rBase_op) +
-                                             (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                             (r(nf,iSiteCurrent,2)-rBase[nf][2])*(r(nf,iSiteCurrent,2)-rBase[nf][2]);
-
-                reeiSite_cen_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase_cen)*(r(nf,iSiteCurrent,0)-(rBase_cen)) +
-                                              (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                              (r(nf,iSiteCurrent,2)-rBase[nf][2])*(r(nf,iSiteCurrent,2)-rBase[nf][2]);
-
-                reeiSite_offcen_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase_offcen)*(r(nf,iSiteCurrent,0)-(rBase_offcen)) +
-                                                 (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                                 (r(nf,iSiteCurrent,2)-rBase[nf][2])*(r(nf,iSiteCurrent,2)-rBase[nf][2]);
+                // Calculate coordinate differences for complex positions using cached coordinates
+                const double dx_op = isite_x - rBase_op;
+                const double dx_cen = isite_x - rBase_cen;
+                const double dx_offcen = isite_x - rBase_offcen;
+                const double dx_offcen_op = isite_x - rBase_offcen_op;
                 
-                reeiSite_offcen_op_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase_offcen_op)*(r(nf,iSiteCurrent,0)-(rBase_offcen_op)) +
-                                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                                    (r(nf,iSiteCurrent,2)-rBase[nf][2])*(r(nf,iSiteCurrent,2)-rBase[nf][2]);
+                // Calculate squared distances using cached coordinate differences
+                reeiSite_op_squared[nf][iy] = dx_op*dx_op + dy*dy + dz*dz;
+                reeiSite_cen_squared[nf][iy] = dx_cen*dx_cen + dy*dy + dz*dz;
+                reeiSite_offcen_squared[nf][iy] = dx_offcen*dx_offcen + dy*dy + dz*dz;
+                reeiSite_offcen_op_squared[nf][iy] = dx_offcen_op*dx_offcen_op + dy*dy + dz*dz;
 
                 // sqrt calculations removed - these variables only used for comparisons
 
-                // Calculate remaining squared distances for optimization
-                reeiSite_up_op_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase_op)*(r(nf,iSiteCurrent,0)-rBase_op) +
-                                                (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                                (r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift));
-
-                reeiSite_cen_up_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase_cen)*(r(nf,iSiteCurrent,0)-(rBase_cen)) +
-                                                 (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                                 (r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift));
-
-                reeiSite_offcen_up_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase_offcen)*(r(nf,iSiteCurrent,0)-(rBase_offcen)) +
-                                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                                    (r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift));
+                // Calculate remaining squared distances using cached coordinate differences
+                reeiSite_up_op_squared[nf][iy] = dx_op*dx_op + dy*dy + dz_up*dz_up;
+                reeiSite_cen_up_squared[nf][iy] = dx_cen*dx_cen + dy*dy + dz_up*dz_up;
+                reeiSite_offcen_up_squared[nf][iy] = dx_offcen*dx_offcen + dy*dy + dz_up*dz_up;
+                reeiSite_offcen_up_op_squared[nf][iy] = dx_offcen_op*dx_offcen_op + dy*dy + dz_up*dz_up;
                 
-                reeiSite_offcen_up_op_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase_offcen_op)*(r(nf,iSiteCurrent,0)-(rBase_offcen_op)) +
-                                                       (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                                       (r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+yshift));
-                
-                reeiSite_halfup_op_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase_op)*(r(nf,iSiteCurrent,0)-rBase_op) +
-                                                    (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                                    (r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift));
-
-                reeiSite_cen_halfup_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase_cen)*(r(nf,iSiteCurrent,0)-(rBase_cen)) +
-                                                     (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                                     (r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift));
-
-                reeiSite_offcen_halfup_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase_offcen)*(r(nf,iSiteCurrent,0)-(rBase_offcen)) +
-                                                        (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                                        (r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift));
-                
-                reeiSite_offcen_halfup_op_squared[nf][iy] = (r(nf,iSiteCurrent,0)-rBase_offcen_op)*(r(nf,iSiteCurrent,0)-(rBase_offcen_op)) +
-                                                           (r(nf,iSiteCurrent,1)-rBase[nf][1])*(r(nf,iSiteCurrent,1)-rBase[nf][1]) +
-                                                           (r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift))*(r(nf,iSiteCurrent,2)-(rBase[nf][2]+halfyshift));
+                reeiSite_halfup_op_squared[nf][iy] = dx_op*dx_op + dy*dy + dz_halfup*dz_halfup;
+                reeiSite_cen_halfup_squared[nf][iy] = dx_cen*dx_cen + dy*dy + dz_halfup*dz_halfup;
+                reeiSite_offcen_halfup_squared[nf][iy] = dx_offcen*dx_offcen + dy*dy + dz_halfup*dz_halfup;
+                reeiSite_offcen_halfup_op_squared[nf][iy] = dx_offcen_op*dx_offcen_op + dy*dy + dz_halfup*dz_halfup;
 
                 // sqrt calculations removed - these variables only used for comparisons
             }
