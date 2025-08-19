@@ -892,8 +892,9 @@ void finalizeSummary(int reallyFinal)
 void dataRecording()
 {
 
-    // end-to-end distance
-    for(nf=0;nf<NFil;nf++)
+    // end-to-end distance (SPEEDRUN: only process filament 0)
+    const int nf_limit = SPEEDRUN ? 1 : NFil;
+    for(nf=0;nf<nf_limit;nf++)
     {
         Ncurrent = N[nf];
         ree[nf]  = sqrt((r(nf,Ncurrent-1,0)-rBase[nf][0])*(r(nf,Ncurrent-1,0)-rBase[nf][0])+
@@ -916,8 +917,8 @@ void dataRecording()
         }
     }
 
-    // distance from base to iSite
-    for(nf=0;nf<NFil;nf++)
+    // distance from base to iSite (SPEEDRUN: only process filament 0)
+    for(nf=0;nf<nf_limit;nf++)
     {
         double yshift= 16.6667;
         double halfyshift= 8.33335;
@@ -1204,7 +1205,7 @@ void dataRecording()
                 rate[1],                    // 6
                 constraintProposalsTotal);  // 7
 
-        for(nf=0;nf<NFil;nf++)
+        for(nf=0;nf<nf_limit;nf++)
         {
 
             fprintf(fList, " %f %f %f %f",
@@ -1318,7 +1319,7 @@ void dataRecording()
         }
 
 
-        for(nf=0;nf<NFil;nf++)
+        for(nf=0;nf<nf_limit;nf++)
         {
             ib=0;
             for(iy=0;iy<iSiteTotal[nf];iy++)
@@ -1433,7 +1434,7 @@ void dataRecording()
             // find how many iSites total are occluded
             iSitesOccluded_counter = 0;
 
-            for(nf=0;nf<NFil;nf++)
+            for(nf=0;nf<nf_limit;nf++)
             {
                 for(iy=0;iy<iSiteTotal[nf];iy++)
                 {
@@ -1444,7 +1445,7 @@ void dataRecording()
             POcclude_NumSites_sum[(int)(iSitesOccluded_counter)] += 1;
         }
 
-        for(nf=0;nf<NFil;nf++)
+        for(nf=0;nf<nf_limit;nf++)
         {
             POccludeBase_sum[nf]  += (long)(stericOcclusionBase[nf]>0);
             //PDeliver_sum[nf][ib] += (long)(boundToBaseDeliver[nf]>0);
@@ -1472,14 +1473,14 @@ void dataRecording()
         }
 
         // update bins for KS test (fabs(rM)+ree will never be larger than 2N, so use 2N to normalize)
-        for(nf=0;nf<NFil;nf++)
+        for(nf=0;nf<nf_limit;nf++)
         {
             convergenceVariableCounts[nf][(long)floor(NBINS*fabs(ree[nf])/(N[nf]))]++;
             // convergenceVariableCounts[nf][(long)floor(NBINS*(fabs(rM[nf])+ree[nf])/(2*N[nf]))]++;
         }
 
         // Distributions for polymer location
-        for(nf=0;nf<NFil;nf++)
+        for(nf=0;nf<nf_limit;nf++)
         {
             for(i=0;i<N[nf];i++)
             {
@@ -1502,7 +1503,7 @@ void dataRecording()
             //             distiSiteToLigand[nf][iy][ib]  = 0;
 
             // calculate distance between each ligand and iSite center
-            for(nf=0;nf<NFil;nf++)
+            for(nf=0;nf<nf_limit;nf++)
                 for(iy=0;iy<iSiteTotal[nf];iy++)
                     for(ib=0;ib<bSiteTotal[nf];ib++)
                         distiSiteToLigand_squared[nf][iy][ib] = ((iLigandCenter[nf][iy][0]-bLigandCenter[nf][ib][0])*
@@ -1513,7 +1514,7 @@ void dataRecording()
                                                              (iLigandCenter[nf][iy][2]-bLigandCenter[nf][ib][2]));
 
             // determine if distance is less than given cutoff AND iSite is not occluded
-            for(nf=0;nf<NFil;nf++)
+            for(nf=0;nf<nf_limit;nf++)
                 for(iy=0;iy<iSiteTotal[nf];iy++)
                     // if iSite is not occluded
                     if(membraneAndSegmentOcclusion[nf][iy] == 0)
