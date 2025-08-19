@@ -1014,7 +1014,13 @@ void rotate(double *tIn, double *e1In, double *e2In, double *tOut, double *e1Out
 	*(e2Out+2) = RGlobal[2][0]*(*(e2In+0)) + RGlobal[2][1]*(*(e2In+1)) + RGlobal[2][2]*(*(e2In+2));
     
 
-    if(1)
+    // GRAM_SCHMIDT_OPTIMIZATION: Selective orthogonalization to reduce computational cost
+    static long global_rotation_count = 0;
+    const int GRAM_SCHMIDT_INTERVAL = 10;
+    global_rotation_count++;
+    
+    if (global_rotation_count % GRAM_SCHMIDT_INTERVAL == 0)
+    // if(0)//(TWISTER < 0.1)
     {
         // Re-normalize and re-orthogonalize unit vectors (using Modified Gram Schmidt algorithm)
         norm = sqrt((*(tOut+0))*(*(tOut+0)) + (*(tOut+1))*(*(tOut+1)) + (*(tOut+2))*(*(tOut+2)));
@@ -1044,6 +1050,29 @@ void rotate(double *tIn, double *e1In, double *e2In, double *tOut, double *e1Out
         *(e2Out+0) = *(e2Out+0)/norm;
         *(e2Out+1) = *(e2Out+1)/norm;
         *(e2Out+2) = *(e2Out+2)/norm;
+    }
+    else
+    {
+        // GRAM_SCHMIDT_OPTIMIZATION: Fast normalization approximation using Taylor expansion
+        // For vectors close to unit length: 1/√(1+ε) ≈ 1.5 - 0.5*(1+ε) = 1 - 0.5*ε
+        
+        double t_len_squared = (*(tOut+0))*(*(tOut+0)) + (*(tOut+1))*(*(tOut+1)) + (*(tOut+2))*(*(tOut+2));
+        double t_correction = 1.5 - 0.5 * t_len_squared;
+        *(tOut+0) *= t_correction;
+        *(tOut+1) *= t_correction;
+        *(tOut+2) *= t_correction;
+        
+        double e1_len_squared = (*(e1Out+0))*(*(e1Out+0)) + (*(e1Out+1))*(*(e1Out+1)) + (*(e1Out+2))*(*(e1Out+2));
+        double e1_correction = 1.5 - 0.5 * e1_len_squared;
+        *(e1Out+0) *= e1_correction;
+        *(e1Out+1) *= e1_correction;
+        *(e1Out+2) *= e1_correction;
+        
+        double e2_len_squared = (*(e2Out+0))*(*(e2Out+0)) + (*(e2Out+1))*(*(e2Out+1)) + (*(e2Out+2))*(*(e2Out+2));
+        double e2_correction = 1.5 - 0.5 * e2_len_squared;
+        *(e2Out+0) *= e2_correction;
+        *(e2Out+1) *= e2_correction;
+        *(e2Out+2) *= e2_correction;
     }
    
     if (0) // print stuff out for debugging
