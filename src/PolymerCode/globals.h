@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <math.h>
 
+#define SPEEDRUN 1
+
 // Constants - single source of truth
 #define TWISTER genrand_real3()
 #define NFILMAX         3
