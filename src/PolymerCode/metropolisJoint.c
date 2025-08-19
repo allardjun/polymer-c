@@ -156,6 +156,11 @@ void metropolisJoint()
     // Timing variables for performance measurement
     clock_t program_start = clock();
     clock_t dataRecording_time = 0;
+    // ROTATE_TIMER_SAMPLING: Sampling-based rotate timer to avoid clock() overhead
+    clock_t rotate_time = 0;
+    long rotate_call_count = 0;
+    long rotate_sampled_count = 0;
+    const int ROTATE_SAMPLE_INTERVAL = 1000;
 
     /********* BEGIN LOOP THROUGH ITERATIONS! *******************/
 	while(!convergedTF && nt < NTMAX) // Time loop!
@@ -281,7 +286,17 @@ void metropolisJoint()
             
             // rotate only the proposed filament
             // do I need to 'set/rotate' proposed base for other filaments??
+            // ROTATE_TIMER_SAMPLING: Sample timing to avoid overhead
+            rotate_call_count++;
+            clock_t rotate_start = 0;
+            if (rotate_call_count % ROTATE_SAMPLE_INTERVAL == 0) {
+                rotate_start = clock();
+                rotate_sampled_count++;
+            }
             rotate(&tBase[nfPropose][0], &e1Base[nfPropose][0], &e2Base[nfPropose][0], &tPropose(nfPropose,0,0), &e1Propose(nfPropose,0,0), &e2Propose(nfPropose,0,0), phiPropose(nfPropose,0), thetaPropose(nfPropose,0), psiPropose(nfPropose,0));
+            if (rotate_call_count % ROTATE_SAMPLE_INTERVAL == 0) {
+                rotate_time += clock() - rotate_start;
+            }
             
             for(ix=0;ix<3;ix++)
                 rPropose(nfPropose,0,ix) = rBase[nfPropose][ix] + tPropose(nfPropose,0,ix);
@@ -298,9 +313,19 @@ void metropolisJoint()
                 iStart=iPropose;
             for(i=iStart;i<N[nfPropose];i++)
             {
+                // ROTATE_TIMER_SAMPLING: Sample timing to avoid overhead
+                rotate_call_count++;
+                rotate_start = 0;
+                if (rotate_call_count % ROTATE_SAMPLE_INTERVAL == 0) {
+                    rotate_start = clock();
+                    rotate_sampled_count++;
+                }
                 rotate(&tPropose(nfPropose,i-1,0), &e1Propose(nfPropose,i-1,0), &e2Propose(nfPropose,i-1,0),
                        &tPropose(nfPropose,i,0), &e1Propose(nfPropose,i,0), &e2Propose(nfPropose,i,0),
                     phiPropose(nfPropose,i), thetaPropose(nfPropose,i), psiPropose(nfPropose,i));
+                if (rotate_call_count % ROTATE_SAMPLE_INTERVAL == 0) {
+                    rotate_time += clock() - rotate_start;
+                }
                 for (ix=0;ix<3;ix++)
                     rPropose(nfPropose,i,ix) = rPropose(nfPropose,i-1,ix) + tPropose(nfPropose,i,ix);
             }
@@ -728,17 +753,15 @@ void metropolisJoint()
                 } // finished loop through iSites
             }
         
-        
             /**********************************************/
             /***********Check Occlusion of Base************/
             /**********************************************/
+
+            // initialization of baseLigandCenter up in initializations of Data Collection section
             
-            {
-                // initialization of baseLigandCenter up in initializations of Data Collection section
-                
-                /*****Test Occlusion of Base*****/
-                //check occlusion with joints
-                for(nf=0;nf<NFil;nf++)
+            /*****Test Occlusion of Base*****/
+            //check occlusion with joints
+            for(nf=0;nf<NFil;nf++)
                 {
                     
                     // test base ligand against all filament segments
@@ -792,7 +815,6 @@ void metropolisJoint()
                     } // finished checking bound ligands occlusion of base
                     
                 }//end checking occlusion of base
-            }
         
         } //end checking occlusion
 
@@ -829,12 +851,25 @@ void metropolisJoint()
     double dataRecording_seconds = (double)dataRecording_time / CLOCKS_PER_SEC;
     double total_seconds = (double)total_time / CLOCKS_PER_SEC;
     
+    // ROTATE_TIMER_SAMPLING: Extrapolate sampled rotate timing to estimate total
+    double rotate_sampled_seconds = (double)rotate_time / CLOCKS_PER_SEC;
+    double rotate_estimated_seconds = 0;
+    double rotate_percent = 0;
+    if (rotate_sampled_count > 0) {
+        rotate_estimated_seconds = rotate_sampled_seconds * ((double)rotate_call_count / (double)rotate_sampled_count);
+        rotate_percent = 100.0 * rotate_estimated_seconds / total_seconds;
+    }
+    
     printf("=== PERFORMANCE TIMING ===\n");
     printf("dataRecording() took %.3f seconds (%.2f%% of total runtime)\n", 
            dataRecording_seconds, dataRecording_percent);
+    printf("rotate() took ~%.3f seconds (%.2f%% of total runtime) [sampled %ld/%ld calls]\n", 
+           rotate_estimated_seconds, rotate_percent, rotate_sampled_count, rotate_call_count);
     printf("Total simulation time: %.3f seconds\n", total_seconds);
     printf("Average dataRecording() time per iteration: %.6f seconds\n", 
            dataRecording_seconds / nt);
+    printf("Average rotate() time per call: %.9f seconds\n", 
+           rotate_estimated_seconds / rotate_call_count);
 
 }
 
@@ -979,34 +1014,37 @@ void rotate(double *tIn, double *e1In, double *e2In, double *tOut, double *e1Out
 	*(e2Out+2) = RGlobal[2][0]*(*(e2In+0)) + RGlobal[2][1]*(*(e2In+1)) + RGlobal[2][2]*(*(e2In+2));
     
 
-    // Re-normalize and re-orthogonalize unit vectors (using Modified Gram Schmidt algorithm)
-    norm = sqrt((*(tOut+0))*(*(tOut+0)) + (*(tOut+1))*(*(tOut+1)) + (*(tOut+2))*(*(tOut+2)));
-    *(tOut+0) = *(tOut+0)/norm;
-    *(tOut+1) = *(tOut+1)/norm;
-    *(tOut+2) = *(tOut+2)/norm;
+    if(1)
+    {
+        // Re-normalize and re-orthogonalize unit vectors (using Modified Gram Schmidt algorithm)
+        norm = sqrt((*(tOut+0))*(*(tOut+0)) + (*(tOut+1))*(*(tOut+1)) + (*(tOut+2))*(*(tOut+2)));
+        *(tOut+0) = *(tOut+0)/norm;
+        *(tOut+1) = *(tOut+1)/norm;
+        *(tOut+2) = *(tOut+2)/norm;
+            
+        e1_dot_t = (*(tOut+0))*(*(e1Out+0))+(*(tOut+1))*(*(e1Out+1))+(*(tOut+2))*(*(e1Out+2));
         
-    e1_dot_t = (*(tOut+0))*(*(e1Out+0))+(*(tOut+1))*(*(e1Out+1))+(*(tOut+2))*(*(e1Out+2));
-    
-    *(e1Out+0) = *(e1Out+0) - e1_dot_t*(*(tOut+0));
-    *(e1Out+1) = *(e1Out+1) - e1_dot_t*(*(tOut+1));
-    *(e1Out+2) = *(e1Out+2) - e1_dot_t*(*(tOut+2));
-    
-    norm = sqrt((*(e1Out+0))*(*(e1Out+0)) + (*(e1Out+1))*(*(e1Out+1)) + (*(e1Out+2))*(*(e1Out+2)));
-    *(e1Out+0) = *(e1Out+0)/norm;
-    *(e1Out+1) = *(e1Out+1)/norm;
-    *(e1Out+2) = *(e1Out+2)/norm;
+        *(e1Out+0) = *(e1Out+0) - e1_dot_t*(*(tOut+0));
+        *(e1Out+1) = *(e1Out+1) - e1_dot_t*(*(tOut+1));
+        *(e1Out+2) = *(e1Out+2) - e1_dot_t*(*(tOut+2));
+        
+        norm = sqrt((*(e1Out+0))*(*(e1Out+0)) + (*(e1Out+1))*(*(e1Out+1)) + (*(e1Out+2))*(*(e1Out+2)));
+        *(e1Out+0) = *(e1Out+0)/norm;
+        *(e1Out+1) = *(e1Out+1)/norm;
+        *(e1Out+2) = *(e1Out+2)/norm;
 
-    e2_dot_t  = (*(tOut+0))*(*(e2Out+0))+(*(tOut+1))*(*(e2Out+1))+(*(tOut+2))*(*(e2Out+2));
-    e2_dot_e1 =(*(e1Out+0))*(*(e2Out+0))+(*(e1Out+1))*(*(e2Out+1))+(*(e1Out+2))*(*(e2Out+2));
-    
-    *(e2Out+0) = *(e2Out+0) - e2_dot_t*(*(tOut+0)) - e2_dot_e1*(*(e1Out+0));
-    *(e2Out+1) = *(e2Out+1) - e2_dot_t*(*(tOut+1)) - e2_dot_e1*(*(e1Out+1));
-    *(e2Out+2) = *(e2Out+2) - e2_dot_t*(*(tOut+2)) - e2_dot_e1*(*(e1Out+2));
-    
-    norm = sqrt((*(e2Out+0))*(*(e2Out+0)) + (*(e2Out+1))*(*(e2Out+1)) + (*(e2Out+2))*(*(e2Out+2)));
-    *(e2Out+0) = *(e2Out+0)/norm;
-    *(e2Out+1) = *(e2Out+1)/norm;
-    *(e2Out+2) = *(e2Out+2)/norm;
+        e2_dot_t  = (*(tOut+0))*(*(e2Out+0))+(*(tOut+1))*(*(e2Out+1))+(*(tOut+2))*(*(e2Out+2));
+        e2_dot_e1 =(*(e1Out+0))*(*(e2Out+0))+(*(e1Out+1))*(*(e2Out+1))+(*(e1Out+2))*(*(e2Out+2));
+        
+        *(e2Out+0) = *(e2Out+0) - e2_dot_t*(*(tOut+0)) - e2_dot_e1*(*(e1Out+0));
+        *(e2Out+1) = *(e2Out+1) - e2_dot_t*(*(tOut+1)) - e2_dot_e1*(*(e1Out+1));
+        *(e2Out+2) = *(e2Out+2) - e2_dot_t*(*(tOut+2)) - e2_dot_e1*(*(e1Out+2));
+        
+        norm = sqrt((*(e2Out+0))*(*(e2Out+0)) + (*(e2Out+1))*(*(e2Out+1)) + (*(e2Out+2))*(*(e2Out+2)));
+        *(e2Out+0) = *(e2Out+0)/norm;
+        *(e2Out+1) = *(e2Out+1)/norm;
+        *(e2Out+2) = *(e2Out+2)/norm;
+    }
    
     if (0) // print stuff out for debugging
     {

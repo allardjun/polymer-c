@@ -165,7 +165,7 @@ function plot_per_site_variable(data::SimulationData, variable_name::String, out
     
     # Save the plot
     save(output_file, fig)
-    println("Plot saved to: $output_file")
+    # println("Plot saved to: $output_file")
     
     return fig
 end
@@ -263,16 +263,16 @@ function analyze_single_run(input_file::String, output_prefix::String = "")
         # Display per-site variable summary
         site_vars = PolymerAnalysis.get_site_dependent_variables(data)
         println("\nSite-dependent variables found: $(length(site_vars))")
-        for var in sort(site_vars)
-            println("  - $var")
-        end
+        # for var in sort(site_vars)
+        #     println("  - $var")
+        # end
         
         # Display file summary
-        println("\nGenerated files:")
-        println("  - $(basename(legacy_output_plot)) (legacy POcclude_NumSites plot)")
-        for plot_file in created_plots
-            println("  - $(basename(plot_file))")
-        end
+        # println("\nGenerated files:")
+        # println("  - $(basename(legacy_output_plot)) (legacy POcclude_NumSites plot)")
+        # for plot_file in created_plots
+        #     println("  - $(basename(plot_file))")
+        # end
         
         return fig
         
