@@ -63,6 +63,9 @@ extern double norm;
 extern double iLigandCenter[NFILMAX][NMAX][3];
 
 extern double RGlobal[3][3], RLocal[3][3];
+// RLOCAL_CACHE_OPTIMIZATION: Static RLocal cache to avoid recomputation for unchanged segments
+extern double RLocalCache[NFILMAX][NMAX][3][3];
+extern int RLocalCacheInitialized;
 extern double e1_dot_t, e2_dot_t, e2_dot_e1;
 
 extern long st;

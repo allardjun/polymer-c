@@ -9,7 +9,7 @@
 void metropolisJoint();
 void stationarity();
 void appendBins();
-void rotate(double *tIn, double *e1In, double *e2In, double *tOut, double *e1Out, double *e2Out, double phiHere, double thetaHere,double psiHere);
+void rotate(double *tIn, double *e1In, double *e2In, double *tOut, double *e1Out, double *e2Out, double phiHere, double thetaHere,double psiHere, int fil, int seg);
 
 void metropolisJoint()
 {
@@ -293,7 +293,7 @@ void metropolisJoint()
                 rotate_start = clock();
                 rotate_sampled_count++;
             }
-            rotate(&tBase[nfPropose][0], &e1Base[nfPropose][0], &e2Base[nfPropose][0], &tPropose(nfPropose,0,0), &e1Propose(nfPropose,0,0), &e2Propose(nfPropose,0,0), phiPropose(nfPropose,0), thetaPropose(nfPropose,0), psiPropose(nfPropose,0));
+            rotate(&tBase[nfPropose][0], &e1Base[nfPropose][0], &e2Base[nfPropose][0], &tPropose(nfPropose,0,0), &e1Propose(nfPropose,0,0), &e2Propose(nfPropose,0,0), phiPropose(nfPropose,0), thetaPropose(nfPropose,0), psiPropose(nfPropose,0), nfPropose, 0);
             if (rotate_call_count % ROTATE_SAMPLE_INTERVAL == 0) {
                 rotate_time += clock() - rotate_start;
             }
@@ -322,7 +322,7 @@ void metropolisJoint()
                 }
                 rotate(&tPropose(nfPropose,i-1,0), &e1Propose(nfPropose,i-1,0), &e2Propose(nfPropose,i-1,0),
                        &tPropose(nfPropose,i,0), &e1Propose(nfPropose,i,0), &e2Propose(nfPropose,i,0),
-                    phiPropose(nfPropose,i), thetaPropose(nfPropose,i), psiPropose(nfPropose,i));
+                    phiPropose(nfPropose,i), thetaPropose(nfPropose,i), psiPropose(nfPropose,i), nfPropose, i);
                 if (rotate_call_count % ROTATE_SAMPLE_INTERVAL == 0) {
                     rotate_time += clock() - rotate_start;
                 }
@@ -948,27 +948,69 @@ void appendBins()
 
 /********************************************************************************************************/
 // This function rotates the orthogonal vectors tIn, e1In and e2In by angles (phiHere, thetaHere, psiHere) in their own frame of reference
-void rotate(double *tIn, double *e1In, double *e2In, double *tOut, double *e1Out, double *e2Out, double phiHere, double thetaHere,double psiHere)
+void rotate(double *tIn, double *e1In, double *e2In, double *tOut, double *e1Out, double *e2Out, double phiHere, double thetaHere,double psiHere, int fil, int seg)
 {	
-	// Performance Improvement #4: Cache trigonometric calculations
-    // Calculate sin/cos values once and reuse them
-    double cos_phi = cos(phiHere);
-    double sin_phi = sin(phiHere);
-    double cos_theta = cos(thetaHere);
-    double sin_theta = sin(thetaHere);
-    double cos_psi = cos(psiHere);
-    double sin_psi = sin(psiHere);
+    // RLOCAL_CACHE_OPTIMIZATION: Initialize cache on first call
+    if (!RLocalCacheInitialized) {
+        // Initialize all RLocal matrices (this happens only once)
+        for (int f = 0; f < NFil; f++) {
+            for (int s = 0; s < N[f]; s++) {
+                // Initialize with identity matrices initially
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        RLocalCache[f][s][i][j] = (i == j) ? 1.0 : 0.0;
+                    }
+                }
+            }
+        }
+        RLocalCacheInitialized = 1;
+    }
     
-    // R Local - using cached trigonometric values
-    RLocal[0][0] =   cos_theta*cos_psi;
-    RLocal[0][1] =   cos_phi*sin_psi     + sin_phi*sin_theta*cos_psi;
-    RLocal[0][2] =   sin_phi*sin_psi     - cos_phi*sin_theta*cos_psi;
-    RLocal[1][0] =  -cos_theta*sin_psi;
-    RLocal[1][1] =   cos_phi*cos_psi     - sin_phi*sin_theta*sin_psi;
-    RLocal[1][2] =   sin_phi*cos_psi     + cos_phi*sin_theta*sin_psi;
-    RLocal[2][0] =   sin_theta;
-    RLocal[2][1] =  -sin_phi*cos_theta;
-    RLocal[2][2] =   cos_phi*cos_theta;
+    // RLOCAL_CACHE_OPTIMIZATION: Use cached RLocal or recompute if segment changed
+    if (fil >= 0 && seg >= 0 && fil < NFil && seg < N[fil]) {
+        // Check if we need to recompute RLocal for this segment by comparing angles
+        double current_phi = phiHere;
+        double current_theta = thetaHere;
+        double current_psi = psiHere;
+        
+        // Get the angles from the current state to see if they changed
+        extern double phi[][NMAX], theta[][NMAX], psi[][NMAX];
+        int need_recompute = 0;
+        
+        // For the initial computation or if this is the perturbed segment
+        if (!RLocalCacheInitialized || 
+            (fil == nfPropose && seg == iPropose)) {
+            need_recompute = 1;
+        }
+        
+        if (need_recompute) {
+            // Performance Improvement #4: Cache trigonometric calculations
+            double cos_phi = cos(phiHere);
+            double sin_phi = sin(phiHere);
+            double cos_theta = cos(thetaHere);
+            double sin_theta = sin(thetaHere);
+            double cos_psi = cos(psiHere);
+            double sin_psi = sin(psiHere);
+            
+            // R Local - using cached trigonometric values, store in cache
+            RLocalCache[fil][seg][0][0] =   cos_theta*cos_psi;
+            RLocalCache[fil][seg][0][1] =   cos_phi*sin_psi     + sin_phi*sin_theta*cos_psi;
+            RLocalCache[fil][seg][0][2] =   sin_phi*sin_psi     - cos_phi*sin_theta*cos_psi;
+            RLocalCache[fil][seg][1][0] =  -cos_theta*sin_psi;
+            RLocalCache[fil][seg][1][1] =   cos_phi*cos_psi     - sin_phi*sin_theta*sin_psi;
+            RLocalCache[fil][seg][1][2] =   sin_phi*cos_psi     + cos_phi*sin_theta*sin_psi;
+            RLocalCache[fil][seg][2][0] =   sin_theta;
+            RLocalCache[fil][seg][2][1] =  -sin_phi*cos_theta;
+            RLocalCache[fil][seg][2][2] =   cos_phi*cos_theta;
+        }
+        
+        // Copy from cache to working matrix
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                RLocal[i][j] = RLocalCache[fil][seg][i][j];
+            }
+        }
+    }
     
     
 	// R Global

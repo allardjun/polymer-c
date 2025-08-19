@@ -1475,7 +1475,7 @@ void dataRecording()
         // update bins for KS test (fabs(rM)+ree will never be larger than 2N, so use 2N to normalize)
         for (nf = 0; nf < nf_limit; nf++)
         {
-            convergenceVariableCounts[nf][(long)floor(NBINS * fabs(ree[nf]) / (N[nf]))]++;
+            convergenceVariableCounts[nf][(long)floor(NBINS * fabs(ree[nf]) / (1.5*N[nf]))]++;
             // convergenceVariableCounts[nf][(long)floor(NBINS*(fabs(rM[nf])+ree[nf])/(2*N[nf]))]++;
         }
 
