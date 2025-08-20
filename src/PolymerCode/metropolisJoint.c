@@ -9,7 +9,7 @@
 void metropolisJoint();
 void stationarity();
 void appendBins();
-void rotate(double *tIn, double *e1In, double *e2In, double *tOut, double *e1Out, double *e2Out, double phiHere, double thetaHere,double psiHere, int fil, int seg);
+void rotate(double * restrict tIn, double * restrict e1In, double * restrict e2In, double * restrict tOut, double * restrict e1Out, double * restrict e2Out, double phiHere, double thetaHere,double psiHere, int fil, int seg);
 
 void metropolisJoint()
 {
@@ -948,7 +948,7 @@ void appendBins()
 
 /********************************************************************************************************/
 // This function rotates the orthogonal vectors tIn, e1In and e2In by angles (phiHere, thetaHere, psiHere) in their own frame of reference
-void rotate(double *tIn, double *e1In, double *e2In, double *tOut, double *e1Out, double *e2Out, double phiHere, double thetaHere,double psiHere, int fil, int seg)
+void rotate(double * restrict tIn, double * restrict e1In, double * restrict e2In, double * restrict tOut, double * restrict e1Out, double * restrict e2Out, double phiHere, double thetaHere,double psiHere, int fil, int seg)
 {	
     // RLOCAL_CACHE_OPTIMIZATION: Initialize cache on first call
     if (!RLocalCacheInitialized) {

@@ -16,6 +16,12 @@ quick-test:
 
 test: quick-test
 
+# Optimized build target with aggressive compiler flags for maximum performance
+test-optimized:
+	gcc -O3 -march=native -fassociative-math -freciprocal-math -ffinite-math-only -fno-signed-zeros -ffp-contract=fast -fexcess-precision=fast -fno-math-errno -fno-trapping-math -funroll-loops -fomit-frame-pointer driveMetropolis.c polymer_data_structures.c -o metropolis.out -lm
+	
+	../../scripts/test/quick_test.sh
+
 run:
 	gcc -O3 driveMetropolis.c polymer_data_structures.c -o metropolis.out -lm
 
