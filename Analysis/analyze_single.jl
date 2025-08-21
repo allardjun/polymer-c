@@ -38,7 +38,7 @@ function parse_simulation_output(filename::String)
     data = PolymerAnalysis.parse_simulation_output(filename)
     
     # Extract domain-specific legacy format for POcclude_NumSites
-    positions, probabilities = extract_legacy_format(data, "POcclude_NumSites", filename)
+    positions, probabilities = PolymerAnalysis.extract_legacy_format(data, "POcclude_NumSites", filename)
     
     return positions, probabilities, data
 end
@@ -47,7 +47,7 @@ end
 # DOMAIN-SPECIFIC PARAMETER MAPPING
 # ============================================================================
 
-function extract_simulation_parameters(data::SimulationData)
+function extract_simulation_parameters(data::PolymerAnalysis.SimulationData)
     """Extract simulation parameters from parsed data (legacy compatibility)."""
     
     params = Dict{String, Any}()
@@ -113,7 +113,7 @@ function plot_occlusion_probability(positions, probabilities, params, output_fil
     return fig
 end
 
-function plot_per_site_variable(data::SimulationData, variable_name::String, output_file::String; 
+function plot_per_site_variable(data::PolymerAnalysis.SimulationData, variable_name::String, output_file::String; 
                                 ylabel::String="", title::String="", 
                                 show_scatter::Bool=true, colors=[:blue, :red, :green, :orange, :purple])
     """Create a plot of any per-site variable with multiple filaments."""
@@ -172,7 +172,7 @@ end
 
 # Domain-specific plot configuration
 
-function create_comprehensive_plots(data::SimulationData, output_prefix::String)
+function create_comprehensive_plots(data::PolymerAnalysis.SimulationData, output_prefix::String)
     """Create plots for all important site-dependent variables using prefix-based naming."""
     
     # Key variables to plot with their display info
@@ -321,8 +321,11 @@ elseif isinteractive()
     # inputfile  = "data/default_input.txt"
     # outputprefix = "results/default_analysis"
 
-    inputfile = "../local_experiments/250817/quick_test_output.txt"
-    outputprefix = "../local_experiments/250817/analysis"
+    # inputfile = "../local_experiments/250817/quick_test_output.txt"
+    # outputprefix = "../local_experiments/250817/analysis"
+
+    inputfile = "../local_experiments/from_katie/output_dimer.N274.iSite-1.BSD35.5.force0.kdimer10.txt"
+    outputprefix = "../local_experiments/from_katie/analysis"
 
     main(inputfile, outputprefix)
 else
