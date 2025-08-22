@@ -9,9 +9,7 @@
 #SBATCH --error=run.dimer.N%a_2025.01.07_17.16.50/error_%A_%a.txt ## error log file; %A is job id, %a is array task id. 
 #SBATCH --output=run.dimer.N%a_2025.01.07_17.16.50/out_%A_%a.txt  ## output filename. 
 #SBATCH --time=14-00:00:00          ## time limit for each array task
-#SBATCH --mail-type=all,time_limit,TIME_LIMIT_50,TIME_LIMIT_90,ARRAY_TASKS
-#SBATCH --mail-user=kbogue1@uci.edu
-#SBATCH --array=1-600           ## number of array tasks. 
+#SBATCH --array=274          ## number of array tasks. 
 
 # echo job info on log:
 echo "Job $A $a started on:   " `hostname -s`
