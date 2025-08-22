@@ -75,7 +75,7 @@ else
 fi
 
 # Clean up copied files (similar to original SLURM script)
-rm "$EXECUTABLE" "$PARAMS_FILE" ISEED
+#rm "$EXECUTABLE" "$PARAMS_FILE" ISEED
 
 echo "Job $SLURM_JOB_ID $SLURM_ARRAY_TASK_ID ended on: " `hostname -s`
 echo "Job $SLURM_JOB_ID $SLURM_ARRAY_TASK_ID ended on: " `date`

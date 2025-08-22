@@ -29,4 +29,4 @@ Zrepulsion		0
 PhosElectroRange 	0
 localConcCutoff		1
 iSiteTemp		1
-NTMAX			11000000
+NTMAX			6000000

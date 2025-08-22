@@ -1,0 +1,11 @@
+Job 42059917 274 started on:  hpc3-22-05
+Job 42059917 274 started on:  Fri Aug 22 08:49:22 AM PDT 2025
+/data/homezvol3/jallard/git/pub/polymer-c/local_experiments/250822/job_274
+Running simulation with parameters:
+  Parameters file: config/parameters/testing.txt
+  Output file: polymer_output_274.txt
+  N_filaments: 2
+  Filament length: 274
+  ISite location: 3
+  Array task ID: 274
+Executing: ./metropolis.out config/parameters/testing.txt polymer_output_274.txt 0 2 274 3 -1 -1 -1
