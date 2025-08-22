@@ -85,14 +85,12 @@ done
 
 echo "Files copied to job directories"
 
-# Change to the base output directory to submit jobs
-cd "$BASE_OUTPUT_DIR"
-
 # Submit the SLURM job array
 echo "Submitting SLURM job array..."
-# Use the first task ID to locate the SLURM script
+# Use the first task ID to locate and submit the SLURM script
 FIRST_TASK_ID=$(echo $TASK_IDS | awk '{print $1}')
-JOB_ID=$(sbatch --chdir="job_\$SLURM_ARRAY_TASK_ID" "job_${FIRST_TASK_ID}/$SLURM_SCRIPT" | grep -o '[0-9]*')
+cd "$BASE_OUTPUT_DIR/job_${FIRST_TASK_ID}"
+JOB_ID=$(sbatch "$SLURM_SCRIPT" | grep -o '[0-9]*')
 
 if [ -n "$JOB_ID" ]; then
     echo "SLURM job array submitted successfully!"
