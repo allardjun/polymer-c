@@ -3,7 +3,7 @@ NFil			2
 N			100
 filamentInputMethod	0
 baseSepDistance		1
-irLigand		2.25
+irLigand		8.33333
 brLigand		40
 kBound			1000
 baserLigand		4
@@ -16,10 +16,10 @@ StiffenRange		0
 stiffCase		0
 occupiedSites		0_0_0_0_0_0
 occupiedSitesNoSpace 	000000
-filamentFilename	../../config/sites/filaments.txt
-iSiteFilename		../../config/sites/iSites.txt
-bSiteFilename		../../config/sites/bSites.txt
-basicSiteFilename	../../config/sites/basicSites.txt
+filamentFilename	NONE
+iSiteFilename		NONE
+bSiteFilename		NONE
+basicSiteFilename	NONE
 bSiteInputMethod	3
 parabolaDepth		0
 parabolaWidth		0

@@ -13,8 +13,24 @@ void getBasicSites()
 {
     /********* INITIALIZE BASIC SITES *******************/
     
+    // Check if filename indicates no file should be loaded
+    if (strcmp(basicSiteFilename, "NONE") == 0 || strcmp(basicSiteFilename, "") == 0) {
+        printf("BasicSite filename set to NONE - skipping file load, no basic sites will be set\n");
+        for(nf=0;nf<NFil;nf++) {
+            basicSiteTotal[nf] = 0;
+        }
+        return;
+    }
 
     basicSiteList = fopen(basicSiteFilename, "r");
+    if (basicSiteList == NULL) {
+        printf("Warning: Could not open basicSite file %s - no basic sites will be set\n", basicSiteFilename);
+        for(nf=0;nf<NFil;nf++) {
+            basicSiteTotal[nf] = 0;
+        }
+        return;
+    }
+    
     char line[200];
     nf=0;
     

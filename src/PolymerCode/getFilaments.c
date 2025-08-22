@@ -28,7 +28,18 @@ void getFilaments()
             
         case 1: //filaments from file
             
+            // Check if filename indicates no file should be loaded
+            if (strcmp(filamentFilename, "NONE") == 0 || strcmp(filamentFilename, "") == 0) {
+                printf("Filament filename set to NONE - skipping file load\n");
+                break;
+            }
+            
             filList = fopen(filamentFilename, "r");
+            if (filList == NULL) {
+                printf("Warning: Could not open filament file %s - using default values\n", filamentFilename);
+                break;
+            }
+            
             char line[200];
             nf=0;
             

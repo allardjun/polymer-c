@@ -58,7 +58,24 @@ void getSites()
             // use -1 on a line to denote no iSites for that filament
             // a blank line will also denote no iSites, but doesn't work if final filament is one without iSites
             
+            // Check if filename indicates no file should be loaded
+            if (strcmp(iSiteFilename, "NONE") == 0 || strcmp(iSiteFilename, "") == 0) {
+                printf("iSite filename set to NONE - skipping file load, no iSites will be set\n");
+                for(nf=0;nf<NFil;nf++) {
+                    iSiteTotal[nf] = 0;
+                }
+                break;
+            }
+            
             iSiteList = fopen(iSiteFilename, "r");
+            if (iSiteList == NULL) {
+                printf("Warning: Could not open iSite file %s - no iSites will be set\n", iSiteFilename);
+                for(nf=0;nf<NFil;nf++) {
+                    iSiteTotal[nf] = 0;
+                }
+                break;
+            }
+            
             char line[200];
             nf=0;
             
@@ -247,7 +264,24 @@ void getSites()
                 // use -1 on a line to denote no bSites for that filament
                 // a blank line will also denote no bSites, but doesn't work if final filament is one without bSites
                 
+                // Check if filename indicates no file should be loaded
+                if (strcmp(bSiteFilename, "NONE") == 0 || strcmp(bSiteFilename, "") == 0) {
+                    printf("bSite filename set to NONE - skipping file load, no bSites will be set\n");
+                    for(nf=0;nf<NFil;nf++) {
+                        bSiteTotal[nf] = 0;
+                    }
+                    break;
+                }
+                
                 bSiteList = fopen(bSiteFilename, "r");
+                if (bSiteList == NULL) {
+                    printf("Warning: Could not open bSite file %s - no bSites will be set\n", bSiteFilename);
+                    for(nf=0;nf<NFil;nf++) {
+                        bSiteTotal[nf] = 0;
+                    }
+                    break;
+                }
+                
                 char line[200];
                 nf=0;
                 
