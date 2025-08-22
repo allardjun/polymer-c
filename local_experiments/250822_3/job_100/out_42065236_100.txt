@@ -1,0 +1,19 @@
+Job 42065236 100 started on:  hpc3-22-05
+Job 42065236 100 started on:  Fri Aug 22 02:27:11 PM PDT 2025
+/data/homezvol3/jallard/git/pub/polymer-c/local_experiments/250822_3/job_100
+Running simulation with parameters:
+  Parameters file: config/parameters/testing.txt
+  Output file: polymer_output_100.txt
+  N_filaments: 2
+  Filament length: 100
+  ISite location: 3
+  Array task ID: 100
+Executing: ./metropolis.out config/parameters/testing.txt polymer_output_100.txt 0 2 100 3 -1 -1 -1
+Simulation completed successfully!
+Output file generated: polymer_output_100.txt
+Log file generated: polymer_log_100.txt
+Output file size: 47032 lines
+Simulation completed in 429 seconds
+Job 42065236 100 ended on:  hpc3-22-05
+Job 42065236 100 ended on:  Fri Aug 22 02:34:20 PM PDT 2025
+ 
