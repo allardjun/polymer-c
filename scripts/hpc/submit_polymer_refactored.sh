@@ -41,12 +41,27 @@ if [ ! -f "$CONFIG_DIR/parameters/testing.txt" ]; then
     exit 1
 fi
 
-# Get array size from SLURM script
-ARRAY_SIZE=$(grep "#SBATCH --array=" "$SLURM_SCRIPT" | sed 's/.*--array=1-\([0-9]*\).*/\1/')
-echo "Setting up $ARRAY_SIZE job directories..."
+# Parse array specification from SLURM script
+ARRAY_SPEC=$(grep "#SBATCH --array=" "$SLURM_SCRIPT" | sed 's/.*--array=\([0-9,-]*\).*/\1/')
+
+# Determine array task IDs
+if [[ "$ARRAY_SPEC" =~ ^[0-9]+-[0-9]+$ ]]; then
+    # Range format like "1-100"
+    START=$(echo "$ARRAY_SPEC" | cut -d'-' -f1)
+    END=$(echo "$ARRAY_SPEC" | cut -d'-' -f2)
+    TASK_IDS=$(seq $START $END)
+elif [[ "$ARRAY_SPEC" =~ ^[0-9]+$ ]]; then
+    # Single number like "274"
+    TASK_IDS="$ARRAY_SPEC"
+else
+    # Comma-separated or other format like "1,5,274"
+    TASK_IDS=$(echo "$ARRAY_SPEC" | tr ',' ' ')
+fi
+
+echo "Setting up job directories for task IDs: $TASK_IDS"
 
 # Create individual job directories and copy files
-for i in $(seq 1 $ARRAY_SIZE); do
+for i in $TASK_IDS; do
     JOB_DIR="$BASE_OUTPUT_DIR/job_${i}"
     mkdir -p "$JOB_DIR"
     
@@ -62,7 +77,7 @@ for i in $(seq 1 $ARRAY_SIZE); do
     cp "$SLURM_SCRIPT" "$JOB_DIR/"
 done
 
-echo "Files copied to $ARRAY_SIZE job directories"
+echo "Files copied to job directories"
 
 # Change to the base output directory to submit jobs
 cd "$BASE_OUTPUT_DIR"
@@ -74,7 +89,7 @@ JOB_ID=$(sbatch --chdir="job_\$SLURM_ARRAY_TASK_ID" "$SLURM_SCRIPT" | grep -o '[
 if [ -n "$JOB_ID" ]; then
     echo "SLURM job array submitted successfully!"
     echo "Job ID: $JOB_ID"
-    echo "Job directories: $BASE_OUTPUT_DIR/job_1 to $BASE_OUTPUT_DIR/job_$ARRAY_SIZE"
+    echo "Job directories created for task IDs: $TASK_IDS"
     echo "Monitor with: squeue -j $JOB_ID"
     echo "Cancel with: scancel $JOB_ID"
 else
