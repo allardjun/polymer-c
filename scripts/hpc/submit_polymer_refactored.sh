@@ -42,7 +42,10 @@ if [ ! -f "$CONFIG_DIR/parameters/testing.txt" ]; then
 fi
 
 # Parse array specification from SLURM script
-ARRAY_SPEC=$(grep "#SBATCH --array=" "$SLURM_SCRIPT" | sed 's/.*--array=\([0-9,-]*\).*/\1/')
+ARRAY_SPEC=$(grep "#SBATCH --array=" "$SLURM_SCRIPT" | sed 's/.*--array=\([0-9,-]*\).*/\1/' | tr -d ' ')
+
+# Debug: show what we parsed
+echo "Parsed array spec: '$ARRAY_SPEC'"
 
 # Determine array task IDs
 if [[ "$ARRAY_SPEC" =~ ^[0-9]+-[0-9]+$ ]]; then
@@ -57,6 +60,9 @@ else
     # Comma-separated or other format like "1,5,274"
     TASK_IDS=$(echo "$ARRAY_SPEC" | tr ',' ' ')
 fi
+
+# Filter out empty task IDs
+TASK_IDS=$(echo $TASK_IDS | tr ' ' '\n' | grep -v '^$' | tr '\n' ' ')
 
 echo "Setting up job directories for task IDs: $TASK_IDS"
 
@@ -84,7 +90,9 @@ cd "$BASE_OUTPUT_DIR"
 
 # Submit the SLURM job array
 echo "Submitting SLURM job array..."
-JOB_ID=$(sbatch --chdir="job_\$SLURM_ARRAY_TASK_ID" "$SLURM_SCRIPT" | grep -o '[0-9]*')
+# Use the first task ID to locate the SLURM script
+FIRST_TASK_ID=$(echo $TASK_IDS | awk '{print $1}')
+JOB_ID=$(sbatch --chdir="job_\$SLURM_ARRAY_TASK_ID" "job_${FIRST_TASK_ID}/$SLURM_SCRIPT" | grep -o '[0-9]*')
 
 if [ -n "$JOB_ID" ]; then
     echo "SLURM job array submitted successfully!"
