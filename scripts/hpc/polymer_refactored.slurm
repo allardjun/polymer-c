@@ -1,14 +1,13 @@
 #!/bin/bash
 
 #SBATCH --job-name=polymer_refactored      ## Name of the job.
-#SBATCH -A jallard_lab     ## account to charge
-#SBATCH -p standard          ## partition/queue name
+#SBATCH -p free          ## partition/queue name
 #SBATCH --nodes=1            ## (-N) number of nodes to use
 #SBATCH --ntasks=1           ## (-n) number of tasks to launch
 #SBATCH --cpus-per-task=1    ## number of cores the job needs
 #SBATCH --error=error_%A_%a.txt ## error log file; %A is job id, %a is array task id. 
 #SBATCH --output=out_%A_%a.txt  ## output filename. 
-#SBATCH --time=14-00:00:00          ## time limit for each array task
+#SBATCH --time=01:00:00          ## time limit for each array task
 #SBATCH --array=274          ## number of array tasks. 
 
 # Echo job info on log
@@ -17,7 +16,7 @@ echo "Job $SLURM_JOB_ID $SLURM_ARRAY_TASK_ID started on: " `date`
 pwd
 
 # Configuration (similar to quick_test.sh but adapted for SLURM)
-CONFIG_DIR="../../config"
+CONFIG_DIR="config"
 EXECUTABLE="metropolis.out"
 PARAMS_FILE="$CONFIG_DIR/parameters/testing.txt"
 OUTPUT_FILE="polymer_output_${SLURM_ARRAY_TASK_ID}.txt"
@@ -26,7 +25,7 @@ LOG_FILE="polymer_log_${SLURM_ARRAY_TASK_ID}.txt"
 # Test parameters (using testing config)
 VERBOSE=0
 N_FILAMENTS=2
-FILAMENT_LENGTH=100
+FILAMENT_LENGTH=${SLURM_ARRAY_TASK_ID}
 ISITE_LOCATION=3
 BASE_SEPARATION=-1
 FORCE=-1

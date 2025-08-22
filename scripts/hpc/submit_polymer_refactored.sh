@@ -78,7 +78,8 @@ for i in $TASK_IDS; do
     # Create a local copy of the parameters file
     mkdir -p "$JOB_DIR/config/parameters"
     cp "$CONFIG_DIR/parameters/testing.txt" "$JOB_DIR/config/parameters/"
-    
+    ls "$JOB_DIR/config/parameters/"
+
     # Copy the SLURM script to the job directory
     cp "$SLURM_SCRIPT" "$JOB_DIR/"
 done
