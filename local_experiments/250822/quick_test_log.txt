@@ -1,0 +1,273 @@
+This is the parameter filename: ../../config/parameters/testing.txt
+This is output file name: outputTest
+This is number of filaments: 2
+This is number of rods in each filament: 100
+This is filament Input Method: 0
+This is the filament base separation distance: 1.000000
+This is ligand radius: 8.333330
+This is bound ligand radius: 40.000000
+This is bound ligand spring constant: 1000.000000
+This is base bound ligand radius: 4.000000
+This is force: 0.000000
+This is dimerization spring constant: 0.000000
+This is dimerization rest distance: 14.000000
+This is verbose: 0
+This is iSite Input Method: 4
+This is stiffening range: 0.000000
+This is stiffness case: 0
+This is occupied Sites: 0_0_0_0_0_0
+This is occupied Sites: 000000
+This is filament filename: NONE
+This is iSite filename: NONE
+This is bSite filename: NONE
+This is basicSite filename: NONE
+This is bSite input method: 3
+This is parabolaDepth: 0.000000
+This is parabolaCenter: 0.000000
+This is wall parabola K: 0.000000
+This is Erepulsion: 0.000000
+This is Zrepulsion: 0.000000
+This is PhosElectroRange: 0
+This is localConcCutoff: 1.000000
+This is iSiteTemp: 1
+This is NTMAX: 6000000
+This is the output filename: quick_test_output.txt
+This is the liveoutput filename: quick_test_output.txt
+This will print verbose: 0
+This is the number of filaments: 2
+This is the filament length: 100
+This is the location of the iSite: 3
+This is the base separation distance: 1.000000
+This is the force: 0.000000
+This is the dimerization force: 0.000000
+This is the radius type: 10
+This is number of rods in filament 0: 100
+This is number of rods in filament 1: 100
+Filament: 0
+N: 100
+Filament: 1
+N: 100
+ran getFilaments
+Filament: 0
+iSite: 0
+iSite: 1
+iSite: 2
+iSite: 3
+iSite: 4
+iSite: 5
+iSite: 6
+iSite: 7
+iSite: 8
+iSite: 9
+iSite: 10
+iSite: 11
+iSite: 12
+iSite: 13
+iSite: 14
+iSite: 15
+iSite: 16
+iSite: 17
+iSite: 18
+iSite: 19
+iSite: 20
+iSite: 21
+iSite: 22
+iSite: 23
+iSite: 24
+iSite: 25
+iSite: 26
+iSite: 27
+iSite: 28
+iSite: 29
+iSite: 30
+iSite: 31
+iSite: 32
+iSite: 33
+iSite: 34
+iSite: 35
+iSite: 36
+iSite: 37
+iSite: 38
+iSite: 39
+iSite: 40
+iSite: 41
+iSite: 42
+iSite: 43
+iSite: 44
+iSite: 45
+iSite: 46
+iSite: 47
+iSite: 48
+iSite: 49
+iSite: 50
+iSite: 51
+iSite: 52
+iSite: 53
+iSite: 54
+iSite: 55
+iSite: 56
+iSite: 57
+iSite: 58
+iSite: 59
+iSite: 60
+iSite: 61
+iSite: 62
+iSite: 63
+iSite: 64
+iSite: 65
+iSite: 66
+iSite: 67
+iSite: 68
+iSite: 69
+iSite: 70
+iSite: 71
+iSite: 72
+iSite: 73
+iSite: 74
+iSite: 75
+iSite: 76
+iSite: 77
+iSite: 78
+iSite: 79
+iSite: 80
+iSite: 81
+iSite: 82
+iSite: 83
+iSite: 84
+iSite: 85
+iSite: 86
+iSite: 87
+iSite: 88
+iSite: 89
+iSite: 90
+iSite: 91
+iSite: 92
+iSite: 93
+iSite: 94
+iSite: 95
+iSite: 96
+iSite: 97
+iSite: 98
+iSite: 99
+iSiteTotal: 100
+Filament: 1
+iSite: 0
+iSite: 1
+iSite: 2
+iSite: 3
+iSite: 4
+iSite: 5
+iSite: 6
+iSite: 7
+iSite: 8
+iSite: 9
+iSite: 10
+iSite: 11
+iSite: 12
+iSite: 13
+iSite: 14
+iSite: 15
+iSite: 16
+iSite: 17
+iSite: 18
+iSite: 19
+iSite: 20
+iSite: 21
+iSite: 22
+iSite: 23
+iSite: 24
+iSite: 25
+iSite: 26
+iSite: 27
+iSite: 28
+iSite: 29
+iSite: 30
+iSite: 31
+iSite: 32
+iSite: 33
+iSite: 34
+iSite: 35
+iSite: 36
+iSite: 37
+iSite: 38
+iSite: 39
+iSite: 40
+iSite: 41
+iSite: 42
+iSite: 43
+iSite: 44
+iSite: 45
+iSite: 46
+iSite: 47
+iSite: 48
+iSite: 49
+iSite: 50
+iSite: 51
+iSite: 52
+iSite: 53
+iSite: 54
+iSite: 55
+iSite: 56
+iSite: 57
+iSite: 58
+iSite: 59
+iSite: 60
+iSite: 61
+iSite: 62
+iSite: 63
+iSite: 64
+iSite: 65
+iSite: 66
+iSite: 67
+iSite: 68
+iSite: 69
+iSite: 70
+iSite: 71
+iSite: 72
+iSite: 73
+iSite: 74
+iSite: 75
+iSite: 76
+iSite: 77
+iSite: 78
+iSite: 79
+iSite: 80
+iSite: 81
+iSite: 82
+iSite: 83
+iSite: 84
+iSite: 85
+iSite: 86
+iSite: 87
+iSite: 88
+iSite: 89
+iSite: 90
+iSite: 91
+iSite: 92
+iSite: 93
+iSite: 94
+iSite: 95
+iSite: 96
+iSite: 97
+iSite: 98
+iSite: 99
+iSiteTotal: 100
+Number of iSites in system: 200
+bSite filename set to NONE - skipping file load, no bSites will be set
+Filament: 0 
+bSiteTotal = 0 
+Filament: 1 
+bSiteTotal = 0 
+Number of bound sites in system = 0 
+ran getSites
+Initializing optimized data structures
+Successfully allocated simulation state for 2 filaments
+starting metropolisJoint
+=== PERFORMANCE TIMING ===
+dataRecording() took 49.571 seconds (13.70% of total runtime)
+rotate() took ~279.180 seconds (77.17% of total runtime) [sampled 309021/309021596 calls]
+Total simulation time: 361.769 seconds
+Average dataRecording() time per iteration: 0.000008 seconds
+Average rotate() time per call: 0.000000903 seconds
+Cleaning up optimized data structures
+Freed simulation state
